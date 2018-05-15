@@ -3,31 +3,22 @@ package Entities;
 import java.util.ArrayList;
 
 public class Taxonomy {
-		private ArrayList<Taxonomy> lineage = new ArrayList<Taxonomy>();
+		private ArrayList<Taxonomy> sons = new ArrayList<Taxonomy>();
 		private String link;
-		private Result result;
 		private String taxID;
 		private String organism;
 		private boolean isExpandAble;
-		public Taxonomy next, prev;
+		public Taxonomy ancestor;
 
 		
 		
-		public Taxonomy() {
-			result = new Result();
-		}
 		
-		public ArrayList<Taxonomy> getLineage() {
-			return lineage;
+		public ArrayList<Taxonomy> getSons() {
+			return sons;
 		}
-		public void setLineage(ArrayList<Taxonomy> lineage) {
-			this.lineage = lineage;
-		}
-		public Result getResult() {
-			return result;
-		}
-		public void setResult(Result result) {
-			this.result = result;
+		public void addToSons(Taxonomy tax) {
+			tax.ancestor = this;
+			sons.add(tax);
 		}
 
 		
@@ -44,17 +35,6 @@ public class Taxonomy {
 			return link;
 		}
 
-		public ArrayList<Taxonomy> getAncestorsList() {
-			return lineage;
-		}
-
-		public void setAncestorsList(ArrayList<Taxonomy> ancestorsList) {
-			this.lineage = ancestorsList;
-		}
-
-		public void addToAncestorsList(Taxonomy tax) {
-			lineage.add(tax);
-		}
 		
 		public String getOrganism() {
 			return organism;

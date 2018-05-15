@@ -27,6 +27,7 @@ public class Vars {
 	public static String searchScreenTitle = "Search";
 	public static File resultsFile;
 	public static Result userResult;
+	public static Taxonomy root;
 
 
 
@@ -35,7 +36,6 @@ public class Vars {
 		BufferedReader br = null;
 		FileReader fr = null;
 		String dna="";
-
 		try {
 			fr = new FileReader(dnaFile);
 			br = new BufferedReader(fr);
