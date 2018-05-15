@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 import Entities.Lineage;
 import Entities.Result;
@@ -13,12 +14,14 @@ import Entities.Vars;
 
 public class ParseSourceCode {
 	public static void main(String args[]) {
-		parseTaxonomyLineageBrowserSourceCode("33213");
+		getLineage("33213");
 	}
-	public static Lineage parseTaxonomyLineageBrowserSourceCode(String taxID) { // First page3
+	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
 		URLConnection conn;
-		Lineage searchedLin = null;
+		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
+		Taxonomy tax;
+		Taxonomy taxSelected = new Taxonomy();
 		try {
 
 			URL url = new URL(Vars.taxonomyBrowser + taxID);
@@ -31,64 +34,51 @@ public class ParseSourceCode {
 			String lineage = br.readLine();
 			String searchedTaxInfo = br.readLine();
 			
-			
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
-			searchedLin = new Lineage();
 			//TAXID
-			searchedLin.setLink(searchedTaxInfo.substring(searchedTaxInfo.indexOf("id=") + 3, searchedTaxInfo.indexOf("&lvl")));
+			taxSelected.setLink(searchedTaxInfo.substring(searchedTaxInfo.indexOf("id=") + 3, searchedTaxInfo.indexOf("&lvl")));
 			//ORGANISM
-			searchedLin.setOrganism(searchedTaxInfo.substring(searchedTaxInfo.indexOf("<STRONG>") + 8, searchedTaxInfo.indexOf("</STRONG>")));
-			System.out.println(searchedLin.getOrganism());
+			taxSelected.setOrganism(searchedTaxInfo.substring(searchedTaxInfo.indexOf("<STRONG>") + 8, searchedTaxInfo.indexOf("</STRONG>")));
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 			
 			
 			int index = 3;//First ahref is irrelevant
 			while(lineage.indexOf("HREF") != -1) {
-				searchedLin = new Lineage();
+				tax = new Taxonomy();
 				lineage = lineage.substring(index);
 				index = lineage.indexOf("HREF");
 				if(index == -1)
 					break;
 				//TAXID
 				lineage = lineage.substring(index);
-				searchedLin.setLink(lineage.substring(lineage.indexOf("id=") + 3, lineage.indexOf("&lvl")));
+				tax.setLink(lineage.substring(lineage.indexOf("id=") + 3, lineage.indexOf("&lvl")));
 				//ORGANISM
 				index = lineage.indexOf("ALT");
-				lineage.substring(index);
+				lineage = lineage.substring(index);
 				index = lineage.indexOf(">") + 1;//Skip the '>'
-				searchedLin.setOrganism(lineage.substring(index, lineage.indexOf("<", index)));
-				searchedLin.setExpandAble(true);
+				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
+				tax.setExpandAble(true);
 				if(Vars.userResult == null)
 					Vars.userResult = new Result();
-				System.out.println(searchedLin.getOrganism());
-				Vars.userResult.lineage.add(searchedLin);
+				taxList.add(tax);
 			}
-			for(int j=0;j<Vars.userResult.lineage.size();++j)
-				System.out.println("Link: " +Vars.userResult.lineage.get(j).getLink()+ " Organism: " + Vars.userResult.lineage.get(j).getOrganism()
-						+ " TaxID: " + Vars.userResult.lineage.get(j).getTaxID());
+			for(int j=0;j<taxList.size();++j)
+				System.out.println(" Organism: " + taxList.get(j).getOrganism()
+						+ " TaxID: " + taxList.get(j).getTaxID());
 
 		}catch(Exception e) {e.printStackTrace();}
-		return searchedLin;
+		return taxList;
 	}
 	
 	
 	
 	
+
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public static void parseTaxonomySonsSourceCode(String taxID) {
+	public static Taxonomy getSons(String taxID) {
 		URLConnection conn;
-		Taxonomy searchedTax = null;
+		Taxonomy root = new Taxonomy();
+		//root.set
 		try {
 
 			URL url = new URL(Vars.taxonomyBrowser + taxID);
@@ -98,6 +88,7 @@ public class ParseSourceCode {
 			String inputLine;
 
 		}catch(Exception e) {e.printStackTrace();}	
+		return root;
 	}
 
 	public boolean isExpandable(String expand) {
