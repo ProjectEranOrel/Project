@@ -2,49 +2,74 @@ package controllers;
 import java.util.ArrayList;
 
 import Entities.Result;
+import Entities.Taxonomy;
+import Entities.Vars;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.stage.Stage;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 
 
 
-public class TreeScreenController 
+
+
+public class TreeScreenController extends Application
 {
-	public TreeTableView<Result> treeTable;
-	public static ArrayList<Result> tableData;
+	public TreeTableView<Taxonomy> treeTable;
+	public static ArrayList<Taxonomy> tableData;
 	public void start(Stage stage)
 	{
 		treeTable = new TreeTableView<>();
-		TreeTableColumn<Result, String> IDCol = new TreeTableColumn<>("Taxonomy ID");
-		TreeTableColumn<Result, String> nameCol = new TreeTableColumn<>("Last Name");
-		TreeTableColumn<Result, Boolean> selectedCol = new TreeTableColumn<>("Selected");
-		populateTree(tableData);
+		TreeTableColumn<Taxonomy, String> IDCol = new TreeTableColumn<>("Taxonomy ID");
+		TreeTableColumn<Taxonomy, String> nameCol = new TreeTableColumn<>("Last Name");
+		TreeTableColumn<Taxonomy, Boolean> selectedCol = new TreeTableColumn<>("Selected");
+		//populateTree(tableData);
+		//After the table is ready we insert the data into it
+		
+		stage.setTitle("CDSF: Conserved DNA sequence finder");
+		showScreen("FirstScreen");
+
 	}
-	
-	private void populateTree(ArrayList<Result> tableData)
+	public static void showScreen(String screenName) throws IOException 
 	{
-		TreeItem<Result> root = new TreeItem<Result>();
-		root.getChildren().add(new TreeItem<Result>(tableData.get(0)));
+		FXMLLoader loader = new FXMLLoader(TreeScreenController.class.getResource("/gui/"+screenName+".fxml"));
+		mainLayout = loader.load();
+		Scene scene = new Scene(mainLayout);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
+
+	
+	private void populateTree()
+	{
+		
+		TreeItem<Taxonomy> root = new TreeItem<Taxonomy>();
+		root.getChildren().add(new TreeItem<Taxonomy>(tableData.get(0)));
 		for(int i=1;i<tableData.size();i++)
 		{
-			Result res = tableData.get(i);   
-			root.getChildren().add(new TreeItem<Result>(res));
-			/*if(res.isExpandable())
-				populateTree(res.getSons());*/	
+			Taxonomy res = tableData.get(i);   
+			root.getChildren().add(new TreeItem<Taxonomy>(res));
+			if(res.isExpandable())
+				populateTree(res.getSons());
 		}
 	}
 	
 	
-	public static void setTableData(ArrayList<Result> tableData)
+	public static void setTableData(ArrayList<Taxonomy> tableData)
 	{
 		TreeScreenController.tableData = tableData;
 	}
-	public static void main(String[] args)
+	public static void main(String[] args) 
 	{
-		//Result res1 = new Result()
+		launch(args);
 	}
+
 	
 
 }
