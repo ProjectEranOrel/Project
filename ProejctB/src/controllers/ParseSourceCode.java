@@ -6,68 +6,108 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+import Entities.Lineage;
 import Entities.Result;
 import Entities.Taxonomy;
 import Entities.Vars;
 
 public class ParseSourceCode {
 	public static void main(String args[]) {
-		parseTaxonomyBrowserSourceCode("9606");
+		parseTaxonomyLineageBrowserSourceCode("33213");
 	}
-	public static void parseTaxonomyBrowserSourceCode(String taxID) { // First page3
-		
+	public static Lineage parseTaxonomyLineageBrowserSourceCode(String taxID) { // First page3
+
 		URLConnection conn;
+		Lineage searchedLin = null;
 		try {
+
+			URL url = new URL(Vars.taxonomyBrowser + taxID);
+			conn = url.openConnection();
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			for(int i=0;i<122;i++) //CHANGE this works for now, but rather get something more general!
+				br.readLine();
 			
-		URL url = new URL(Vars.taxonomyBrowser + taxID);
-		conn = url.openConnection();
-		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String currLine="", prevLine;
-/*		while ((prevLine = br.readLine()) != null) {
-			if(currLine.contains("</table>") && prevLine.contains("<A HREF"))
-				System.out.println(currLine);
-			currLine = br.readLine();
-			if(prevLine.contains("</table>") && currLine.contains("<A HREF"))
-				System.out.println(currLine);
-		}*/
-		br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		for(int i=0;i<122;i++) {//CHANGE this works for now, but rather get something more general!
-			br.readLine();
-		}
 			String lineage = br.readLine();
-			System.out.println(lineage);
 			String searchedTaxInfo = br.readLine();
-			Taxonomy searchedTax = new Taxonomy();
+			
+			
+			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
+			searchedLin = new Lineage();
 			//TAXID
-			searchedTax.setLink(searchedTaxInfo.substring(searchedTaxInfo.indexOf("id=") + 3, searchedTaxInfo.indexOf("&lvl")));
+			searchedLin.setLink(searchedTaxInfo.substring(searchedTaxInfo.indexOf("id=") + 3, searchedTaxInfo.indexOf("&lvl")));
 			//ORGANISM
-			searchedTax.setOrganism(searchedTaxInfo.substring(searchedTaxInfo.indexOf("<STRONG>") + 8, searchedTaxInfo.indexOf("</STRONG>")));
+			searchedLin.setOrganism(searchedTaxInfo.substring(searchedTaxInfo.indexOf("<STRONG>") + 8, searchedTaxInfo.indexOf("</STRONG>")));
+			System.out.println(searchedLin.getOrganism());
+			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 			
 			
 			int index = 3;//First ahref is irrelevant
-			lineage = lineage.substring(index);
 			while(lineage.indexOf("HREF") != -1) {
+				searchedLin = new Lineage();
 				lineage = lineage.substring(index);
 				index = lineage.indexOf("HREF");
 				if(index == -1)
 					break;
-				Taxonomy tax = new Taxonomy();
 				//TAXID
 				lineage = lineage.substring(index);
-				tax.setLink(lineage.substring(lineage.indexOf("id=") + 3, lineage.indexOf("&lvl")));
+				searchedLin.setLink(lineage.substring(lineage.indexOf("id=") + 3, lineage.indexOf("&lvl")));
 				//ORGANISM
 				index = lineage.indexOf("ALT");
 				lineage.substring(index);
 				index = lineage.indexOf(">") + 1;//Skip the '>'
-				tax.setOrganism(lineage.substring(index, lineage.indexOf("<", index)));
-				searchedTax.addToAncestorsList(tax);
+				searchedLin.setOrganism(lineage.substring(index, lineage.indexOf("<", index)));
+				searchedLin.setExpandAble(true);
+				if(Vars.userResult == null)
+					Vars.userResult = new Result();
+				System.out.println(searchedLin.getOrganism());
+				Vars.userResult.lineage.add(searchedLin);
 			}
-			System.out.println("done while");
+			for(int j=0;j<Vars.userResult.lineage.size();++j)
+				System.out.println("Link: " +Vars.userResult.lineage.get(j).getLink()+ " Organism: " + Vars.userResult.lineage.get(j).getOrganism()
+						+ " TaxID: " + Vars.userResult.lineage.get(j).getTaxID());
 
-		
 		}catch(Exception e) {e.printStackTrace();}
+		return searchedLin;
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static void parseTaxonomySonsSourceCode(String taxID) {
+		URLConnection conn;
+		Taxonomy searchedTax = null;
+		try {
+
+			URL url = new URL(Vars.taxonomyBrowser + taxID);
+			conn = url.openConnection();
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String inputLine;
+
+		}catch(Exception e) {e.printStackTrace();}	
+	}
+
+	public boolean isExpandable(String expand) {
+		if(expand.equals("square"))
+			return false;
+		return true;
+	}
+	
+	
+
 	public static void parseSearchSourceCode() {
 		URLConnection conn;
 		try {

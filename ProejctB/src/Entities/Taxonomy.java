@@ -4,10 +4,19 @@ import java.util.ArrayList;
 
 public class Taxonomy {
 		private ArrayList<Taxonomy> lineage = new ArrayList<Taxonomy>();
-		private String organism;//Name of the organism
 		private String link;
 		private Result result;
 		private String taxID;
+		private String organism;
+		private boolean isExpandAble;
+		public Taxonomy next, prev;
+
+		
+		
+		public Taxonomy() {
+			result = new Result();
+		}
+		
 		public ArrayList<Taxonomy> getLineage() {
 			return lineage;
 		}
@@ -20,7 +29,6 @@ public class Taxonomy {
 		public void setResult(Result result) {
 			this.result = result;
 		}
-		private boolean isExpandAble;
 
 		
 		public void setLink(String taxID) {
@@ -58,7 +66,7 @@ public class Taxonomy {
 		public boolean isExpandAble() {
 			return isExpandAble;
 		}
-		public void setExpandAble(boolean isExpandAble) {
+		public void setIsExpandAble(boolean isExpandAble) {
 			this.isExpandAble = isExpandAble;
 		}
 }

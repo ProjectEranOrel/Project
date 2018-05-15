@@ -12,6 +12,7 @@ public class Result {
 	private String name = "";
 	private String nameGenID = name + "\n" + geneID;
 	private String orgName;
+	public ArrayList<Lineage> lineage = new ArrayList<Lineage>();
 	private int number; // row number in table
 	
 	
