@@ -26,11 +26,11 @@ public class Vars {
 	public static String resultsScreenScreenTitle = "Results";
 	public static String searchScreenTitle = "Search";
 	public static File resultsFile;
-	public static Result userResult;
-	public static Taxonomy root;
+	public static Result userResult;//The entry the user chose
+	public static Taxonomy root = null;
 
 
-
+//Vars.root = func(userResult.getTaxID());
 	@SuppressWarnings({ "resource", "finally" })
 	public static String readDNAFile() {
 		BufferedReader br = null;

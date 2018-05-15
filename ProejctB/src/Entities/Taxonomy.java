@@ -20,6 +20,10 @@ public class Taxonomy {
 			tax.ancestor = this;
 			sons.add(tax);
 		}
+		
+		public void setTaxID(String taxID) {
+			this.taxID = taxID;
+		}
 
 		
 		public void setLink(String taxID) {
@@ -46,7 +50,7 @@ public class Taxonomy {
 		public boolean isExpandAble() {
 			return isExpandAble;
 		}
-		public void setIsExpandAble(boolean isExpandAble) {
+		public void setExpandAble(boolean isExpandAble) {
 			this.isExpandAble = isExpandAble;
 		}
 }
