@@ -35,6 +35,7 @@ public class TreeScreenController
 				populateTree(res.getSons());*/	
 		}
 	}
+	/*ERAN SIMHON*/
 	
 	public static void setTableData(ArrayList<Result> tableData)
 	{
