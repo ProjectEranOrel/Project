@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="297.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FirstScreenController">
+   <children>
+      <ImageView fitHeight="315.0" fitWidth="536.0" layoutX="-1.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../pictures/FirstScreen2.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="14.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter a key word and choose your DNA" wrappingWidth="383.336669921875">
+         <font>
+            <Font name="System Bold Italic" size="20.0" />
+         </font></Text>
+      <Button fx:id="searchButton" layoutX="408.0" layoutY="232.0" mnemonicParsing="false" onAction="#onSearch" onMousePressed="#onSearchPressed" onMouseReleased="#onSearchReleased" prefHeight="44.0" prefWidth="118.0" text="Begin search ">
+         <font>
+            <Font size="16.0" />
+         </font></Button>
+      <ImageView fx:id="uploadImageView" fitHeight="10.0" fitWidth="9.0" layoutY="278.0" onMousePressed="#onUpload" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../pictures/upload.png" />
+         </image>
+      </ImageView>
+      <TextField fx:id="uploadTextField" layoutX="26.0" layoutY="139.0" onKeyPressed="#onInputKeyPressed" prefHeight="34.0" prefWidth="360.0" style="-fx-background-color: #E3FAE1; -fx-border-color: #525252;" />
+      <ImageView fitHeight="126.0" fitWidth="118.0" layoutX="66.0" layoutY="173.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../pictures/downloadGif.gif" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

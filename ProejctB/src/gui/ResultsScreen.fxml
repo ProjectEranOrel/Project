@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="757.0" prefWidth="986.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ResultsScreenController">
+   <children>
+      <ImageView fitHeight="757.0" fitWidth="1347.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../pictures/TableBackground.png" />
+         </image>
+      </ImageView>
+      <TableView fx:id="resultsTableView" editable="true" layoutX="69.0" layoutY="30.0" prefHeight="552.0" prefWidth="855.0" style="-fx-background-color: #CEF0FD; -fx-border-color: #7C7C7C; -fx-: red;">
+        <columns>
+            <TableColumn fx:id="resultsTableColumn" minWidth="0.0" prefWidth="0.0" text="Results" />
+            <TableColumn fx:id="numberTableColumn" prefWidth="90.0" style="-fx-background-color: #CEF0FD; -fx-border-color: #525252;" text="No." />
+          <TableColumn fx:id="nameGenTableColumn" prefWidth="126.0" style="-fx-background-color: #CEF0FD; -fx-border-color: #525252;" text="Name/Gen ID" />
+            <TableColumn fx:id="orgNameTableColumn" prefWidth="75.0" style="-fx-background-color: #CEF0FD; -fx-border-color: #525252;" text="Org_Name" />
+          <TableColumn fx:id="descriptionTableColumn" prefWidth="261.0" style="-fx-background-color: #CEF0FD; -fx-border-color: #525252;" text="Description" />
+            <TableColumn fx:id="aliasesTableColumn" prefWidth="232.0" style="-fx-background-color: #CEF0FD; -fx-border-color: #525252;" text="Aliases" />
+            <TableColumn fx:id="mimTableColumn" prefWidth="70.0" style="-fx-background-color: #CEF0FD; -fx-border-color: #525252;" text="MIM" />
+        </columns>
+      </TableView>
+      <Button layoutX="67.0" layoutY="671.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="95.0" text="Back">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Button>
+      <Button fx:id="checkAllButton" layoutX="840.0" layoutY="671.0" mnemonicParsing="false" onMouseEntered="#onCheckAllEntered" onMouseExited="#onCheckAllExited" prefHeight="49.0" prefWidth="95.0" text="Check all">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Button>
+      <Button fx:id="checkSelectedButton" layoutX="449.0" layoutY="671.0" mnemonicParsing="false" onAction="#onCheckSelected" prefHeight="49.0" prefWidth="140.0" text="Check Selected">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Button>
+      <Text fx:id="checkAllText" fill="RED" layoutX="795.0" layoutY="666.0" strokeType="OUTSIDE" strokeWidth="0.0" text="This action may take a while">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Text>
+      <Button layoutX="853.0" layoutY="590.0" mnemonicParsing="false" text="Next Page" />
+      <Button layoutX="69.0" layoutY="590.0" mnemonicParsing="false" text="Previous Page" />
+   </children>
+</Pane>
