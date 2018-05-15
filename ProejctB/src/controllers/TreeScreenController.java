@@ -34,7 +34,7 @@ public class TreeScreenController extends Application
 		
 		stage.setTitle("CDSF: Conserved DNA sequence finder");
 		showScreen("FirstScreen");
-
+//
 	}
 	public static void showScreen(String screenName) throws IOException 
 	{
