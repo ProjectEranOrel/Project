@@ -29,7 +29,7 @@ public class TreeScreenController
 		root.getChildren().add(new TreeItem<Result>(tableData.get(0)));
 		for(int i=1;i<tableData.size();i++)
 		{
-			Result res = tableData.get(i);
+			Result res = tableData.get(i);   
 			root.getChildren().add(new TreeItem<Result>(res));
 			/*if(res.isExpandable())
 				populateTree(res.getSons());*/	
