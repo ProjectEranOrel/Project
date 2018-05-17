@@ -18,13 +18,26 @@ public class ParseSourceCode {
 	private static final String father = "</UL>";
 	private static final String notExpandable = "square";
 
+<<<<<<< HEAD
 	public static void main(String args[]) {
+=======
+	/*public static void main(String args[]) 
+	{
+		if(getLineage("9443")==null)
+			System.out.println("SHIT");
+>>>>>>> branch 'master' of https://github.com/ProjectEranOrel/Project.git
 		Taxonomy t = new Taxonomy();
 		t.setTaxID("9443");
 		getSons(t);
+<<<<<<< HEAD
 	}
+=======
+		
+	}*/
+>>>>>>> branch 'master' of https://github.com/ProjectEranOrel/Project.git
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
+		System.out.println("TaxId: "+taxID);
 		URLConnection conn;
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
@@ -83,11 +96,15 @@ public class ParseSourceCode {
 
 
 	public static Taxonomy getSons(Taxonomy tax) {
+		System.out.println(tax.getTaxID());
 		URLConnection conn;
 		Taxonomy root = tax;
 		String taxID=root.getTaxID();
+<<<<<<< HEAD
 		root.setOrganism("TESTORGA");
 		root.setTaxID("TESTTAX");
+=======
+>>>>>>> branch 'master' of https://github.com/ProjectEranOrel/Project.git
 		root.setExpandable(true);
 		Taxonomy currentTax = root;
 		// CHECK FIRST IF EXPANDABLE, IF NOT, RETURN INFO!
@@ -108,8 +125,8 @@ public class ParseSourceCode {
 			inputLine = inputLine.substring(startIndex, endIndex+12);
 			String[] lines = inputLine.split("\\r?\\n");
 
-
 			for(int i=0;i<lines.length-1;i++) {// -1 to ignore <script type line
+				
 				/* SON */
 				if(lines[i].contains(son)){			//		System.out.println("son");
 					currentTax.addToSons(new Taxonomy());
@@ -141,6 +158,7 @@ public class ParseSourceCode {
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
+					//System.out.println(currentTax.getTaxID());
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());
 						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
@@ -148,6 +166,7 @@ public class ParseSourceCode {
 				}
 			}
 		}catch(Exception e) {e.printStackTrace();}	
+		
 		return root;
 	}
 	public boolean isExpandable(String expand) {

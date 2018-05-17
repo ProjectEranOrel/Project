@@ -20,7 +20,7 @@ public class TreeScreenController
 	public TreeTableView<Taxonomy> treeTable;
 	public static ArrayList<Taxonomy> tableData;
 	public TableView<Taxonomy> selectedTable;
-	
+
 	@SuppressWarnings("unchecked")
 	public void initialize()
 	{
@@ -31,11 +31,11 @@ public class TreeScreenController
 		TreeTableColumn<Taxonomy, String> nameCol = new TreeTableColumn<>("Organism name");
 		nameCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getValue().getOrganism()));
-		
+
 		TableColumn<Taxonomy,String> selectedIDcol = new TableColumn<>("Taxonomy ID");
 		selectedIDcol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getTaxID()));
-		
+
 		TableColumn<Taxonomy, String> selectedNameCol = new TableColumn<>("Organism name");
 		selectedNameCol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getOrganism()));
@@ -44,20 +44,16 @@ public class TreeScreenController
 		treeTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		selectedTable.getColumns().addAll(selectedIDcol,selectedNameCol);
 		selectedTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		
+
 		//populateTree(tableData);
 		//After the table is ready we insert the data into it
 		//ArrayList<Taxonomy> data = ParseSourceCode.getLineage(Vars.userResult.getTaxID());
-		
-		
+
+
 		TreeItem<Taxonomy> root = new TreeItem<Taxonomy>();
-		Taxonomy item1 = new Taxonomy("EE12","Charizard",true);
-		for(int i=0;i<3;i++)
-			item1.addToSons(new Taxonomy("EE12"+i,"Charizard"+i,false));
-		Taxonomy item2 = new Taxonomy("EE13","Blastoise",true);
-		for(int i=0;i<3;i++)
-			item2.addToSons(new Taxonomy("EE13"+i,"Blastoise"+i,false));
-		root.getChildren().addAll(new TreeItem<Taxonomy>(item1),new TreeItem<Taxonomy>(item2));
+		ArrayList<Taxonomy> data = ParseSourceCode.getLineage(Vars.userResult.getGeneID());
+		for(int i=0;i<data.size();i++)
+			root.getChildren().add(new TreeItem<Taxonomy>(data.get(i)));
 		treeTable.setRoot(root);
 		treeTable.setShowRoot(false);
 	}
@@ -80,17 +76,18 @@ public class TreeScreenController
 	{
 		TreeItem<Taxonomy> chosen = treeTable.getSelectionModel().getSelectedItem();
 		if(chosen != null && chosen.getValue().isExpandable() && chosen.getChildren().size()==0)//If the chosen table entry has children and they weren't retrieved yet
-			populateTree(chosen);
+			populateTree(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
+
 	}
-	private void populateTree(TreeItem<Taxonomy> data)
+	private void populateTree(TreeItem<Taxonomy> data, ArrayList<Taxonomy> sons,int depth)
 	{
-		ArrayList<Taxonomy> sons = data.getValue().getSons();
-		for(int i=1;i<sons.size();i++)
+		for(int i=0;i<sons.size();i++)
 		{
-			Taxonomy son = sons.get(i);   
-			if(son.isExpandable())
-				populateTree(new TreeItem<Taxonomy>(son));
-			data.getChildren().add(new TreeItem<Taxonomy>(son));
+			Taxonomy son = sons.get(i);  
+			TreeItem<Taxonomy> sonItem = new TreeItem<Taxonomy>(son);
+			if(son.isExpandable() && depth>0)
+				populateTree(sonItem,son.getSons(),depth-1);
+			data.getChildren().add(sonItem);
 		}
 	}
 
