@@ -1,4 +1,4 @@
-package controllers;
+/*package controllers;
 import java.util.ArrayList;
 
 import Entities.Result;
@@ -15,9 +15,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-
-
-
+function Maximum Consecutive Subsequence(X, n)
+Input: X (an array of size n)
+Output: GlobalElements (a Queue of the maximum subsequence
+elements)
+GlobalMax := 0;
+SuffixMax := 0;
+for i := 1 to n do
+if x[i] + SuffixMax > GlobalMax then
+put x[i] in Queue GlobalElements
+SuffixMax := SuffixMax + x[i];
+GlobalMax := SuffixMax;
+else if x[i] + SuffixMax > 0 then
+put x[i] in SuffixQueue;
+ SuffixMax := x[i] + SuffixMax;
+else
+SuffixMax := 0;
+return GlobalElements;
 
 public class TreeScreenController extends Application
 {
@@ -73,3 +87,4 @@ public class TreeScreenController extends Application
 	
 
 }
+*/
