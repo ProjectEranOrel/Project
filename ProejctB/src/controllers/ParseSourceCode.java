@@ -18,10 +18,12 @@ public class ParseSourceCode {
 	private static final String father = "</UL>";
 	private static final String notExpandable = "square";
 
-	public static void main(String args[]) {
+/*	public static void main(String args[]) {
 		//getLineage("9443");
-		getSons("9443");
-	}
+		Taxonomy t = new Taxonomy();
+		t.setTaxID("9443");
+		getSons(t);
+	}*/
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
 		URLConnection conn;
@@ -81,9 +83,10 @@ public class ParseSourceCode {
 
 
 
-	public static Taxonomy getSons(String taxID) {
+	public static Taxonomy getSons(Taxonomy tax) {
 		URLConnection conn;
-		Taxonomy root = new Taxonomy();
+		Taxonomy root = tax;
+		String taxID=root.getTaxID();
 		root.setOrganism("TESTORGA");
 		root.setTaxID("TESTTAX");
 		root.setExpandAble(true);
@@ -110,21 +113,21 @@ public class ParseSourceCode {
 			for(int i=0;i<lines.length-1;i++) {// -1 to ignore <script type line
 				/* SON */
 				if(lines[i].contains(son)){			//		System.out.println("son");
-				currentTax.addToSons(new Taxonomy());
-				currentTax = currentTax.getSons().get(currentTax.getSons().size()-1);
+					currentTax.addToSons(new Taxonomy());
+					currentTax = currentTax.getSons().get(currentTax.getSons().size()-1);
 				}// end if
 
 				/* FATHER */
 				else if(lines[i].contains(father)) {	//				System.out.println("father");
-				int l=0;
-				while(lines[i].contains(father)) {
-					currentTax = currentTax.ancestor;i++;
-				}
-				if(lines[i].contains("<script t"))
-					break;
-				currentTax.ancestor.addToSons(new Taxonomy());
-				currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);
-				--i;
+					int l=0;
+					while(lines[i].contains(father)) {
+						currentTax = currentTax.ancestor;i++;
+					}
+					if(lines[i].contains("<script t"))
+						break;
+					currentTax.ancestor.addToSons(new Taxonomy());
+					currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);
+					--i;
 
 				}// end else if
 				else {
@@ -136,7 +139,9 @@ public class ParseSourceCode {
 					/*      TAX ID         */
 					currentTax.setTaxID(lines[i].substring((lines[i].indexOf("id="))+3, lines[i].indexOf("&lvl")));
 					/*      ORGANISM      */
-					currentTax.setOrganism(lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")));
+					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
+							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
+					currentTax.setOrganism(org);
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());
 						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
