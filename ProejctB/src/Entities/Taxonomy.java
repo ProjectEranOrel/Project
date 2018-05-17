@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import javafx.scene.control.*;
 public class Taxonomy {
 		private ArrayList<Taxonomy> sons = new ArrayList<Taxonomy>();
-		private String link;
+		private String link;//USELESS
 		private String taxID;
 		private String organism;
 		private boolean isExpandable;

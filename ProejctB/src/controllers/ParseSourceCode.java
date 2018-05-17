@@ -13,8 +13,16 @@ import Entities.Taxonomy;
 import Entities.Vars;
 
 public class ParseSourceCode {
-	/*public static void main(String args[]) {
-		getLineage("33213");
+
+	private static final String son = "<UL COMPACT>";
+	private static final String father = "</UL>";
+	private static final String notExpandable = "square";
+
+/*	public static void main(String args[]) {
+		//getLineage("9443");
+		Taxonomy t = new Taxonomy();
+		t.setTaxID("9443");
+		getSons(t);
 	}*/
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
@@ -30,18 +38,18 @@ public class ParseSourceCode {
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			for(int i=0;i<122;i++) //CHANGE this works for now, but rather get something more general!
 				br.readLine();
-			
+
 			String lineage = br.readLine();
 			String searchedTaxInfo = br.readLine();
-			
+
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 			//TAXID
 			taxSelected.setLink(searchedTaxInfo.substring(searchedTaxInfo.indexOf("id=") + 3, searchedTaxInfo.indexOf("&lvl")));
 			//ORGANISM
 			taxSelected.setOrganism(searchedTaxInfo.substring(searchedTaxInfo.indexOf("<STRONG>") + 8, searchedTaxInfo.indexOf("</STRONG>")));
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
-			
-			
+
+
 			int index = 3;//First ahref is irrelevant
 			while(lineage.indexOf("HREF") != -1) {
 				tax = new Taxonomy();
@@ -57,7 +65,7 @@ public class ParseSourceCode {
 				lineage = lineage.substring(index);
 				index = lineage.indexOf(">") + 1;//Skip the '>'
 				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
-				tax.setExpandable(true);
+				tax.setExpandAble(true);
 				if(Vars.userResult == null)
 					Vars.userResult = new Result();
 				taxList.add(tax);
@@ -69,37 +77,89 @@ public class ParseSourceCode {
 		}catch(Exception e) {e.printStackTrace();}
 		return taxList;
 	}
-	
-	
-	
-	
 
-	
-	public static Taxonomy getSons(String taxID) {
+
+
+
+
+
+	public static Taxonomy getSons(Taxonomy tax) {
 		URLConnection conn;
-		Taxonomy root = new Taxonomy();
+		Taxonomy root = tax;
+		String taxID=root.getTaxID();
+		root.setOrganism("TESTORGA");
+		root.setTaxID("TESTTAX");
+		root.setExpandAble(true);
+		Taxonomy currentTax = root;
+		// CHECK FIRST IF EXPANDABLE, IF NOT, RETURN INFO!
 		//root.set
 		try {
-
+			/// DO PREV AND CURR TAX! REPARSE!
 			URL url = new URL(Vars.taxonomyBrowser + taxID);
 			conn = url.openConnection();
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String inputLine;
+			String inputLine="";
+			String temp="";
+			while((inputLine = br.readLine())!=null)
+				temp+=inputLine + "\n";
+			inputLine = temp;
+			int startIndex = inputLine.indexOf("</em>") + 6;//We start now!
+			int endIndex = inputLine.indexOf(("<script type=\"text/javascript\">") , (inputLine.indexOf("<script type=\"text/javascript\">")+1));//<script type="text/javascript"> shows twice
+			inputLine = inputLine.substring(startIndex, endIndex+12);
+			String[] lines = inputLine.split("\\r?\\n");
 
+
+			for(int i=0;i<lines.length-1;i++) {// -1 to ignore <script type line
+				/* SON */
+				if(lines[i].contains(son)){			//		System.out.println("son");
+					currentTax.addToSons(new Taxonomy());
+					currentTax = currentTax.getSons().get(currentTax.getSons().size()-1);
+				}// end if
+
+				/* FATHER */
+				else if(lines[i].contains(father)) {	//				System.out.println("father");
+					int l=0;
+					while(lines[i].contains(father)) {
+						currentTax = currentTax.ancestor;i++;
+					}
+					if(lines[i].contains("<script t"))
+						break;
+					currentTax.ancestor.addToSons(new Taxonomy());
+					currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);
+					--i;
+
+				}// end else if
+				else {
+					/*      EXPANDABLE      */
+					if(lines[i].substring(lines[i].indexOf("="), lines[i].indexOf(">")).contains(notExpandable))
+						currentTax.setExpandAble(false);
+					else
+						currentTax.setExpandAble(true);
+					/*      TAX ID         */
+					currentTax.setTaxID(lines[i].substring((lines[i].indexOf("id="))+3, lines[i].indexOf("&lvl")));
+					/*      ORGANISM      */
+					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
+							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
+					currentTax.setOrganism(org);
+					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
+						currentTax.ancestor.addToSons(new Taxonomy());
+						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
+					}
+				}
+			}
 		}catch(Exception e) {e.printStackTrace();}	
 		return root;
 	}
-
 	public boolean isExpandable(String expand) {
 		if(expand.equals("square"))
 			return false;
 		return true;
 	}
-	
-	
 
-	public static void parseSearchSourceCode() {
+
+
+	public static void parseGeneSearchSourceCode() {
 		URLConnection conn;
 		try {
 			URL url = new URL(Vars.searchLink + Vars.searchWord);
