@@ -18,14 +18,18 @@ public class ParseSourceCode {
 	private static final String father = "</UL>";
 	private static final String notExpandable = "square";
 
-/*	public static void main(String args[]) {
-		//getLineage("9443");
+	/*public static void main(String args[]) 
+	{
+		if(getLineage("9443")==null)
+			System.out.println("SHIT");
 		Taxonomy t = new Taxonomy();
 		t.setTaxID("9443");
 		getSons(t);
+		
 	}*/
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
+		System.out.println("TaxId: "+taxID);
 		URLConnection conn;
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
@@ -65,7 +69,7 @@ public class ParseSourceCode {
 				lineage = lineage.substring(index);
 				index = lineage.indexOf(">") + 1;//Skip the '>'
 				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
-				tax.setExpandAble(true);
+				tax.setExpandable(true);
 				if(Vars.userResult == null)
 					Vars.userResult = new Result();
 				taxList.add(tax);
@@ -84,12 +88,11 @@ public class ParseSourceCode {
 
 
 	public static Taxonomy getSons(Taxonomy tax) {
+		System.out.println(tax.getTaxID());
 		URLConnection conn;
 		Taxonomy root = tax;
 		String taxID=root.getTaxID();
-		root.setOrganism("TESTORGA");
-		root.setTaxID("TESTTAX");
-		root.setExpandAble(true);
+		root.setExpandable(true);
 		Taxonomy currentTax = root;
 		// CHECK FIRST IF EXPANDABLE, IF NOT, RETURN INFO!
 		//root.set
@@ -109,8 +112,8 @@ public class ParseSourceCode {
 			inputLine = inputLine.substring(startIndex, endIndex+12);
 			String[] lines = inputLine.split("\\r?\\n");
 
-
 			for(int i=0;i<lines.length-1;i++) {// -1 to ignore <script type line
+				
 				/* SON */
 				if(lines[i].contains(son)){			//		System.out.println("son");
 					currentTax.addToSons(new Taxonomy());
@@ -133,15 +136,16 @@ public class ParseSourceCode {
 				else {
 					/*      EXPANDABLE      */
 					if(lines[i].substring(lines[i].indexOf("="), lines[i].indexOf(">")).contains(notExpandable))
-						currentTax.setExpandAble(false);
+						currentTax.setExpandable(false);
 					else
-						currentTax.setExpandAble(true);
+						currentTax.setExpandable(true);
 					/*      TAX ID         */
 					currentTax.setTaxID(lines[i].substring((lines[i].indexOf("id="))+3, lines[i].indexOf("&lvl")));
 					/*      ORGANISM      */
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
+					//System.out.println(currentTax.getTaxID());
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());
 						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
@@ -149,6 +153,7 @@ public class ParseSourceCode {
 				}
 			}
 		}catch(Exception e) {e.printStackTrace();}	
+		
 		return root;
 	}
 	public boolean isExpandable(String expand) {

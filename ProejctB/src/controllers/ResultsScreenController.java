@@ -76,6 +76,7 @@ public class ResultsScreenController {
 					JOptionPane.WARNING_MESSAGE);
 		else
 			System.out.println(Vars.userResult.getGeneID());
+		Main.showScreen("TreeScreen", "bbb");
 
 	}
 
