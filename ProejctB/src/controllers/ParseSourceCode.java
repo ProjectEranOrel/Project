@@ -13,9 +13,9 @@ import Entities.Taxonomy;
 import Entities.Vars;
 
 public class ParseSourceCode {
-	public static void main(String args[]) {
+	/*public static void main(String args[]) {
 		getLineage("33213");
-	}
+	}*/
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
 		URLConnection conn;
@@ -57,7 +57,7 @@ public class ParseSourceCode {
 				lineage = lineage.substring(index);
 				index = lineage.indexOf(">") + 1;//Skip the '>'
 				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
-				tax.setExpandAble(true);
+				tax.setExpandable(true);
 				if(Vars.userResult == null)
 					Vars.userResult = new Result();
 				taxList.add(tax);

@@ -14,6 +14,7 @@ public class Result {
 	private String orgName;
 	public ArrayList<Lineage> lineage = new ArrayList<Lineage>();
 	private int number; // row number in table
+	private String TaxID;
 	
 	
 	public static ArrayList<Result> resultsList = new ArrayList<Result>();
@@ -81,6 +82,12 @@ public class Result {
 	}
 	public void setNumber(int number) {
 		this.number = number;
+	}
+	public String getTaxID() {
+		return TaxID;
+	}
+	public void setTaxID(String taxID) {
+		TaxID = taxID;
 	}
 
 

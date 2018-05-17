@@ -14,6 +14,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.zip.GZIPInputStream;
 
 public class ConnectToServer{
+	/*
 	public static void main(String[] args) {
 		connectToURL();
 		URL url = null;
@@ -23,7 +24,7 @@ public class ConnectToServer{
 			download(url, file);
 		} catch (IOException e) {	e.printStackTrace();}
 
-	}
+	}*/
 
 	static java.net.URLConnection conn = null;
 	private static String directory = "C:\\Users\\Orel\\Desktop";

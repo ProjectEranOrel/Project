@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="599.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TreeScreenController">
+   <children>
+      <TreeTableView fx:id="treeTable" layoutX="18.0" layoutY="54.0" onMouseClicked="#onClick" prefHeight="309.0" prefWidth="563.0" />
+      <Button fx:id="compareButton" layoutX="515.0" layoutY="575.0" mnemonicParsing="false" onAction="#compare" text="Compare" />
+      <Button layoutX="514.0" layoutY="487.0" mnemonicParsing="false" onAction="#onRemove" prefHeight="26.0" prefWidth="65.0" text="Remove" />
+      <Button layoutX="514.0" layoutY="401.0" mnemonicParsing="false" onAction="#onAdd" prefHeight="26.0" prefWidth="66.0" text="Add " />
+      <Text layoutX="18.0" layoutY="397.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected items:" />
+      <Text layoutX="18.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mark items from the table and click add to add them to the list. If you mark an entry from the table below, you will have the option to delete it" wrappingWidth="563.1999929323792" />
+      <TableView fx:id="selectedTable" layoutX="18.0" layoutY="401.0" prefHeight="200.0" prefWidth="488.0" />
+   </children>
+</AnchorPane>

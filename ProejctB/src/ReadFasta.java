@@ -8,7 +8,7 @@ public class ReadFasta {
   * The program takes two args: the first is the file name of the Fasta file.
   * The second is the name of the Alphabet. Acceptable names are DNA RNA or PROTEIN.
   */
- public static void main(String[] args) {
+ /*public static void main(String[] args) {
 
    try {
      //setup file input
@@ -34,5 +34,5 @@ public class ReadFasta {
      ex.printStackTrace();
    }
  }
-
+*/
 }

@@ -235,7 +235,7 @@ public class SequenceAlignment {
 	}
 
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		SequenceAlignment sequenceAligner = new SequenceAlignment();
 
 		String[][] testSequences = {{"MEAN", "name"},
@@ -243,9 +243,9 @@ public class SequenceAlignment {
 									{"asdc", "gcasa"},
 									{"abc", "bc"}
 									};
-/*		for(int i=0; i< testSequences.length; i++){
+		for(int i=0; i< testSequences.length; i++){
 			sequenceAligner.calcOptimalAlignment(testSequences[i][0], testSequences[i][1]);
-		}*/
-	}
+		}
+	}*/
 
 }

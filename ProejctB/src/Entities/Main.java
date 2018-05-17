@@ -27,7 +27,8 @@ public class Main extends Application
 		popup.initModality(Modality.APPLICATION_MODAL);
 		popup.initOwner(primaryStage);
 		popup = new Stage();
-		showScreen("ResultsScreen", Vars.firstScreenTitle);
+		//showScreen("ResultsScreen", Vars.firstScreenTitle);
+		showScreen("TreeScreen", "Boobs and drugs");
 	}
 	public static void showScreen(String screenName, String screenTitle) 
 	{
@@ -40,7 +41,7 @@ public class Main extends Application
 			primaryStage.show();
 		}catch(Exception e) {e.printStackTrace();}
 	}
-	public static void showPopUpWait(String screenName) {
+	/*public static void showPopUpWait(String screenName) {
 		try {
 			popUp = FXMLLoader.load(Main.class.getResource("/gui/"+screenName+".fxml"));
 		} catch (IOException e) {System.out.println("DeFuck");e.printStackTrace();}
@@ -53,11 +54,12 @@ public class Main extends Application
 		} catch (IOException e) {e.printStackTrace();}
 		Main.popup.setScene(new Scene(popUp));
 		Main.popup.show();
-	}
+	}*/
 
 
 	public static void main(String[] args) 
 	{
+		
 		launch(args);
 	}
 
