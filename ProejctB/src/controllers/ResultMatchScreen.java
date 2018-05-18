@@ -41,7 +41,6 @@ public class ResultMatchScreen
 		selectedTable.getItems().addAll(extraEntires);
 		selectedTable.getSortOrder().add(matchScoreCol);
 	}
-	//
 	public void onClickSelectedTable()
 	{
 		Taxonomy chosen = selectedTable.getSelectionModel().getSelectedItem();
