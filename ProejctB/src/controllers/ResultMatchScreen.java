@@ -34,11 +34,7 @@ public class ResultMatchScreen
 		selectedTable.getColumns().addAll(selectedIDcol,selectedNameCol,matchScoreCol);
 		inputFasta.setText(Vars.userSequence.getDNA());
 		ObservableList<Taxonomy> selectedData = TreeScreenController.selectedData;
-		for(int i=0;i<selectedData.size();i++)
-			selectedData.get(i).getSequence().compare(Vars.userSequence);
-		
 		selectedTable.getItems().addAll(selectedData);
-		selectedTable.getItems().addAll(extraEntires);
 		selectedTable.getSortOrder().add(matchScoreCol);
 	}
 	public void onClickSelectedTable()
@@ -47,8 +43,9 @@ public class ResultMatchScreen
 		if(chosen!=null)
 			selectedFasta.setText(chosen.getSequence().getDNA());
 	}
-	public static void addEntries(Collection<Taxonomy> entires)
+	public void addEntries(Collection<Taxonomy> entires)
 	{
-		extraEntires.addAll(entires);
+		selectedTable.getItems().addAll(entires);
+		selectedTable.setItems(selectedTable.getItems());
 	}
 }

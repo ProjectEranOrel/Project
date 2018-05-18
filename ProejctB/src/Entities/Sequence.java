@@ -50,7 +50,7 @@ public class Sequence {
 		}
 		System.out.println("Its good: "  + ((double)matchNumber/Math.max((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100);
 		//return ((double)matchNumber/Math.min((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100;
-		matchScore = ((double)matchNumber/Math.min((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100;
+		toCompareDNA.matchScore = ((double)matchNumber/Math.min((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100;
 	}
 
 	public String getDNA() {
