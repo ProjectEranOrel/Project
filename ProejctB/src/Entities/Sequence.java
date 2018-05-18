@@ -9,6 +9,7 @@ public class Sequence {
 	private String DNA;
 	public ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 	SequenceAlignment seqAlign = new SequenceAlignment();
+	private double matchScore;
 	
 	public Sequence(String DNA) {
 		this.DNA = DNA;
@@ -16,7 +17,7 @@ public class Sequence {
 
 	public Sequence() {	}
 
-	public double compare(Sequence toCompareDNA) {
+	public void compare(Sequence toCompareDNA) {
 
 		int clusterNum = 0, matchNumber=0;
                                  /*           CHECK IF HIDDEN REPEATS OF 2 CLUSTERS ARE EQUAL        */
@@ -48,7 +49,8 @@ public class Sequence {
 			}//else
 		}
 		System.out.println("Its good: "  + ((double)matchNumber/Math.max((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100);
-		return ((double)matchNumber/Math.min((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100;
+		//return ((double)matchNumber/Math.min((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100;
+		matchScore = ((double)matchNumber/Math.min((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100;
 	}
 
 	public String getDNA() {
@@ -56,6 +58,14 @@ public class Sequence {
 	}
 	public void setDNA(String DNA) {
 		this.DNA = DNA;
+	}
+
+	public double getMatchScore() {
+		return matchScore;
+	}
+
+	public void setMatchScore(double matchScore) {
+		this.matchScore = matchScore;
 	}
 
 

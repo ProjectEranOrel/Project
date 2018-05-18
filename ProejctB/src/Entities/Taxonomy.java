@@ -1,7 +1,6 @@
 package Entities;
 
 import java.util.ArrayList;
-import javafx.scene.control.*;
 public class Taxonomy {
 		private ArrayList<Taxonomy> sons = new ArrayList<Taxonomy>();
 		private String link;//USELESS
@@ -9,6 +8,7 @@ public class Taxonomy {
 		private String organism;
 		private boolean isExpandable;
 		public Taxonomy ancestor;
+		private Sequence sequence;//To use the compare method
 		
 		
 
@@ -27,6 +27,8 @@ public class Taxonomy {
 			this.organism = organism;
 			this.isExpandable = isExpandable;
 			this.ancestor = ancestor;
+			setSequence(new Sequence());
+			
 		}
 		public Taxonomy(String taxID, String organism, boolean isExpandable) 
 		{
@@ -77,6 +79,15 @@ public class Taxonomy {
 		public void setExpandable(boolean isExpandable) {
 			this.isExpandable = isExpandable;
 		}
+
+		public Sequence getSequence() {
+			return sequence;
+		}
+
+		public void setSequence(Sequence sequence) {
+			this.sequence = sequence;
+		}
+
 
 		
 

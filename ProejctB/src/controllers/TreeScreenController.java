@@ -18,7 +18,7 @@ import javafx.scene.control.TreeTableView;
 public class TreeScreenController 
 {
 	public TreeTableView<Taxonomy> treeTable;
-	public static ArrayList<Taxonomy> tableData;
+	public static ObservableList<Taxonomy> selectedData;
 	public TableView<Taxonomy> selectedTable;
 
 	@SuppressWarnings("unchecked")
@@ -92,14 +92,14 @@ public class TreeScreenController
 	}
 
 
-	public static void setTableData(ArrayList<Taxonomy> tableData)
+	/*public static void setTableData(ArrayList<Taxonomy> tableData)
 	{
 		TreeScreenController.tableData = tableData;
-	}
+	}*/
 
 	public void compare()
 	{
-
+		selectedData = selectedTable.getItems();
 	}
 
 }
