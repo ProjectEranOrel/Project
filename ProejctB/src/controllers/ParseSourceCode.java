@@ -18,18 +18,14 @@ public class ParseSourceCode {
 	private static final String father = "</UL>";
 	private static final String notExpandable = "square";
 
-	/*public static void main(String args[]) 
+	public static void main(String args[]) 
 	{
-		if(getLineage("9443")==null)
-			System.out.println("SHIT");
-		Taxonomy t = new Taxonomy();
-		t.setTaxID("9443");
-		getSons(t);
+		getLineage("672");
+
 		
-	}*/
+	}
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
-		System.out.println("TaxId: "+taxID);
 		URLConnection conn;
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
@@ -44,15 +40,15 @@ public class ParseSourceCode {
 				br.readLine();
 
 			String lineage = br.readLine();
-			String searchedTaxInfo = br.readLine();
+
 
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 			//TAXID
-			taxSelected.setLink(searchedTaxInfo.substring(searchedTaxInfo.indexOf("id=") + 3, searchedTaxInfo.indexOf("&lvl")));
+			taxSelected.setLink(lineage.substring(lineage.indexOf("id=", lineage.indexOf("</STRONG>")) + 3,
+					lineage.indexOf("&lvl",lineage.indexOf("</STRONG>"))));
 			//ORGANISM
-			taxSelected.setOrganism(searchedTaxInfo.substring(searchedTaxInfo.indexOf("<STRONG>") + 8, searchedTaxInfo.indexOf("</STRONG>")));
+			taxSelected.setOrganism(lineage.substring(lineage.indexOf("<STRONG>") + 8, lineage.indexOf("</STRONG>")));
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
-
 
 			int index = 3;//First ahref is irrelevant
 			while(lineage.indexOf("HREF") != -1) {
@@ -74,6 +70,7 @@ public class ParseSourceCode {
 					Vars.userResult = new Result();
 				taxList.add(tax);
 			}
+			taxList.set(0, taxSelected);
 			for(int j=0;j<taxList.size();++j)
 				System.out.println(" Organism: " + taxList.get(j).getOrganism()
 						+ " TaxID: " + taxList.get(j).getTaxID());
@@ -88,7 +85,6 @@ public class ParseSourceCode {
 
 
 	public static Taxonomy getSons(Taxonomy tax) {
-		System.out.println(tax.getTaxID());
 		URLConnection conn;
 		Taxonomy root = tax;
 		String taxID=root.getTaxID();
@@ -112,8 +108,8 @@ public class ParseSourceCode {
 			inputLine = inputLine.substring(startIndex, endIndex+12);
 			String[] lines = inputLine.split("\\r?\\n");
 
+
 			for(int i=0;i<lines.length-1;i++) {// -1 to ignore <script type line
-				
 				/* SON */
 				if(lines[i].contains(son)){			//		System.out.println("son");
 					currentTax.addToSons(new Taxonomy());
@@ -145,7 +141,6 @@ public class ParseSourceCode {
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
-					//System.out.println(currentTax.getTaxID());
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());
 						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
@@ -153,7 +148,6 @@ public class ParseSourceCode {
 				}
 			}
 		}catch(Exception e) {e.printStackTrace();}	
-		
 		return root;
 	}
 	public boolean isExpandable(String expand) {
