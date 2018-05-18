@@ -18,12 +18,12 @@ public class ParseSourceCode {
 	private static final String father = "</UL>";
 	private static final String notExpandable = "square";
 
-	public static void main(String args[]) 
+	/*public static void main(String args[]) 
 	{
 		getLineage("672");
 
 		
-	}
+	}*/
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
 		URLConnection conn;
