@@ -2,6 +2,7 @@ package controllers;
 import java.util.ArrayList;
 
 import Entities.Sequence;
+import Entities.Main;
 import Entities.Taxonomy;
 import Entities.Vars;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -105,6 +106,7 @@ public class TreeScreenController
 	public void compare()
 	{
 		selectedData = selectedTable.getItems();
+		Main.showScreen("ResultMatchScreen", "Boobs and drugs");
 	}
 
 }

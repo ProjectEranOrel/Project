@@ -29,6 +29,7 @@ public class Main extends Application
 		popup = new Stage();
 		//showScreen("ResultsScreen", Vars.firstScreenTitle);
 		showScreen("GetResultsScreen", "Boobs and drugs");
+		showScreen("ResultMatchScreen", "Boobs and drugs");
 	}
 	public static void showScreen(String screenName, String screenTitle) 
 	{

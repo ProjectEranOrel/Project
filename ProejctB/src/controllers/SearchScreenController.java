@@ -100,8 +100,7 @@ public class SearchScreenController
 //TEST CLUSTERS
 /* CHANGE - USE THE BBOX TO CREATE THE CLUSTERS AND SEQUENCES*/
 		//First match
-		Vars.userSequence.compare(toCompareDNA);
-		if(firstMatchCheckBox.isSelected()) {
+score = toCompareDNA.getMatchScore();		if(firstMatchCheckBox.isSelected()) {
 			if(score>Integer.parseInt(fromTextField.getText()) && score<Integer.parseInt(toTextField.getText())) {
 				System.out.println("Sequence FOUND!");
 				Vars.foundSequence = toCompareDNA;
