@@ -28,8 +28,8 @@ public class Main extends Application
 		popup.initOwner(primaryStage);
 		popup = new Stage();
 		//showScreen("ResultsScreen", Vars.firstScreenTitle);
-		showScreen("GetResultsScreen", "Boobs and drugs");
-		showScreen("ResultMatchScreen", "Boobs and drugs");
+		showScreen("GetResultsScreen", "");
+
 	}
 	public static void showScreen(String screenName, String screenTitle) 
 	{
@@ -60,10 +60,14 @@ public class Main extends Application
 
 	public static void main(String[] args) 
 	{
-		Vars.userSequence = Vars.setSequence("24475906");
-		Sequence seq = Vars.setSequence("24475906");
+/*		Vars.userSequence = Vars.setSequence("24475906");
+		Sequence seq = Vars.setSequence("24475906");		
 		System.out.println(Vars.userSequence.compare(seq));
-		//launch(args);
+		
+		Vars.userSequence = Vars.setSequence("24475906");
+		Sequence seq1 = Vars.setSequence("50978625");		
+		System.out.println(Vars.userSequence.compare(seq1));*/
+		launch(args);
 	}
 
 }

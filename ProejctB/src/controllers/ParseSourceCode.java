@@ -31,7 +31,6 @@ public class ParseSourceCode {
 		Taxonomy tax;
 		Taxonomy taxSelected = new Taxonomy();
 		try {
-
 			URL url = new URL(Vars.taxonomyBrowser + taxID);
 			conn = url.openConnection();
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -47,7 +46,8 @@ public class ParseSourceCode {
 			taxSelected.setLink(lineage.substring(lineage.indexOf("id=", lineage.indexOf("</STRONG>")) + 3,
 					lineage.indexOf("&lvl",lineage.indexOf("</STRONG>"))));
 			//ORGANISM
-			taxSelected.setOrganism(lineage.substring(lineage.indexOf("<STRONG>") + 8, lineage.indexOf("</STRONG>")));
+			taxSelected.setOrganism(lineage.substring(lineage.indexOf(">", lineage.indexOf("ALT="))+1, 
+					lineage.indexOf("<", lineage.indexOf("ALT="))));
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 
 			int index = 3;//First ahref is irrelevant
@@ -76,6 +76,7 @@ public class ParseSourceCode {
 						+ " TaxID: " + taxList.get(j).getTaxID());
 
 		}catch(Exception e) {e.printStackTrace();}
+
 		return taxList;
 	}
 
@@ -109,21 +110,29 @@ public class ParseSourceCode {
 			String[] lines = inputLine.split("\\r?\\n");
 
 
-			for(int i=0;i<lines.length-1;i++) {// -1 to ignore <script type line
+			for(int i=0;i<lines.length;i++) {// -1 to ignore <script type line
 				/* SON */
-				if(lines[i].contains(son)){			//		System.out.println("son");
+				
+				if(lines[i].contains(son)){	
 					currentTax.addToSons(new Taxonomy());
 					currentTax = currentTax.getSons().get(currentTax.getSons().size()-1);
 				}// end if
 
 				/* FATHER */
-				else if(lines[i].contains(father)) {	//				System.out.println("father");
-					int l=0;
+				else if(lines[i].contains(father)) {
+					if(lines[i].contains("id=")) //last line
+						if(!(lines[i].contains("&nbsp"))) {//Its the end!
+							currentTax.setTaxID(lines[i].substring((lines[i].indexOf("id="))+3, lines[i].indexOf("&lvl")));
+							String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
+									lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("</UL>"));	
+							currentTax.setOrganism(org);
+							break;
+						}
+					
 					while(lines[i].contains(father)) {
 						currentTax = currentTax.ancestor;i++;
 					}
-					if(lines[i].contains("<script t"))
-						break;
+			
 					currentTax.ancestor.addToSons(new Taxonomy());
 					currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);
 					--i;
@@ -138,6 +147,7 @@ public class ParseSourceCode {
 					/*      TAX ID         */
 					currentTax.setTaxID(lines[i].substring((lines[i].indexOf("id="))+3, lines[i].indexOf("&lvl")));
 					/*      ORGANISM      */
+						
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
