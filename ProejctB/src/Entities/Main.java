@@ -62,7 +62,6 @@ public class Main extends Application
 		Vars.userSequence = Vars.setSequence("24475906");
 		Sequence seq = Vars.setSequence("24475906");
 		System.out.println(Vars.userSequence.compare(seq));
-		
 		//launch(args);
 	}
 
