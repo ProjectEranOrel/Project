@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import Entities.Main;
 import Entities.Result;
+import Entities.Sequence;
 import Entities.Vars;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,10 +38,12 @@ public class ResultsScreenController {
 	Button checkAllButton, checkSelectedButton;
 	private int rowNumber = 0;
 
+	Thread t;
+
 	public void initialize() {
 		System.out.println("Initialize ResultsScreenController");
 		checkAllText.setVisible(false);
-		
+
 		//resultsTableView.setStyle("-fx-selection-bar: #3ECAFF; ");
 
 		if(Vars.isUserDNA) {
@@ -71,24 +74,40 @@ public class ResultsScreenController {
 	}
 
 	public void onSelect() {
-		if((Vars.userResult = resultsTableView.getSelectionModel().getSelectedItem()) == null)
+		if((Vars.userResult = resultsTableView.getSelectionModel().getSelectedItem()) == null) {
 			JOptionPane.showMessageDialog(null, "Please select a result", "Warning",
-					JOptionPane.WARNING_MESSAGE);
-		else
-			System.out.println(Vars.userResult.getGeneID());
-		Main.showScreen("TreeScreen", "bbb");
+					JOptionPane.WARNING_MESSAGE); return;}
+		
+		Vars.userSequence = Vars.setSequence(resultsTableView.getSelectionModel().getSelectedItem().getGeneID());
 
+		if(Vars.userSequence == null || Vars.userSequence.dna.equals("bad dna"))
+			System.out.println("bad user dna");
+		Main.showScreen("TreeScreen", "bbb");
 	}
 
 	public void onCheckSelected() {
-		Vars.userResult = resultsTableView.getSelectionModel().getSelectedItem();
-		Vars.setDNAFile(Vars.getDNAByGI(Vars.userResult.getGeneID()));
-		
-		
-		
-		
+		//Vars.userResult = resultsTableView.getSelectionModel().getSelectedItem();
+		//Vars.setDNAFile(Vars.getDNAByGI(Vars.userResult.getGeneID()));
 	}
 
+	/*public static boolean setUserSequence() {
+		try {
+			FileReader	fr = new FileReader(Vars.getUserDNAFile());
+			BufferedReader	br = new BufferedReader(fr);
+			for(int i=0;i<5;i++) 
+				if(br.readLine().contains("ERROR"))
+					return false;
+			br = new BufferedReader(fr);//reinitialize it
+			br.readLine();//Skip first row
+			String temp;
+			while((temp = br.readLine()) != null)
+				Vars.userSequence.dna+=temp;
+			Vars.blackBox("dna.txt");
+			return true;
+		}catch (Exception e) {e.printStackTrace();}
+		return false;
+
+	}*/
 
 	public void setResults() {
 
@@ -210,8 +229,8 @@ public class ResultsScreenController {
 		fileChooser.getExtensionFilters().add(extFilter);
 		Vars.resultsFile = fileChooser.showOpenDialog(Main.primaryStage);
 	}
-	
-	
+
+
 }
 
 

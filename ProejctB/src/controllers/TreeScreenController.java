@@ -1,6 +1,7 @@
 package controllers;
 import java.util.ArrayList;
 
+import Entities.Sequence;
 import Entities.Taxonomy;
 import Entities.Vars;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -91,6 +92,10 @@ public class TreeScreenController
 		}
 	}
 
+	public static void runCompare(Sequence seq) {
+		//Vars.userSequence.
+		
+	}
 
 	/*public static void setTableData(ArrayList<Taxonomy> tableData)
 	{
