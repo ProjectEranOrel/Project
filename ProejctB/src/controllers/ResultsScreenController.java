@@ -146,7 +146,6 @@ public class ResultsScreenController {
 		int index=0;
 		/*       TaxID     */
 		res.setTaxID(line.substring(0, getIndexOf(1, line, false)-3));
-		System.out.println(res.getTaxID());
 		/*     GeneID      */
 		index = getIndexOf(2, line, false);
 		if(index == -1)
