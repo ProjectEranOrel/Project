@@ -29,10 +29,5 @@
          </image>
       </ImageView>
       <TextField fx:id="uploadTextField" layoutX="26.0" layoutY="139.0" onKeyPressed="#onInputKeyPressed" prefHeight="34.0" prefWidth="360.0" style="-fx-background-color: #E3FAE1; -fx-border-color: #525252;" />
-      <ImageView fitHeight="126.0" fitWidth="118.0" layoutX="66.0" layoutY="173.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../pictures/downloadGif.gif" />
-         </image>
-      </ImageView>
    </children>
 </AnchorPane>

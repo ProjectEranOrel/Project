@@ -21,12 +21,11 @@ public class ParseSourceCode {
 	/*public static void main(String args[]) 
 	{
 		getLineage("672");
-
-		
 	}*/
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
 		URLConnection conn;
+		System.out.println("taxid: " + taxID);
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
 		Taxonomy taxSelected = new Taxonomy();
@@ -39,7 +38,7 @@ public class ParseSourceCode {
 				br.readLine();
 
 			String lineage = br.readLine();
-
+			System.out.println(lineage);
 
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 			//TAXID
@@ -112,7 +111,7 @@ public class ParseSourceCode {
 
 			for(int i=0;i<lines.length;i++) {// -1 to ignore <script type line
 				/* SON */
-				
+
 				if(lines[i].contains(son)){	
 					currentTax.addToSons(new Taxonomy());
 					currentTax = currentTax.getSons().get(currentTax.getSons().size()-1);
@@ -128,11 +127,11 @@ public class ParseSourceCode {
 							currentTax.setOrganism(org);
 							break;
 						}
-					
+
 					while(lines[i].contains(father)) {
 						currentTax = currentTax.ancestor;i++;
 					}
-			
+
 					currentTax.ancestor.addToSons(new Taxonomy());
 					currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);
 					--i;
@@ -147,7 +146,7 @@ public class ParseSourceCode {
 					/*      TAX ID         */
 					currentTax.setTaxID(lines[i].substring((lines[i].indexOf("id="))+3, lines[i].indexOf("&lvl")));
 					/*      ORGANISM      */
-						
+
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);

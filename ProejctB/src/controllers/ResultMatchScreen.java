@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-
-
+import Entities.Sequence;
 import Entities.Taxonomy;
+import Entities.Vars;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.application.*;
 public class ResultMatchScreen 
 {
 	public TextArea selectedFasta;
@@ -28,7 +28,7 @@ public class ResultMatchScreen
 		TableColumn<Taxonomy, String> selectedNameCol = new TableColumn<>("Organism name");
 		selectedNameCol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getOrganism()));
-
+		
 		TableColumn<Taxonomy, Number> matchScoreCol = new TableColumn<>("Match score");
 		/*matchScoreCol.setCellValueFactory(cellData -> 
 		new ReadOnlyDoubleWrapper(cellData.getValue().getSequence().getMatchScore()));*/

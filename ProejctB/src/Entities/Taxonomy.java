@@ -5,6 +5,7 @@ public class Taxonomy {
 		private ArrayList<Taxonomy> sons = new ArrayList<Taxonomy>();
 		private String link;//USELESS
 		private String taxID;
+		public String geneID;
 		private String organism;
 		private boolean isExpandable;
 		public Taxonomy ancestor;

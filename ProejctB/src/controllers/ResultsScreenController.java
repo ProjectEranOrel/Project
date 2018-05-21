@@ -41,11 +41,7 @@ public class ResultsScreenController {
 	Thread t;
 
 	public void initialize() {
-		System.out.println("Initialize ResultsScreenController");
 		checkAllText.setVisible(false);
-
-		//resultsTableView.setStyle("-fx-selection-bar: #3ECAFF; ");
-
 		if(Vars.isUserDNA) {
 			userResults();
 			Vars.isUserDNA = false;
@@ -65,10 +61,14 @@ public class ResultsScreenController {
 		checkSelectedButton.setText("Upload");
 		checkSelectedButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
+				resultsList.removeAll(resultsList);
+				Result.resultsList.removeAll(Result.resultsList);
+				rowNumber=0;
 				uploadResultsFile();
 				setResults();
-				setTable();
-
+				setTable();	
+				resultsTableView.refresh();
+				
 			}
 		});
 	}
@@ -110,10 +110,8 @@ public class ResultsScreenController {
 	}*/
 
 	public void setResults() {
-
 		BufferedReader br = null;
 		FileReader fr = null;
-
 		try {
 			if(Vars.resultsFile == null)
 				uploadResultsFile();
@@ -146,6 +144,9 @@ public class ResultsScreenController {
 	public void getValues(String line) {
 		Result res = new Result();
 		int index=0;
+		/*       TaxID     */
+		res.setTaxID(line.substring(0, getIndexOf(1, line, false)-3));
+		System.out.println(res.getTaxID());
 		/*     GeneID      */
 		index = getIndexOf(2, line, false);
 		if(index == -1)
@@ -215,7 +216,10 @@ public class ResultsScreenController {
 		resultsTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("results"));
 		resultsList = FXCollections.observableArrayList(Result.resultsList);
 		resultsTableView.setEditable(true);
+		resultsTableView.getItems().clear();
 		resultsTableView.setItems(resultsList);//Set the list before this command
+		resultsTableView.refresh();
+		
 	}
 
 	public void onCheckAllEntered() { checkAllText.setVisible(true); }
@@ -227,6 +231,7 @@ public class ResultsScreenController {
 		FileChooser fileChooser = new FileChooser();
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("txt (*.txt)", "*.txt");  
 		fileChooser.getExtensionFilters().add(extFilter);
+		Vars.resultsFile = null;
 		Vars.resultsFile = fileChooser.showOpenDialog(Main.primaryStage);
 	}
 

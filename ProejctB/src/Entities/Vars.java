@@ -105,7 +105,13 @@ public class Vars {
 		}
 		return new File("clusters.txt");
 	}
-
+	
+	public static Sequence compare(String geneID) {
+		Sequence seq = setSequence(geneID);
+		seq.setMatchScore(Vars.userSequence.compare(seq));
+		return seq;
+	}
+	
 	public static Sequence setSequence(String geneID) {
 		FileReader fr;
 		BufferedReader br;
@@ -137,10 +143,7 @@ public class Vars {
 						sequence.dna.substring(Integer.parseInt(start), Integer.parseInt(end))));
 				start = end;
 			}
-			/*			for(int i=0;i<sequence.clusters.size();i++)
-				System.out.println(sequence.clusters.get(i).getDnaCluster() + "        hidden:" + sequence.clusters.get(i).getHiddenRepeat());
-			 */		}catch(Exception e) {e.printStackTrace(); sequence = null;}
-		System.out.println("cluster size: " + sequence.clusters.size());
+		}catch(Exception e) {e.printStackTrace(); sequence = null;}
 		return sequence;
 	}
 

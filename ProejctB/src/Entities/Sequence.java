@@ -44,17 +44,11 @@ public class Sequence {
 						matchNumber++;
 						temp++;
 					}
-				System.out.println("cluster 1: " + cluster1 );
-				System.out.println("cluster 2: " + cluster2 );
-				System.out.println("cluster size: " + cluster1.length());
-				System.out.println("matchNumber: " + temp);
+
 				clusterNum++;
 			}//else
 		}
-		System.out.println("matchnum: " + matchNumber + "    minSize: " + Math.min((double)dna.length(), (double)(toCompareDNA.getDNA()).length()));
-		System.out.println("timesRight: " + t + "   clusterNum: " + toCompareDNA.clusters.size());
-		System.out.println("DNA Length: " + toCompareDNA.dna.length());
-		//return ((double)matchNumber/Math.min((double)DNA.length(), (double)(toCompareDNA.getDNA()).length()))*100;
+		
 		return ((double)matchNumber/(Math.min((double)dna.length(), (double)(toCompareDNA.getDNA()).length())))*100;
 	}
 
