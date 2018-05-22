@@ -1,6 +1,11 @@
 package Entities;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.net.ftp.FTPClient;
+
+import controllers.ParseSourceCode;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,12 +14,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+
 public class Main extends Application
 {
 	public static Stage primaryStage;
 	public static Parent mainLayout;
-	public static int port=5555;
-	public static String host = "localhost";
 	public static Stage popup;
 	public static Scene currentScene;
 	public static Pane popUp;
@@ -60,14 +64,19 @@ public class Main extends Application
 
 	public static void main(String[] args) 
 	{
-/*		Vars.userSequence = Vars.setSequence("24475906");
+		/*		Vars.userSequence = Vars.setSequence("24475906");
 		Sequence seq = Vars.setSequence("24475906");		
 		System.out.println(Vars.userSequence.compare(seq));
-		
+
 		Vars.userSequence = Vars.setSequence("24475906");
 		Sequence seq1 = Vars.setSequence("50978625");		
 		System.out.println(Vars.userSequence.compare(seq1));*/
-		launch(args);
+
+		//Vars.trimNodesFile(new File("nodes.dmp"));
+		System.out.println("start");
+		Vars.trimNodesFile();
+		System.out.println("end");
+		//launch(args);
 	}
 
 }

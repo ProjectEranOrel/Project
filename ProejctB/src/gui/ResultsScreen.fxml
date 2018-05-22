@@ -47,7 +47,5 @@
             <Font size="15.0" />
          </font>
       </Text>
-      <Button layoutX="853.0" layoutY="590.0" mnemonicParsing="false" text="Next Page" />
-      <Button layoutX="69.0" layoutY="590.0" mnemonicParsing="false" text="Previous Page" />
    </children>
 </Pane>

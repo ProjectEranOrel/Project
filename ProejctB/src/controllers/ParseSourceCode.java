@@ -1,13 +1,18 @@
 package controllers;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import org.apache.commons.net.ftp.FTPClient;
 
-import Entities.Lineage;
 import Entities.Result;
 import Entities.Taxonomy;
 import Entities.Vars;
@@ -25,15 +30,11 @@ public class ParseSourceCode {
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
 
 		URLConnection conn;
-		System.out.println("taxid: " + taxID);
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
 		Taxonomy taxSelected = new Taxonomy();
 		try {
-			URL url = new URL(Vars.taxonomyBrowser + taxID);
-			conn = url.openConnection();
-			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			BufferedReader br = getBufferedReader(Vars.taxonomyBrowser + taxID);
 			for(int i=0;i<122;i++) //CHANGE this works for now, but rather get something more general!
 				br.readLine();
 
@@ -85,7 +86,6 @@ public class ParseSourceCode {
 
 
 	public static Taxonomy getSons(Taxonomy tax) {
-		URLConnection conn;
 		Taxonomy root = tax;
 		String taxID=root.getTaxID();
 		root.setExpandable(true);
@@ -94,10 +94,9 @@ public class ParseSourceCode {
 		//root.set
 		try {
 			/// DO PREV AND CURR TAX! REPARSE!
-			URL url = new URL(Vars.taxonomyBrowser + taxID);
-			conn = url.openConnection();
-			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+			BufferedReader br = getBufferedReader(Vars.taxonomyBrowser + taxID);
+
 			String inputLine="";
 			String temp="";
 			while((inputLine = br.readLine())!=null)
@@ -168,12 +167,9 @@ public class ParseSourceCode {
 
 
 	public static void parseGeneSearchSourceCode() {
-		URLConnection conn;
 		try {
-			URL url = new URL(Vars.searchLink + Vars.searchWord);
-			conn = url.openConnection();
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(conn.getInputStream()));
+
+			BufferedReader br = getBufferedReader(Vars.searchLink + Vars.searchWord);
 			String inputLine;
 			while ((inputLine = br.readLine()) != null) 
 				if(inputLine.contains("gene-id"))
@@ -304,6 +300,66 @@ public class ParseSourceCode {
 		}
 		return str;
 
+	}
+	
+	public static void checkTaxDMPUpdate() {//Update later maybe!
+		try {
+			BufferedReader br = getBufferedReader("ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/");
+			String str = "", oldDate, newDate;
+			while(!str.contains("taxdmp.zip")) {
+				str = br.readLine();
+				System.out.println(str);
+			}
+			newDate = str.substring(str.indexOf("\"",str.indexOf("MB\","+5))+1, str.indexOf(":")-4);
+			System.out.println(newDate);
+
+			File file;
+			if(!(Files.exists(Paths.get("C:\\Users\\Orel\\git\\Project\\ProejctB\\taxdmpdate.txt")))) { 
+				PrintWriter writer = new PrintWriter("taxdmpdate.txt", "UTF-8");
+				writer.write(newDate);
+				writer.close();
+				return;
+			}
+			else 
+				file = new File("taxdmpdate.txt");
+			FileReader fr = new FileReader(file);
+			BufferedReader brdmp = new BufferedReader(fr);
+			oldDate = brdmp.readLine();
+			PrintWriter writer = new PrintWriter("taxdmpdate.txt", "UTF-8");
+			String[] oldDateArr = oldDate.split("."), newDateArr = newDate.split(".");//DD-MM-YYYY
+			System.out.println("old: " + oldDate + " new: " + newDate);
+			boolean toDownload = false;
+			if(Integer.parseInt(newDateArr[2]) > Integer.parseInt(oldDateArr[2])) 
+				toDownload=true;
+			
+			else if(Integer.parseInt(newDateArr[1]) > Integer.parseInt(oldDateArr[1])) 
+				toDownload=true;
+			
+			else if(Integer.parseInt(newDateArr[0]) > Integer.parseInt(oldDateArr[0])) 
+				toDownload=true;
+			if(!toDownload)
+				return;
+			//FTPClient client = new FTPClient();
+			//client.connect("ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/");
+			
+			
+				
+				
+				
+			
+		}catch(Exception e) {e.printStackTrace();}
+	}
+	
+	
+	public static BufferedReader getBufferedReader(String link) {
+		URLConnection conn;
+		BufferedReader br = null;
+		try {
+			URL url = new URL(link);
+			conn = url.openConnection();
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		}catch(Exception e) {e.printStackTrace();}
+		finally {return br;}
 	}
 
 

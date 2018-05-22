@@ -1,12 +1,18 @@
 package Entities;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Vars {
 	public static final String genBankLink = "ftp://ftp.ncbi.nlm.nih.gov/genomes/";
@@ -14,6 +20,7 @@ public class Vars {
 	// NEED TO BE DONE
 	public static final String getGIWithTaxidLink = "https://www.ncbi.nlm.nih.gov/nuccore/?term=txid";
 	public static final String taxonomyBrowser = "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=";
+	private static final String orthologyLink = "https://www.ncbi.nlm.nih.gov/gene/?Term=ortholog_gene_";
 	// NEED TO BE DONE
 	public static String searchWord = null;
 	public static Sequence userSequence = null;
@@ -31,6 +38,10 @@ public class Vars {
 	public static Result userResult;//The entry the user chose
 	public static Taxonomy root = null;
 
+
+	public static String getOrthologyLink(String taxID) {
+		return orthologyLink+taxID+"[group]";
+	}
 
 	//Vars.root = func(userResult.getTaxID());
 	@SuppressWarnings({ "resource", "finally" })
@@ -105,13 +116,14 @@ public class Vars {
 		}
 		return new File("clusters.txt");
 	}
-	
+
 	public static Sequence compare(String geneID) {
 		Sequence seq = setSequence(geneID);
 		seq.setMatchScore(Vars.userSequence.compare(seq));
 		return seq;
 	}
-	
+
+	@SuppressWarnings("resource")
 	public static Sequence setSequence(String geneID) {
 		FileReader fr;
 		BufferedReader br;
@@ -137,8 +149,6 @@ public class Vars {
 			br = new BufferedReader(fr);
 			String start=br.readLine()/*=0*/, end;
 			while((end = br.readLine()) != null) {
-				if(end.equals("3306"))
-					System.out.println("DAMN BOY");
 				sequence.clusters.add(new Cluster(Integer.parseInt(start), Integer.parseInt(end), 
 						sequence.dna.substring(Integer.parseInt(start), Integer.parseInt(end))));
 				start = end;
@@ -163,5 +173,80 @@ public class Vars {
 
 	}
 
+	public static File trimNodesFile() {
+		File file = null;
+		try {
+			file = new File("nodes.dmp");
+			if(!file.isFile()) {
+				setTaxDmpFile();
+			}
+/*			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			PrintWriter writer = new PrintWriter("nodes.txt", "UTF-8");
+			String str = "", strToWrite="";
+			int i=0;
+			while((str = br.readLine()) != null) {
+				strToWrite+=str.substring(0, str.indexOf("|", str.indexOf("|")+1)) + "\n";
+				System.out.println(i++);
+			}
+			
+			writer.write(strToWrite);
+			file.delete();*/
 
+		}catch(Exception e) {e.printStackTrace();}
+		return file;
+	}
+
+
+	public static void setTaxDmpFile() {
+		downloadFile("taxdmp.zip","ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip");
+		extractFromZip("nodes.dmp", "taxdmp.zip");
+	}
+
+
+	public static void downloadFile(String fileName, String fileUrl){
+		try {
+		BufferedInputStream in = null;
+		FileOutputStream fout = null;
+		try {
+			in = new BufferedInputStream(new URL(fileUrl).openStream());
+			fout = new FileOutputStream(fileName);
+
+			byte data[] = new byte[1024];
+			int count;
+			while ((count = in.read(data, 0, 1024)) != -1) {
+				fout.write(data, 0, count);
+			}
+		} finally {
+			if (in != null)
+				in.close();
+			if (fout != null)
+				fout.close();
+		}
+		}catch(Exception e) {e.printStackTrace();}
+	}
+	
+	public static void extractFromZip(String fileToBeExtracted, String zipPackage) {
+		try {
+        OutputStream out = new FileOutputStream(fileToBeExtracted);
+        FileInputStream fileInputStream = new FileInputStream(zipPackage);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream );
+        ZipInputStream zin = new ZipInputStream(bufferedInputStream);
+        ZipEntry ze = null;
+        while ((ze = zin.getNextEntry()) != null) {
+            if (ze.getName().equals(fileToBeExtracted)) {
+                byte[] buffer = new byte[9000];
+                int len;
+                while ((len = zin.read(buffer)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+                out.close();
+                break;
+            }
+        }
+        zin.close();
+        File file = new File(zipPackage);
+        file.delete();
+		}catch(Exception e) {e.printStackTrace();}
+    }
 }

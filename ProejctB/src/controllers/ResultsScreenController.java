@@ -206,7 +206,7 @@ public class ResultsScreenController {
 
 
 	public void setTable() {
-		nameGenTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("nameGenID"));
+		nameGenTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("taxID"));
 		orgNameTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("orgName"));
 		descriptionTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("description"));
 		numberTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("number"));
