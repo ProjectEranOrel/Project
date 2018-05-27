@@ -108,6 +108,7 @@ public class TreeScreenController
 	{
 		for(int i=0;i<sons.size();i++)
 		{
+			
 			Taxonomy son = sons.get(i);  
 			TreeItem<Taxonomy> sonItem = new TreeItem<Taxonomy>(son);
 			if(son.isExpandable() && depth>0)
