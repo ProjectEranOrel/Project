@@ -113,12 +113,16 @@ public class TreeScreenController
 			if(son.isExpandable() && depth>0)
 				populateTree(sonItem,son.getSons(),depth-1);
 			chosenTreeItem.getChildren().add(sonItem);
-			double numOfEntries = resultList.size()/20;
+			double numOfThreads = 2;
+			while(((double)resultList.size()/numOfThreads)%numOfThreads!=0)
+				numOfThreads++;
+			System.out.println(numOfThreads);
+			int numOfEntries = (int) (resultList.size()/numOfThreads);
 			/*if(numOfEntries != (int)numOfEntries)
 				numOfEntries++;*/
-			endIndex = (int)numOfEntries;
-			Thread markingThreads[] = new Thread[20];
-			for(int j=0;j<20;j++)
+			endIndex = numOfEntries;
+			Thread markingThreads[] = new Thread[(int)numOfThreads];
+			for(int j=0;j<numOfThreads;j++)
 			{
 				markingThreads[j] = new Thread(new Runnable()
 				{
@@ -127,7 +131,7 @@ public class TreeScreenController
 					{
 						int localStartIndex = startIndex;
 						int localEndIndex = endIndex;
-						for(int k=localStartIndex;k<localEndIndex;k++)
+						for(int k=localStartIndex;k<localEndIndex-1;k++)
 						{
 							try 
 							{
@@ -145,7 +149,7 @@ public class TreeScreenController
 							} 
 							catch (IOException e) 
 							{
-								// TODO Auto-generated catch block
+								System.out.println("k: "+k+"\nresultList: "+resultList.size());
 								e.printStackTrace();
 							}
 						}
@@ -154,13 +158,13 @@ public class TreeScreenController
 				markingThreads[j].start();
 				System.out.println("Thread "+j+" started");
 				startIndex = endIndex;
-				endIndex += endIndex;
+				endIndex += (int)numOfEntries;
 			}
-			for(int j=0;j<20;j++)
+			for(int j=0;j<numOfThreads;j++)
 				try {
 					markingThreads[j].join();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					System.out.println("j: "+j+"\nresultList: "+resultList.size());
 					e.printStackTrace();
 				}
 		}

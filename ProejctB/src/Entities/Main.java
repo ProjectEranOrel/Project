@@ -76,7 +76,7 @@ public class Main extends Application
 		System.out.println("start");
 		Vars.trimNodesFile();
 		System.out.println("end");
-		//launch(args);
+		launch(args);
 	}
 
 }
