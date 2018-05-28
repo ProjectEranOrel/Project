@@ -218,7 +218,6 @@ public class ResultsScreenController {
 		resultsTableView.getItems().clear();
 		resultsTableView.setItems(resultsList);//Set the list before this command
 		resultsTableView.refresh();
-		
 	}
 
 	public void onCheckAllEntered() { checkAllText.setVisible(true); }
