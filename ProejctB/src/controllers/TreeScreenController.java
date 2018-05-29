@@ -27,8 +27,9 @@ public class TreeScreenController
 	public TableView<Taxonomy> selectedTable;
 	private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
 	private ArrayList<Result> resultList;
+	int cnt = 0;
 
-	private int startIndex = 0, endIndex;
+	private int startIndex, endIndex;
 
 	@SuppressWarnings("unchecked")
 	public void initialize()
@@ -108,92 +109,83 @@ public class TreeScreenController
 	{
 		for(int i=0;i<sons.size();i++)
 		{
-			
+
 			Taxonomy son = sons.get(i);  
 			TreeItem<Taxonomy> sonItem = new TreeItem<Taxonomy>(son);
 			if(son.isExpandable() && depth>0)
 				populateTree(sonItem,son.getSons(),depth-1);
 			chosenTreeItem.getChildren().add(sonItem);
-			double numOfThreads = 2;
-			while(((double)resultList.size()/numOfThreads)%numOfThreads!=0)
-				numOfThreads++;
-			System.out.println(numOfThreads);
-			int numOfEntries = (int) (resultList.size()/numOfThreads);
-			/*if(numOfEntries != (int)numOfEntries)
-				numOfEntries++;*/
-			endIndex = numOfEntries;
-			Thread markingThreads[] = new Thread[(int)numOfThreads];
-			for(int j=0;j<numOfThreads;j++)
-			{
-				markingThreads[j] = new Thread(new Runnable()
-				{
-					@Override
-					public void run() 
-					{
-						int localStartIndex = startIndex;
-						int localEndIndex = endIndex;
-						for(int k=localStartIndex;k<localEndIndex-1;k++)
-						{
-							try 
-							{
-								if(findAncestors(resultList.get(k).getTaxID()).contains(son.getTaxID()))
-								{
-									System.out.println("Found something...");
-									ObservableList<TreeTableColumn<Taxonomy, ?>> columns = treeTable.getColumns();
-									System.out.println("Going thrrough the columns");
-									for(int l=0;l<columns.size();l++)
-									{
-										System.out.println("Column"+l);
-										columns.get(l).setStyle("-fx-background-color:#558C8C");
-									}
-								}
-							} 
-							catch (IOException e) 
-							{
-								System.out.println("k: "+k+"\nresultList: "+resultList.size());
-								e.printStackTrace();
-							}
-						}
-					}
-				});
-				markingThreads[j].start();
-				System.out.println("Thread "+j+" started");
-				startIndex = endIndex;
-				endIndex += (int)numOfEntries;
-			}
-			for(int j=0;j<numOfThreads;j++)
-				try {
-					markingThreads[j].join();
-				} catch (InterruptedException e) {
-					System.out.println("j: "+j+"\nresultList: "+resultList.size());
-					e.printStackTrace();
-				}
+			if(depth<1)
+				createAndStartThreads(son);
 		}
-		System.out.println("DONE");
 	}
 
-	/*private void markEntries(TreeItem<Taxonomy> root)
+	private void createAndStartThreads(Taxonomy son)
 	{
-
-		ObservableList<TreeItem<Taxonomy>> treeItems = root.getChildren();
-		for(int i=0;i<resultList.size();i++)
+		int numOfEntries = 20;
+		while(((double)resultList.size()/(double)numOfEntries)!=resultList.size()/numOfEntries)
+			numOfEntries++;
+		int numOfThreads = (resultList.size()/numOfEntries)-1;
+		Thread[] markingThreads = new Thread[numOfThreads];
+		/*System.out.println("numOfEntires: "+numOfEntries);
+		System.out.println("numOfThreads: "+numOfThreads);*/
+		startIndex = 0;
+		endIndex = numOfEntries;
+		for(int j=0;j<numOfThreads;j++)
 		{
-			try {
-				ArrayList<String> ancestors = findAncestors(resultList.get(i).getTaxID());
-				for(int j=0;j<treeItems.size();j++)
+			/*System.out.println("Thread "+j);
+			System.out.println("startIndex:" + startIndex);
+			System.out.println("endIndex:" + endIndex+"\n");*/
+			markingThreads[j] = new Thread(new Runnable()
+			{
+				@Override
+				public void run() 
 				{
-
+					int localStartIndex = startIndex;
+					int localEndIndex = endIndex;
+					for(int k=localStartIndex;k<localEndIndex;k++)
+					{
+						try 
+						{
+							if(findAncestors(resultList.get(k).getTaxID()).contains(son.getTaxID()))
+							{
+								//System.out.println("Found something...");
+								ObservableList<TreeTableColumn<Taxonomy, ?>> columns = treeTable.getColumns();
+								//System.out.println("Going thrrough the columns");
+								for(int l=0;l<columns.size();l++)
+								{
+									System.out.println("Column"+l);
+									columns.get(l).setStyle("-fx-background-color:#558C8C");
+								}
+							}
+						} 
+						catch (IOException e) 
+						{
+							System.out.println("k: "+k+"\nresultList: "+resultList.size());
+							e.printStackTrace();
+						}
+					}
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
+			});
+			markingThreads[j].start();
+			startIndex = endIndex;
+			endIndex += numOfEntries;
 		}
-	}*/
+		for(int j=0;j<numOfThreads;j++)
+			try {
+				//System.out.println(numOfThreads);
+				markingThreads[j].join();
+			} catch (InterruptedException e) {
+				System.out.println("j: "+j+"\nresultList: "+resultList.size());
+				e.printStackTrace();
+			}
+	}
+	
+	
 
 	public ArrayList<String> findAncestors(String taxID) throws IOException
 	{
-		BufferedReader br = new BufferedReader(new FileReader("nodes.dmp"));
+		BufferedReader br = new BufferedReader(new FileReader("nodes.txt"));
 		String readLine;
 		ArrayList<String> sonColumn = new ArrayList<String>();
 		ArrayList<String> parentColumn = new ArrayList<String>();
