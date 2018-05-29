@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -37,6 +39,7 @@ public class Vars {
 	public static File resultsFile;
 	public static Result userResult;//The entry the user chose
 	public static Taxonomy root = null;
+	public static ArrayList<Node> nodesList;
 
 
 	public static String getOrthologyLink(String taxID) {
@@ -180,18 +183,17 @@ public class Vars {
 			if(!file.isFile()) {
 				setTaxDmpFile();
 			}
-/*			FileReader fr = new FileReader(file);
+			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			PrintWriter writer = new PrintWriter("nodes.txt", "UTF-8");
 			String str = "", strToWrite="";
 			int i=0;
-			while((str = br.readLine()) != null) {
+			while((str = br.readLine()) != null) 
 				strToWrite+=str.substring(0, str.indexOf("|", str.indexOf("|")+1)) + "\n";
-				System.out.println(i++);
-			}
-			
+
+
 			writer.write(strToWrite);
-			file.delete();*/
+			file.delete();
 
 		}catch(Exception e) {e.printStackTrace();}
 		return file;
@@ -200,53 +202,71 @@ public class Vars {
 
 	public static void setTaxDmpFile() {
 		downloadFile("taxdmp.zip","ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip");
-		extractFromZip("nodes.dmp", "taxdmp.zip");
+		extractFromZip("nodes.dmp", "taxdmp.zip", true);
 	}
 
 
 	public static void downloadFile(String fileName, String fileUrl){
 		try {
-		BufferedInputStream in = null;
-		FileOutputStream fout = null;
-		try {
-			in = new BufferedInputStream(new URL(fileUrl).openStream());
-			fout = new FileOutputStream(fileName);
+			BufferedInputStream in = null;
+			FileOutputStream fout = null;
+			try {
+				in = new BufferedInputStream(new URL(fileUrl).openStream());
+				fout = new FileOutputStream(fileName);
 
-			byte data[] = new byte[1024];
-			int count;
-			while ((count = in.read(data, 0, 1024)) != -1) {
-				fout.write(data, 0, count);
+				byte data[] = new byte[1024];
+				int count;
+				while ((count = in.read(data, 0, 1024)) != -1) {
+					fout.write(data, 0, count);
+				}
+			} finally {
+				if (in != null)
+					in.close();
+				if (fout != null)
+					fout.close();
 			}
-		} finally {
-			if (in != null)
-				in.close();
-			if (fout != null)
-				fout.close();
-		}
 		}catch(Exception e) {e.printStackTrace();}
 	}
-	
-	public static void extractFromZip(String fileToBeExtracted, String zipPackage) {
+
+	public static void extractFromZip(String fileToBeExtracted, String zipPackage, boolean toDelete) {
 		try {
-        OutputStream out = new FileOutputStream(fileToBeExtracted);
-        FileInputStream fileInputStream = new FileInputStream(zipPackage);
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream );
-        ZipInputStream zin = new ZipInputStream(bufferedInputStream);
-        ZipEntry ze = null;
-        while ((ze = zin.getNextEntry()) != null) {
-            if (ze.getName().equals(fileToBeExtracted)) {
-                byte[] buffer = new byte[9000];
-                int len;
-                while ((len = zin.read(buffer)) != -1) {
-                    out.write(buffer, 0, len);
-                }
-                out.close();
-                break;
-            }
-        }
-        zin.close();
-        File file = new File(zipPackage);
-        file.delete();
+			OutputStream out = new FileOutputStream(fileToBeExtracted);
+			FileInputStream fileInputStream = new FileInputStream(zipPackage);
+			BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream );
+			ZipInputStream zin = new ZipInputStream(bufferedInputStream);
+			ZipEntry ze = null;
+			while ((ze = zin.getNextEntry()) != null) {
+				if (ze.getName().equals(fileToBeExtracted)) {
+					byte[] buffer = new byte[9000];
+					int len;
+					while ((len = zin.read(buffer)) != -1) {
+						out.write(buffer, 0, len);
+					}
+					out.close();
+					break;
+				}
+			}
+			zin.close();
+			if(toDelete) {
+				File file = new File(zipPackage);
+				file.delete();
+			}
 		}catch(Exception e) {e.printStackTrace();}
-    }
+	}
+	public static void setNodesList(){
+		ArrayList<Node> nodesList = new ArrayList<Node>();
+
+		try {
+			FileReader fr = new FileReader(new File("nodes.dmp"));
+			BufferedReader br = new BufferedReader(fr);
+			String str, son, father;
+			while((str = br.readLine())!=null) {
+				son = str.substring(0, str.indexOf("\t"));
+				str = str.substring(son.length()+3);
+				father = str.substring(0, str.indexOf("\t"));
+				nodesList.add(new Node(son, father));
+			}
+		}catch (Exception e) {e.printStackTrace();}
+	}
+
 }

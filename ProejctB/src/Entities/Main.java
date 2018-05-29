@@ -1,11 +1,8 @@
 package Entities;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.net.ftp.FTPClient;
-
-import controllers.ParseSourceCode;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -73,10 +70,33 @@ public class Main extends Application
 		System.out.println(Vars.userSequence.compare(seq1));*/
 
 		//Vars.trimNodesFile(new File("nodes.dmp"));
-		System.out.println("start");
+		/*	System.out.println("start");
 		Vars.trimNodesFile();
 		System.out.println("end");
-		launch(args);
+	//	launch(args)
+
+		 */	
+/*		ArrayList<Result> res = new ArrayList<Result>();
+		for(int i=0;i<10000;i++)
+			res.add(new Result());
+		long startTime = System.nanoTime();
+		Vars.trimNodesFile();
+		long endTime = System.nanoTime();
+
+		long durationDisk = (endTime - startTime);
+		startTime = System.nanoTime();
+			for(int i=0;i<10000;i++)
+				System.out.println(i);
+		endTime = System.nanoTime();
+		long durationRam = (endTime-startTime);
+		
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\nDisk Time: " + TimeUnit.SECONDS.convert(durationDisk, TimeUnit.NANOSECONDS) + 
+				"s\nRam Time:" + TimeUnit.SECONDS.convert(durationRam, TimeUnit.NANOSECONDS) + 
+				"s\ndifference:" + durationDisk/durationRam + "s");*/
+		long startTime = System.nanoTime();
+		Vars.setNodesList();
+		long endTime = System.nanoTime();
+		System.out.println("Time: " + TimeUnit.SECONDS.convert((endTime-startTime), TimeUnit.NANOSECONDS) + "s");
 	}
 
 }
