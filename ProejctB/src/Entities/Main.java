@@ -31,6 +31,7 @@ public class Main extends Application
   //showScreen("ResultsScreen", Vars.firstScreenTitle);
   showScreen("GetResultsScreen", "");
 
+<<<<<<< HEAD
  }
  public static void showScreen(String screenName, String screenTitle) 
  {
@@ -57,6 +58,35 @@ public class Main extends Application
   Main.popup.setScene(new Scene(popUp));
   Main.popup.show();
  }*/
+=======
+	}
+	
+	public static void showScreen(String screenName, String screenTitle) 
+	{
+		try {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("/gui/"+screenName+".fxml"));
+			mainLayout = loader.load();
+			currentScene = new Scene(mainLayout);
+			primaryStage.setScene(currentScene);
+			primaryStage.setTitle(screenTitle);
+			primaryStage.show();
+		}catch(Exception e) {e.printStackTrace();}
+	}
+	/*public static void showPopUpWait(String screenName) {
+		try {
+			popUp = FXMLLoader.load(Main.class.getResource("/gui/"+screenName+".fxml"));
+		} catch (IOException e) {System.out.println("DeFuck");e.printStackTrace();}
+		Main.popup.setScene(new Scene(popUp));
+		Main.popup.showAndWait();
+	}
+	public static void showPopUp(String screenName) {
+		try {
+			popUp = FXMLLoader.load(Main.class.getResource("/gui/"+screenName+".fxml"));
+		} catch (IOException e) {e.printStackTrace();}
+		Main.popup.setScene(new Scene(popUp));
+		Main.popup.show();
+	}*/
+>>>>>>> branch 'master' of https://github.com/ProjectEranOrel/Project.git
 
 
  public static void main(String[] args) 
