@@ -95,7 +95,7 @@ public class Main extends Application
 				"s\ndifference:" + durationDisk/durationRam + "s");*/
 		long startTime = System.nanoTime();
 		Vars.setNodesList();
-		long endTime = System.nanoTime();
+		long endTime = System.nanoTime(); 
 		System.out.println("Time: " + TimeUnit.SECONDS.convert((endTime-startTime), TimeUnit.NANOSECONDS) + "s");
 	}
 

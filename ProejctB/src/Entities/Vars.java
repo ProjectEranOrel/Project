@@ -245,7 +245,7 @@ public class Vars {
 					out.close();
 					break;
 				}
-			}
+			} 
 			zin.close();
 			if(toDelete) {
 				File file = new File(zipPackage);

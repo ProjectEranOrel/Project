@@ -24,7 +24,7 @@ public class Node {
 	public void setFatherTaxID(String fatherTaxID) {
 		this.fatherTaxID = fatherTaxID;
 	}
-	
+	 
 	
 }
 
