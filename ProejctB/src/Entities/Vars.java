@@ -254,8 +254,7 @@ public class Vars {
 		}catch(Exception e) {e.printStackTrace();}
 	}
 	public static void setNodesList(){
-		ArrayList<Node> nodesList = new ArrayList<Node>();
-
+		nodesList = new ArrayList<Node>();
 		try {
 			FileReader fr = new FileReader(new File("nodes.dmp"));
 			BufferedReader br = new BufferedReader(fr);
@@ -267,6 +266,40 @@ public class Vars {
 				nodesList.add(new Node(son, father));
 			}
 		}catch (Exception e) {e.printStackTrace();}
+	}
+
+	public static ArrayList<String> findAncestors(String taxID)
+	{
+
+		Vars.setNodesList();
+		//ArrayList<Node> nodesList = Vars.nodesList;
+		ArrayList<String> ancestors = new ArrayList<String>();
+		//String currAncestor = parentColumn.get(sonColumn.indexOf(taxID));
+		int index = getSonIndex(Vars.nodesList,taxID);
+		if(index==-1) return null;
+		String currAncestor = Vars.nodesList.get(index).getFatherTaxID();
+		String nextAncestor = null;
+		ancestors.add(currAncestor);
+		while(true)
+		{
+			//nextAncestor = parentColumn.get(sonColumn.indexOf(currAncestor));
+			index = getSonIndex(Vars.nodesList,currAncestor);
+			if(index==-1) return ancestors;
+			nextAncestor = Vars.nodesList.get(index).getFatherTaxID();
+			if(currAncestor.equals(nextAncestor)) break;
+			ancestors.add(nextAncestor);
+			currAncestor = nextAncestor;
+		}
+		//System.out.println(cnt++);
+		return ancestors;
+	}
+
+	private static int getSonIndex(ArrayList<Node> arr, String nodeTaxID) 
+	{
+		for(int i=0;i<arr.size();++i)
+			if(arr.get(i).getSonTaxID().equals(nodeTaxID))
+				return i;
+		return -1;
 	}
 
 }

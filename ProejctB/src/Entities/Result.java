@@ -15,7 +15,7 @@ public class Result {
 	public ArrayList<Lineage> lineage = new ArrayList<Lineage>();
 	private int number; // row number in table
 	private String TaxID;
-	public ArrayList<String> fathers = new ArrayList<String>();
+	public ArrayList<String> ancestors = new ArrayList<String>();
 	
 	
 	public static ArrayList<Result> resultsList = new ArrayList<Result>();

@@ -189,7 +189,11 @@ public class ResultsScreenController {
 		else
 			res.setMim(line.substring(mimIndex, line.length()-3));
 		res.setNumber(rowNumber++);
+		
+		res.ancestors = new ArrayList<String>(Vars.findAncestors(res.getTaxID()));
+		System.out.println("lel: " + res.ancestors.size() + "   index: " + rowNumber);
 		Result.resultsList.add(res);
+		
 	}
 
 
