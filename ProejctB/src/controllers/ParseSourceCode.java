@@ -69,11 +69,12 @@ public class ParseSourceCode {
 				if(Vars.userResult == null)
 					Vars.userResult = new Result();
 				taxList.add(tax);
+				for(int i=0;i<Result.resultsList.size();++i) 
+				if(Result.resultsList.get(i).equals(tax.getTaxID()))
+					tax.setOrganism("*"+tax.getOrganism()+"*");
+				
 			}
 			taxList.set(0, taxSelected);
-			for(int j=0;j<taxList.size();++j)
-				System.out.println(" Organism: " + taxList.get(j).getOrganism()
-						+ " TaxID: " + taxList.get(j).getTaxID());
 
 		}catch(Exception e) {e.printStackTrace();}
 
@@ -149,11 +150,15 @@ public class ParseSourceCode {
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
+					for(int j=0;j<Result.resultsList.size();++j) 
+						if(Result.resultsList.get(j).equals(currentTax.getTaxID()))
+							tax.setOrganism("*"+currentTax.getOrganism()+"*");
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());
 						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
 					}
 				}
+				
 			}
 		}catch(Exception e) {e.printStackTrace();}	
 		return root;
