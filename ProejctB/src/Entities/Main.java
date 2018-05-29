@@ -32,6 +32,7 @@ public class Main extends Application
 		showScreen("GetResultsScreen", "");
 
 	}
+	
 	public static void showScreen(String screenName, String screenTitle) 
 	{
 		try {
