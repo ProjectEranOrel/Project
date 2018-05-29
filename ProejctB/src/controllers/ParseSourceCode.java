@@ -70,9 +70,10 @@ public class ParseSourceCode {
 					Vars.userResult = new Result();
 				taxList.add(tax);
 				for(int i=0;i<Result.resultsList.size();++i) 
-				if(Result.resultsList.get(i).equals(tax.getTaxID()))
-					tax.setOrganism("*"+tax.getOrganism()+"*");
-				
+					for(int k=0;k<Result.resultsList.get(i).ancestors.size();k++)
+						if(Result.resultsList.get(i).ancestors.get(k).equals(tax.getTaxID()))
+							tax.setOrganism("*"+tax.getOrganism()+"*");
+
 			}
 			taxList.set(0, taxSelected);
 
@@ -151,14 +152,15 @@ public class ParseSourceCode {
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
 					for(int j=0;j<Result.resultsList.size();++j) 
-						if(Result.resultsList.get(j).equals(currentTax.getTaxID()))
-							tax.setOrganism("*"+currentTax.getOrganism()+"*");
+						for(int k=0;k<Result.resultsList.get(j).ancestors.size();k++)
+							if(Result.resultsList.get(j).ancestors.get(k).equals(currentTax.getTaxID()))
+								tax.setOrganism("*"+currentTax.getOrganism()+"*");
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());
 						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
 					}
 				}
-				
+
 			}
 		}catch(Exception e) {e.printStackTrace();}	
 		return root;
@@ -306,7 +308,7 @@ public class ParseSourceCode {
 		return str;
 
 	}
-	
+
 	public static void checkTaxDMPUpdate() {//Update later maybe!
 		try {
 			BufferedReader br = getBufferedReader("ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/");
@@ -336,26 +338,26 @@ public class ParseSourceCode {
 			boolean toDownload = false;
 			if(Integer.parseInt(newDateArr[2]) > Integer.parseInt(oldDateArr[2])) 
 				toDownload=true;
-			
+
 			else if(Integer.parseInt(newDateArr[1]) > Integer.parseInt(oldDateArr[1])) 
 				toDownload=true;
-			
+
 			else if(Integer.parseInt(newDateArr[0]) > Integer.parseInt(oldDateArr[0])) 
 				toDownload=true;
 			if(!toDownload)
 				return;
 			//FTPClient client = new FTPClient();
 			//client.connect("ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/");
-			
-			
-				
-				
-				
-			
+
+
+
+
+
+
 		}catch(Exception e) {e.printStackTrace();}
 	}
-	
-	
+
+
 	public static BufferedReader getBufferedReader(String link) {
 		URLConnection conn;
 		BufferedReader br = null;
