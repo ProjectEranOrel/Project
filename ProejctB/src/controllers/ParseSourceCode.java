@@ -35,11 +35,17 @@ public class ParseSourceCode {
 		Taxonomy taxSelected = new Taxonomy();
 		try {
 			BufferedReader br = getBufferedReader(Vars.taxonomyBrowser + taxID);
-			for(int i=0;i<122;i++) //CHANGE this works for now, but rather get something more general!
+			String str = null;
+			for(int i=0;i<85;i++)
+				str = br.readLine();
+			System.out.println(str);
+			if(str.contains("lineage")) 
+				return getLineageModifier(br);
+			
+			for(int i=0;i<37;i++) //CHANGE this works for now, but rather get something more general!
 				br.readLine();
 
 			String lineage = br.readLine();
-			System.out.println(lineage);
 
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 			//TAXID
@@ -66,8 +72,8 @@ public class ParseSourceCode {
 				index = lineage.indexOf(">") + 1;//Skip the '>'
 				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
 				tax.setExpandable(true);
-				if(Vars.userResult == null)
-					Vars.userResult = new Result();
+/*				if(Vars.userResult == null)
+					Vars.userResult = new Result();*/
 				taxList.add(tax);
 				for(int i=0;i<Result.resultsList.size();++i) 
 					for(int k=0;k<Result.resultsList.get(i).ancestors.size();k++)
@@ -85,7 +91,42 @@ public class ParseSourceCode {
 
 
 
+	public static ArrayList<Taxonomy> getLineageModifier(BufferedReader br){
+		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
+		Taxonomy tax;
+		try {			
+			String lineage = br.readLine();
+			System.out.println("lineage " + lineage);
+			
 
+			int index = 3;//First ahref is irrelevant
+			while(lineage.indexOf("href") != -1) {
+				tax = new Taxonomy();
+				index = lineage.indexOf("href");
+				if(index == -1)
+					break;
+				//TAXID
+				lineage = lineage.substring(index);
+				tax.setLink(lineage.substring(lineage.indexOf("id=") + 3, lineage.indexOf("&amp", lineage.indexOf("id="))));
+				//ORGANISM
+				index = lineage.indexOf("TITLE=");
+				lineage = lineage.substring(index);
+				index = lineage.indexOf(">") + 1;//Skip the '>'
+				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
+				tax.setExpandable(true);
+/*				if(Vars.userResult == null)
+					Vars.userResult = new Result();*/
+				taxList.add(tax);
+/*				for(int i=0;i<Result.resultsList.size();++i) 
+					for(int k=0;k<Result.resultsList.get(i).ancestors.size();k++)
+						if(Result.resultsList.get(i).ancestors.get(k).equals(tax.getTaxID()) && !tax.getOrganism().contains("*"))
+							tax.setOrganism("*"+tax.getOrganism()+"*");*/
+
+			}
+			return taxList;
+
+		}catch(Exception e) {e.printStackTrace(); return null;}
+	}
 
 	public static Taxonomy getSons(Taxonomy tax) {
 		Taxonomy root = tax;
@@ -151,6 +192,7 @@ public class ParseSourceCode {
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
+					System.out.println(currentTax.getTaxID());
 					for(int j=0;j<Result.resultsList.size();++j) 
 						for(int k=0;k<Result.resultsList.get(j).ancestors.size();k++)
 							if(Result.resultsList.get(j).ancestors.get(k).equals(currentTax.getTaxID()) && !tax.getOrganism().contains("*"))

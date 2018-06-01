@@ -15,7 +15,7 @@
             <Image url="@../../pictures/FirstScreen2.png" />
          </image>
       </ImageView>
-      <Text layoutX="14.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter a key word and choose your DNA" wrappingWidth="383.336669921875">
+      <Text fx:id="subtitleText" layoutX="14.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please enter a key word and choose your DNA" wrappingWidth="383.336669921875">
          <font>
             <Font name="System Bold Italic" size="20.0" />
          </font></Text>
@@ -23,7 +23,7 @@
          <font>
             <Font size="16.0" />
          </font></Button>
-      <ImageView fx:id="uploadImageView" fitHeight="10.0" fitWidth="9.0" layoutY="278.0" onMousePressed="#onUpload" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="uploadImageView" fitHeight="53.0" fitWidth="99.0" layoutX="59.0" layoutY="206.0" onMousePressed="#onUpload" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../pictures/upload.png" />
          </image>

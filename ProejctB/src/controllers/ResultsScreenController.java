@@ -47,6 +47,8 @@ public class ResultsScreenController {
 			Vars.isUserDNA = false;
 		}
 		setResults();
+		if(Vars.getUserDNAFile() != null) 
+			Main.showScreen("TreeScreen", "bbb");		
 		setTable();
 	}
 
@@ -78,10 +80,7 @@ public class ResultsScreenController {
 			JOptionPane.showMessageDialog(null, "Please select a result", "Warning",
 					JOptionPane.WARNING_MESSAGE); return;}
 		
-/*		Vars.userSequence = Vars.setSequence(resultsTableView.getSelectionModel().getSelectedItem().getGeneID());
 
-		if(Vars.userSequence == null || Vars.userSequence.dna.equals("bad dna"))
-			System.out.println("bad user dna");*/
 		Main.showScreen("TreeScreen", "bbb");
 	}
 
@@ -129,10 +128,8 @@ public class ResultsScreenController {
 		finally {
 
 			try {
-
 				if (br != null)
 					br.close();
-
 				if (fr != null)
 					fr.close();
 
