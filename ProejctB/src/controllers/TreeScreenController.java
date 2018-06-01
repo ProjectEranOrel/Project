@@ -236,6 +236,8 @@ public class TreeScreenController
 			for(int j=0;j<resultList.size();j++)
 				if(resultList.get(j).getTaxID().equals(item.getTaxID()))
 				{
+					System.out.println("GeneID: "+resultList.get(j).getGeneID());
+					System.out.println("TaxID: "+item.getTaxID());
 					item.setSequence(Vars.setSequence(resultList.get(j).getGeneID()));
 					if(item.getSequence().getDNA().equals("bad dna"))
 						item.getSequence().setMatchScore(-1);	
