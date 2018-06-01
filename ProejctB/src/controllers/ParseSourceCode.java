@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import org.apache.commons.net.ftp.FTPClient;
 
 import Entities.Result;
+import Entities.Sequence;
 import Entities.Taxonomy;
 import Entities.Vars;
 
@@ -71,7 +72,7 @@ public class ParseSourceCode {
 				taxList.add(tax);
 				for(int i=0;i<Result.resultsList.size();++i) 
 					for(int k=0;k<Result.resultsList.get(i).ancestors.size();k++)
-						if(Result.resultsList.get(i).ancestors.get(k).equals(tax.getTaxID()) && !tax.getOrganism().contains("*"))
+						if(Result.resultsList.get(i).ancestors.contains(tax.getTaxID()) && !tax.getOrganism().contains("*"))
 							tax.setOrganism("*"+tax.getOrganism()+"*");
 
 			}
@@ -153,7 +154,7 @@ public class ParseSourceCode {
 					currentTax.setOrganism(org);
 					for(int j=0;j<Result.resultsList.size();++j) 
 						for(int k=0;k<Result.resultsList.get(j).ancestors.size();k++)
-							if(Result.resultsList.get(j).ancestors.get(k).equals(currentTax.getTaxID()) && !tax.getOrganism().contains("*"))
+							if(Result.resultsList.get(j).ancestors.contains(currentTax.getTaxID()) && !tax.getOrganism().contains("*"))
 								tax.setOrganism("*"+currentTax.getOrganism()+"*");
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());

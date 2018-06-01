@@ -16,8 +16,8 @@ public class Result {
 	private int number; // row number in table
 	private String TaxID;
 	public ArrayList<String> ancestors = new ArrayList<String>();
-	
-	
+
+
 	public static ArrayList<Result> resultsList = new ArrayList<Result>();
 
 	public String getOrgName() {
@@ -26,7 +26,7 @@ public class Result {
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
 	}
-	
+
 	public String getGeneID() {
 		return geneID;
 	}
@@ -90,6 +90,8 @@ public class Result {
 	public void setTaxID(String taxID) {
 		TaxID = taxID;
 	}
+
+	
 
 
 }

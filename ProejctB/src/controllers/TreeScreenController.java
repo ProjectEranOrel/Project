@@ -1,21 +1,27 @@
 package controllers;
-import java.io.IOException;
+
 import java.util.ArrayList;
+
 import java.util.concurrent.TimeUnit;
 
-import Entities.Main;
-import Entities.Node;
 import Entities.Result;
+import Entities.Sequence;
 import Entities.Taxonomy;
 import Entities.Vars;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 
@@ -28,7 +34,7 @@ public class TreeScreenController
 	private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
 	private ArrayList<Result> resultList;
 	int cnt = 0;
-	private ArrayList<Taxonomy> chosenItemHeritage = new ArrayList<Taxonomy>();
+	private ArrayList<TreeItem<Taxonomy>> chosenItemHeritage = new ArrayList<TreeItem<Taxonomy>>();
 
 	private int startIndex, endIndex;
 
@@ -43,6 +49,8 @@ public class TreeScreenController
 		TreeTableColumn<Taxonomy, String> nameCol = new TreeTableColumn<>("Organism name");
 		nameCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getValue().getOrganism()));
+
+
 
 		TableColumn<Taxonomy,String> selectedIDcol = new TableColumn<>("Taxonomy ID");
 		selectedIDcol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
@@ -68,6 +76,7 @@ public class TreeScreenController
 			root.getChildren().add(new TreeItem<Taxonomy>(data.get(i)));
 		treeTable.setRoot(root);
 		treeTable.setShowRoot(false);
+
 		//markEntries(treeTable.getRoot());
 	}
 
@@ -105,22 +114,34 @@ public class TreeScreenController
 			populateTree(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
 			for(int i=0;i<resultList.size();i++)
 			{
+				for(int j=0;j<chosenItemHeritage.size();j++)
+					if(resultList.get(i).ancestors.contains(chosenItemHeritage.get(j).getValue().getTaxID()))
+					{
+						/*ObservableList<TreeTableColumn<Taxonomy, ?>> columns = treeTable.getColumns();
+						for(int l=0;l<columns.size();l++)
+						{
+							columns.get(l).setR
+							treeTable.
+						}*/
+						//treeTable.getRow
+						//System.out.println(i+": "+chosenItemHeritage.get(j).getValue().getTaxID(
 
+
+					}
 			}
+			chosenItemHeritage.removeAll(chosenItemHeritage);
 		}
-
 	}
 	private void populateTree(TreeItem<Taxonomy> chosenTreeItem, ArrayList<Taxonomy> sons,int depth)
 	{
 		for(int i=0;i<sons.size();i++)
 		{
-
 			Taxonomy son = sons.get(i);  
 			TreeItem<Taxonomy> sonItem = new TreeItem<Taxonomy>(son);
 			if(son.isExpandable() && depth>0)
 				populateTree(sonItem,son.getSons(),depth-1);
 			chosenTreeItem.getChildren().add(sonItem);
-			chosenItemHeritage.add(son);
+			chosenItemHeritage.add(sonItem);
 		}
 	}
 
@@ -138,17 +159,17 @@ public class TreeScreenController
 		long startTime = System.nanoTime();
 		for(int i=0;i<resultList.size();i++)
 		{
-				if(Vars.findAncestors(resultList.get(i).getTaxID()).contains(son.getTaxID()))
+			if(Vars.findAncestors(resultList.get(i).getTaxID()).contains(son.getTaxID()))
+			{
+				//System.out.println("Found something...");
+				ObservableList<TreeTableColumn<Taxonomy, ?>> columns = treeTable.getColumns();
+				//System.out.println("Going thrrough the columns");
+				for(int l=0;l<columns.size();l++)
 				{
-					//System.out.println("Found something...");
-					ObservableList<TreeTableColumn<Taxonomy, ?>> columns = treeTable.getColumns();
-					//System.out.println("Going thrrough the columns");
-					for(int l=0;l<columns.size();l++)
-					{
-						System.out.println("Column"+l);
-						columns.get(l).setStyle("-fx-background-color:#558C8C");
-					}
+					System.out.println("Column"+l);
+					columns.get(l).setStyle("-fx-background-color:#558C8C");
 				}
+			}
 		}
 
 
@@ -202,19 +223,65 @@ public class TreeScreenController
    }*/
 		long endTime = System.nanoTime();
 		System.out.println("Time: " + TimeUnit.SECONDS.convert((endTime-startTime), TimeUnit.NANOSECONDS) + "s");
-		
+
 	}
-
-
-
-
-
-
-
 	public void compare()
 	{
 		selectedData = selectedTable.getItems();
-		Main.showScreen("ResultMatchScreen", "");
+		ArrayList<Taxonomy> itemsToBeCompared = new ArrayList<Taxonomy>();
+		int i;
+		for(i=0;i<selectedData.size();i++)
+		{
+			Taxonomy item = selectedData.get(i);
+			for(int j=0;j<resultList.size();j++)
+				if(resultList.get(j).getTaxID().equals(item.getTaxID()))
+				{
+					item.setSequence(Vars.setSequence(resultList.get(j).getGeneID()));
+					if(item.getSequence().getDNA().equals("bad dna"))
+						item.getSequence().setMatchScore(-1);	
+					else item.getSequence().setMatchScore(new Sequence(Vars.userResult.getTaxID()).compare(item.getSequence()));
+					System.out.println(item.getSequence().getMatchScore());
+					itemsToBeCompared.add(item);
+					if(item.isExpandable())
+						itemsToBeCompared.addAll(getChildren(item,new ArrayList<Taxonomy>()));
+					break;
+				}
+		}
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/ResultMatchScreen.fxml"));
+			Parent root1 = (Parent) fxmlLoader.load();
+			ResultMatchScreen controller = fxmlLoader.getController();
+			controller.setItems(itemsToBeCompared);
+			Stage stage = new Stage();
+			stage.setScene(new Scene(root1));  
+			stage.show();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		selectedTable.getItems().removeAll(selectedTable.getItems());
+	}
+
+	private ArrayList<Taxonomy> getChildren(Taxonomy tax,ArrayList<Taxonomy> res)
+	{
+		ArrayList<Taxonomy> sons = tax.getSons();
+		for(int i=0;i<sons.size();i++)
+		{
+			Taxonomy son = sons.get(i);
+
+			for(int j=0;j<resultList.size();j++)
+				if(resultList.get(j).getTaxID().equals(son.getTaxID()))
+				{
+					son.setSequence(Vars.setSequence(resultList.get(j).getGeneID()));
+					if(son.getSequence().getDNA().equals("bad dna"))
+						son.getSequence().setMatchScore(-1);
+					else son.getSequence().setMatchScore(new Sequence(Vars.userResult.getTaxID()).compare(son.getSequence()));	
+					res.add(son);
+					if(son.isExpandable())
+						getChildren(son,res);
+					break;
+				}
+		}
+		return res;
 	}
 
 }
