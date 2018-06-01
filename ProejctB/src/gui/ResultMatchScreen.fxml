@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="814.0" prefWidth="1127.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ResultMatchScreen">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="555.0" prefWidth="557.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ResultMatchScreen">
    <children>
-      <TextArea fx:id="inputFasta" editable="false" layoutX="578.0" layoutY="36.0" prefHeight="510.0" prefWidth="534.0" />
-      <TextArea fx:id="selectedFasta" editable="false" layoutX="14.0" layoutY="36.0" prefHeight="510.0" prefWidth="534.0" />
-      <Text layoutX="578.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your input's sequence:" />
-      <Text layoutX="14.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The sequence of the entry you selected from the table below:" />
-      <TableView fx:id="selectedTable" layoutX="16.0" layoutY="556.0" onMouseClicked="#onClickSelectedTable" prefHeight="234.0" prefWidth="1096.0" />
+      <TableView fx:id="resTable" layoutX="21.0" layoutY="20.0" prefHeight="514.0" prefWidth="516.0" />
    </children>
 </AnchorPane>
