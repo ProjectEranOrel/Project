@@ -6,12 +6,22 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Orel/Desktop/biojava-core-4.2.0-sources.jar">
+	<classpathentry kind="lib" path="C:/Users/Orel/git/Project/ProejctB/Project Jars/apache-commons-net.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Orel/Desktop/biojava-1.7.jar">
+	<classpathentry kind="lib" path="C:/Users/Orel/git/Project/ProejctB/Project Jars/biojava-1.7.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Orel/git/Project/ProejctB/Project Jars/biojava-core-4.2.0-sources.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Orel/git/Project/ProejctB/Project Jars/jna-4.5.1.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

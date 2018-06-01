@@ -19,16 +19,16 @@ import java.util.zip.ZipInputStream;
 public class Vars {
 	public static final String genBankLink = "ftp://ftp.ncbi.nlm.nih.gov/genomes/";
 	public static final String searchLink = "https://www.ncbi.nlm.nih.gov/gene/?Term=";
+	public static final String orthoSearchLink = "https://www.ncbi.nlm.nih.gov/gene/";
 	// NEED TO BE DONE
 	public static final String getGIWithTaxidLink = "https://www.ncbi.nlm.nih.gov/nuccore/?term=txid";
 	public static final String taxonomyBrowser = "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=";
-	private static final String orthologyLink = "https://www.ncbi.nlm.nih.gov/gene/?Term=ortholog_gene_";
 	// NEED TO BE DONE
 	public static String searchWord = null;
 	public static Sequence userSequence = null;
 	public static Sequence foundSequence;
 	public static ArrayList<Integer> clustersIndexes = new ArrayList<Integer>();
-	private static File userDNAFile;//Get a pointer to the user's DNA file
+	private static File userDNAFile = null;//Get a pointer to the user's DNA file
 	public static boolean isUserDNA = true;//This flag will say whether it's the user's DNA that we're looking for or a comparison DNA
 	public static String desktopPath;
 	public static String noResultsString = "The following term was not found in Gene";
@@ -40,11 +40,6 @@ public class Vars {
 	public static Result userResult;//The entry the user chose
 	public static Taxonomy root = null;
 	public static ArrayList<Node> nodesList;
-
-
-	public static String getOrthologyLink(String taxID) {
-		return orthologyLink+taxID+"[group]";
-	}
 
 	//Vars.root = func(userResult.getTaxID());
 	@SuppressWarnings({ "resource", "finally" })
@@ -130,9 +125,14 @@ public class Vars {
 	public static Sequence setSequence(String geneID) {
 		FileReader fr;
 		BufferedReader br;
+		File dnaFile;
 		Sequence sequence = new Sequence();
 		try {
-			File dnaFile = getDNAByGI(geneID);
+			if(geneID.equals("userDNA")) 
+				dnaFile = Vars.userDNAFile;
+		
+			else
+				dnaFile = getDNAByGI(geneID);
 			fr = new FileReader(dnaFile);
 			br = new BufferedReader(fr);
 
