@@ -7,9 +7,9 @@ import java.net.URLConnection;
 
 import javax.swing.JOptionPane;
 
-import Entities.Main;
-import Entities.Result;
-import Entities.Vars;
+import entities.Main;
+import entities.Result;
+import entities.Vars;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -27,7 +27,7 @@ public class FirstScreenController {
 	@FXML
 	private Button searchButton;
 	@FXML
-	private Text subtitleText;
+	private Text subtitleText, fileNameText;
 
 	public void initialize() {
 		searchButton.setStyle("-fx-background-color: #96FFFF");
@@ -39,7 +39,7 @@ public class FirstScreenController {
 		fileChooser.getExtensionFilters().add(extFilter);
 		Vars.setUserDNAFile(fileChooser.showOpenDialog(Main.primaryStage));
 		if(Vars.getUserDNAFile().exists()) {
-			uploadTextField.setText(Vars.getUserDNAFile().getName());
+			fileNameText.setText(Vars.getUserDNAFile().getName());
 			subtitleText.setText("Please insert gene's Tax ID");
 			searchButton.setText("Submit");
 			
@@ -58,7 +58,7 @@ public class FirstScreenController {
 	/*CHANGE add a short video on how to do it and check weather its user's or looking for a match*/
 	public void onSearch() throws IOException
 	{
-
+		System.out.println("onSearch");
 		if(uploadTextField.getText().equals("") && Vars.getUserDNAFile() == null) {
 			JOptionPane.showMessageDialog(null,  "Please insert a key word before you search.", "Warning",
 					JOptionPane.WARNING_MESSAGE);
@@ -84,9 +84,12 @@ public class FirstScreenController {
 				Vars.userSequence = Vars.setSequence("userDNA");
 			}
 		
-
-		if(isResults())
+		System.out.println("onSearch");
+		
+		if(isResults()) {
+			Vars.setNodesArray();
 			Main.showScreen("GetResultsScreen", Vars.getResultsScreenTitle);
+		}
 		else 
 			JOptionPane.showMessageDialog(null, "No Results were found.\nPlease try something else.", "Warning",
 					JOptionPane.WARNING_MESSAGE);

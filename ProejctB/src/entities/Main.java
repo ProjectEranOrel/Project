@@ -1,8 +1,9 @@
-package Entities;
+package entities;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import controllers.ParseSourceCode;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,7 +29,7 @@ public class Main extends Application
 		popup.initModality(Modality.APPLICATION_MODAL);
 		popup.initOwner(primaryStage);
 		popup = new Stage();
-		showScreen("FirstScreen", Vars.firstScreenTitle);
+		showScreen("GetResultsScreen", "Selected DNA Tree");
 		// showScreen("GetResultsScreen", "");
 
 	}
@@ -71,7 +72,6 @@ public class Main extends Application
 
 		//Vars.trimNodesFile(new File("nodes.dmp"));
 
-		System.out.println("start");
 		//Vars.trimNodesFile();
 
 		/* System.out.println("start");
@@ -102,7 +102,10 @@ public class Main extends Application
   Vars.setNodesList();
   long endTime = System.nanoTime(); 
   System.out.println("Time: " + TimeUnit.SECONDS.convert((endTime-startTime), TimeUnit.NANOSECONDS) + "s");*/
+		Vars.setNodesArray();
 		launch(args);
+		//ParseSourceCode.getLineage("9615");
+
 	}
 
 }

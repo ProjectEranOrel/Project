@@ -1,5 +1,4 @@
-package Entities;
-
+package entities;
 import java.util.ArrayList;
 public class Taxonomy {
 		private ArrayList<Taxonomy> sons = new ArrayList<Taxonomy>();
@@ -10,9 +9,6 @@ public class Taxonomy {
 		private boolean isExpandable;
 		public Taxonomy ancestor;
 		private Sequence sequence;//To use the compare method
-		
-		
-
 		
 		public Taxonomy() {
 			super();
@@ -87,10 +83,5 @@ public class Taxonomy {
 
 		public void setSequence(Sequence sequence) {
 			this.sequence = sequence;
-		}
-
-
-		
-
-		
+		}		
 }

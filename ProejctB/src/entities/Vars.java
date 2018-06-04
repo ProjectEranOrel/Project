@@ -1,4 +1,4 @@
-package Entities;
+package entities;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -39,7 +40,7 @@ public class Vars {
 	public static File resultsFile;
 	public static Result userResult;//The entry the user chose
 	public static Taxonomy root = null;
-	public static ArrayList<Node> nodesList;
+	public static String[] nodesArray = null;
 
 	//Vars.root = func(userResult.getTaxID());
 	@SuppressWarnings({ "resource", "finally" })
@@ -253,8 +254,10 @@ public class Vars {
 			}
 		}catch(Exception e) {e.printStackTrace();}
 	}
-	public static void setNodesList(){
-		nodesList = new ArrayList<Node>();
+	public static void setNodesArray(){
+		ArrayList<Node> nodesList = new ArrayList<Node>();
+
+		int max = 0;
 		try {
 			FileReader fr = new FileReader(new File("nodes.dmp"));
 			BufferedReader br = new BufferedReader(fr);
@@ -264,14 +267,28 @@ public class Vars {
 				str = str.substring(son.length()+3);
 				father = str.substring(0, str.indexOf("\t"));
 				nodesList.add(new Node(son, father));
+				if(Integer.parseInt(son)>=Integer.parseInt(father)) {
+					if(Integer.parseInt(son)>max)
+						max=Integer.parseInt(son);}
+				else
+					if(Integer.parseInt(father)>max)
+						max = Integer.parseInt(father);
 			}
+			if(max == 0) {
+				System.out.println("File is empty or non existent!"); return;}
+			System.out.println(max);
+			nodesArray = new String[max+1];
+			Arrays.fill(nodesArray, null);
+			for(int i=0;i<nodesList.size();++i)
+				nodesArray[Integer.parseInt(nodesList.get(i).getSonTaxID())] = nodesList.get(i).getFatherTaxID();
+			
 		}catch (Exception e) {e.printStackTrace();}
 	}
 
-	public static ArrayList<String> findAncestors(String taxID)
+/*	public static ArrayList<String> findAncestors(String taxID)
 	{
-
-		Vars.setNodesList();
+		if(nodesArray == null)
+			Vars.setNodesArray();
 		//ArrayList<Node> nodesList = Vars.nodesList;
 		ArrayList<String> ancestors = new ArrayList<String>();
 		//String currAncestor = parentColumn.get(sonColumn.indexOf(taxID));
@@ -290,16 +307,8 @@ public class Vars {
 			ancestors.add(nextAncestor);
 			currAncestor = nextAncestor;
 		}
-		//System.out.println(cnt++);
 		return ancestors;
-	}
+	}*/
 
-	private static int getSonIndex(ArrayList<Node> arr, String nodeTaxID) 
-	{
-		for(int i=0;i<arr.size();++i)
-			if(arr.get(i).getSonTaxID().equals(nodeTaxID))
-				return i;
-		return -1;
-	}
 
 }

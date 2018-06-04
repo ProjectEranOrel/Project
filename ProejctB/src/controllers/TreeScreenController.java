@@ -3,11 +3,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import Entities.Main;
-import Entities.Node;
-import Entities.Result;
-import Entities.Taxonomy;
-import Entities.Vars;
+import entities.Main;
+import entities.Node;
+import entities.Result;
+import entities.Taxonomy;
+import entities.Vars;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SelectionMode;
@@ -24,7 +24,7 @@ public class TreeScreenController
 {
 	public TreeTableView<Taxonomy> treeTable;
 	public static ObservableList<Taxonomy> selectedData;
-	public TableView<Taxonomy> selectedTable;
+	public  TableView<Taxonomy> selectedTable;
 	private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
 	private ArrayList<Result> resultList;
 	int cnt = 0;
@@ -35,7 +35,7 @@ public class TreeScreenController
 	@SuppressWarnings("unchecked")
 	public void initialize()
 	{
-		resultList = Result.resultsList;
+		resultList = Result.orthology;
 		TreeTableColumn<Taxonomy, String> IDCol = new TreeTableColumn<>("Taxonomy ID");
 		IDCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getValue().getTaxID()));
@@ -63,11 +63,15 @@ public class TreeScreenController
 
 
 		TreeItem<Taxonomy> root = new TreeItem<Taxonomy>();
+		System.out.println("getting Lineage!");
 		ArrayList<Taxonomy> data = ParseSourceCode.getLineage(Vars.userResult.getTaxID());
+		System.out.println("Got Lineage!");
 		for(int i=0;i<data.size();i++)
 			root.getChildren().add(new TreeItem<Taxonomy>(data.get(i)));
+		System.out.println("Got Lineage!");
 		treeTable.setRoot(root);
 		treeTable.setShowRoot(false);
+		System.out.println("Got Lineage!");
 		//markEntries(treeTable.getRoot());
 	}
 
@@ -124,15 +128,15 @@ public class TreeScreenController
 		}
 	}
 
-	private void createAndStartThreads(Taxonomy son)
+	/*private void createAndStartThreads(Taxonomy son)
 	{
 		int numOfEntries = 20;
 		while(((double)resultList.size()/(double)numOfEntries)!=resultList.size()/numOfEntries)
 			numOfEntries++;
 		int numOfThreads = (resultList.size()/numOfEntries)-1;
 		Thread[] markingThreads = new Thread[numOfThreads];
-		/*System.out.println("numOfEntires: "+numOfEntries);
-  System.out.println("numOfThreads: "+numOfThreads);*/
+		System.out.println("numOfEntires: "+numOfEntries);
+  System.out.println("numOfThreads: "+numOfThreads);
 		startIndex = 0;
 		endIndex = numOfEntries;
 		long startTime = System.nanoTime();
@@ -149,7 +153,7 @@ public class TreeScreenController
 						columns.get(l).setStyle("-fx-background-color:#558C8C");
 					}
 				}
-		}
+		}*/
 
 
 		/*for(int j=0;j<numOfThreads;j++)
@@ -200,10 +204,10 @@ public class TreeScreenController
     System.out.println("j: "+j+"\nresultList: "+resultList.size());
     e.printStackTrace();
    }*/
-		long endTime = System.nanoTime();
+/*		long endTime = System.nanoTime();
 		System.out.println("Time: " + TimeUnit.SECONDS.convert((endTime-startTime), TimeUnit.NANOSECONDS) + "s");
 		
-	}
+	}*/
 
 
 

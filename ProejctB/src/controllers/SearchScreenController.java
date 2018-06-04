@@ -3,9 +3,9 @@ package controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import Entities.Cluster;
-import Entities.Sequence;
-import Entities.Vars;
+import entities.Cluster;
+import entities.Sequence;
+import entities.Vars;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;

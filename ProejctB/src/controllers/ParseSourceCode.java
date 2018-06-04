@@ -13,9 +13,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import org.apache.commons.net.ftp.FTPClient;
 
-import Entities.Result;
-import Entities.Taxonomy;
-import Entities.Vars;
+import entities.Result;
+import entities.Taxonomy;
+import entities.Vars;
 
 public class ParseSourceCode {
 
@@ -28,24 +28,22 @@ public class ParseSourceCode {
 		getLineage("672");
 	}*/
 	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
-
+		System.out.println(taxID);
 		URLConnection conn;
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
 		Taxonomy taxSelected = new Taxonomy();
 		try {
 			BufferedReader br = getBufferedReader(Vars.taxonomyBrowser + taxID);
-			String str = null;
-			for(int i=0;i<85;i++)
-				str = br.readLine();
-			System.out.println(str);
-			if(str.contains("lineage")) 
-				return getLineageModifier(br);
-			
-			for(int i=0;i<37;i++) //CHANGE this works for now, but rather get something more general!
-				br.readLine();
+			String lineage = null;
+			while((lineage = br.readLine())!=null)
+				if(lineage.contains("lineage")) break;
 
-			String lineage = br.readLine();
+			if(!lineage.contains("STRONG")) 
+				return getLineageModifier(br);
+			System.out.println("returned");
+
+
 
 			/*              GET INFO ABOUT THE ORGANISM WE'RE SPECTATING          */
 			//TAXID
@@ -72,15 +70,24 @@ public class ParseSourceCode {
 				index = lineage.indexOf(">") + 1;//Skip the '>'
 				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
 				tax.setExpandable(true);
-/*				if(Vars.userResult == null)
+				/*				if(Vars.userResult == null)
 					Vars.userResult = new Result();*/
 				taxList.add(tax);
-				for(int i=0;i<Result.resultsList.size();++i) 
-					for(int k=0;k<Result.resultsList.get(i).ancestors.size();k++)
-						if(Result.resultsList.get(i).ancestors.get(k).equals(tax.getTaxID()) && !tax.getOrganism().contains("*"))
-							tax.setOrganism("*"+tax.getOrganism()+"*");
-
-			}
+				int nextTax;
+				boolean isDone = false;
+				for(int i=0;i<Result.orthology.size()&&!isDone;++i) {
+					nextTax = Integer.parseInt(Result.orthology.get(i).getTaxID());
+					while(Vars.nodesArray[nextTax] != null) 
+						if(Vars.nodesArray[nextTax].equals(tax.getTaxID()) && !tax.getOrganism().contains("*")) {
+							tax.setOrganism("*"+tax.getOrganism()+"*");isDone=true;break;
+						}
+						else {
+							nextTax = Integer.parseInt(Vars.nodesArray[nextTax]);
+							if(nextTax ==  Integer.parseInt(Vars.nodesArray[nextTax])) break;
+						}
+				}//for
+				System.out.println("Organism: " + tax.getOrganism());
+			}//outer while
 			taxList.set(0, taxSelected);
 
 		}catch(Exception e) {e.printStackTrace();}
@@ -92,12 +99,14 @@ public class ParseSourceCode {
 
 
 	public static ArrayList<Taxonomy> getLineageModifier(BufferedReader br){
+	
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
-		try {			
+
+		try {	
 			String lineage = br.readLine();
-			System.out.println("lineage " + lineage);
-			
+			System.out.println(lineage);
+
 
 			int index = 3;//First ahref is irrelevant
 			while(lineage.indexOf("href") != -1) {
@@ -114,13 +123,22 @@ public class ParseSourceCode {
 				index = lineage.indexOf(">") + 1;//Skip the '>'
 				tax.setOrganism(lineage.substring(index, lineage.indexOf("<")));
 				tax.setExpandable(true);
-/*				if(Vars.userResult == null)
+				/*				if(Vars.userResult == null)
 					Vars.userResult = new Result();*/
 				taxList.add(tax);
-/*				for(int i=0;i<Result.resultsList.size();++i) 
-					for(int k=0;k<Result.resultsList.get(i).ancestors.size();k++)
-						if(Result.resultsList.get(i).ancestors.get(k).equals(tax.getTaxID()) && !tax.getOrganism().contains("*"))
-							tax.setOrganism("*"+tax.getOrganism()+"*");*/
+				int nextTax;
+				boolean isDone = false;
+				for(int i=0;i<Result.orthology.size()&&!isDone;++i) {
+					nextTax = Integer.parseInt(Result.orthology.get(i).getTaxID());
+					while(Vars.nodesArray[nextTax] != null) 
+						if(Vars.nodesArray[nextTax].equals(tax.getTaxID()) && !tax.getOrganism().contains("*")) {
+							tax.setOrganism("*"+tax.getOrganism()+"*");isDone=true;break;
+						}
+						else {
+							nextTax = Integer.parseInt(Vars.nodesArray[nextTax]);
+							if(nextTax ==  Integer.parseInt(Vars.nodesArray[nextTax])) break;
+						}
+				}//for
 
 			}
 			return taxList;
@@ -128,8 +146,8 @@ public class ParseSourceCode {
 		}catch(Exception e) {e.printStackTrace(); return null;}
 	}
 
-	public static Taxonomy getSons(Taxonomy tax) {
-		Taxonomy root = tax;
+	public static Taxonomy getSons(Taxonomy taxonomy) {
+		Taxonomy root = taxonomy;
 		String taxID=root.getTaxID();
 		root.setExpandable(true);
 		Taxonomy currentTax = root;
@@ -192,11 +210,24 @@ public class ParseSourceCode {
 					String org = lines[i].substring((lines[i].indexOf("<STRONG>")) + 8, lines[i].indexOf("</STRONG>")) +
 							lines[i].substring((lines[i].indexOf("</A>")) + 4, lines[i].indexOf("&nbsp"));	
 					currentTax.setOrganism(org);
-					System.out.println(currentTax.getTaxID());
-					for(int j=0;j<Result.resultsList.size();++j) 
-						for(int k=0;k<Result.resultsList.get(j).ancestors.size();k++)
-							if(Result.resultsList.get(j).ancestors.get(k).equals(currentTax.getTaxID()) && !tax.getOrganism().contains("*"))
-								tax.setOrganism("*"+currentTax.getOrganism()+"*");
+
+					int nextTax;
+					boolean isDone = false;
+					for(int j=0;j<Result.orthology.size()&&!isDone;++j) {
+						nextTax = Integer.parseInt(Result.orthology.get(j).getTaxID());
+						while(Vars.nodesArray[nextTax] != null) 
+							if(Vars.nodesArray[nextTax].equals(currentTax.getTaxID()) && !currentTax.getOrganism().contains("*")) {
+								currentTax.setOrganism("*"+currentTax.getOrganism()+"*");isDone=true;break;
+							}
+							else {
+								nextTax = Integer.parseInt(Vars.nodesArray[nextTax]);
+								if(nextTax ==  Integer.parseInt(Vars.nodesArray[nextTax])) break;
+							}
+					}//for
+					//	System.out.println("Organism: " + currentTax.getOrganism() +"tax id: " + currentTax.getTaxID() + "  ancestor: " + Result.resultsList.get(j).ancestors.get(k));
+					//	System.out.println("Organism: " + currentTax.getOrganism() +"tax id: " + currentTax.getTaxID() + "  ancestor: " + Result.resultsList.get(j).ancestors.get(k));
+
+
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
 						currentTax.ancestor.addToSons(new Taxonomy());
 						currentTax = currentTax.ancestor.getSons().get(currentTax.ancestor.getSons().size()-1);	
@@ -327,11 +358,11 @@ public class ParseSourceCode {
 				}
 				else 
 					result.setMim("");
-				Result.resultsList.add(result);result = new Result();
+				Result.orthology.add(result);result = new Result();
 			}//for
 			if(resultsInPage>0) {
 				result.print();
-				Result.resultsList.add(result);
+				Result.orthology.add(result);
 			}
 
 			br.close();

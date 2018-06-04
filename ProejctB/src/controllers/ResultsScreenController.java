@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import Entities.Main;
-import Entities.Result;
-import Entities.Sequence;
-import Entities.Vars;
+import entities.Main;
+import entities.Result;
+import entities.Sequence;
+import entities.Vars;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -64,7 +64,7 @@ public class ResultsScreenController {
 		checkSelectedButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override public void handle(ActionEvent e) {
 				resultsList.removeAll(resultsList);
-				Result.resultsList.removeAll(Result.resultsList);
+				Result.orthology.removeAll(Result.orthology);
 				rowNumber=0;
 				uploadResultsFile();
 				setResults();
@@ -79,8 +79,6 @@ public class ResultsScreenController {
 		if((Vars.userResult = resultsTableView.getSelectionModel().getSelectedItem()) == null) {
 			JOptionPane.showMessageDialog(null, "Please select a result", "Warning",
 					JOptionPane.WARNING_MESSAGE); return;}
-		
-
 		Main.showScreen("TreeScreen", "bbb");
 	}
 
@@ -89,24 +87,6 @@ public class ResultsScreenController {
 		//Vars.setDNAFile(Vars.getDNAByGI(Vars.userResult.getGeneID()));
 	}
 
-	/*public static boolean setUserSequence() {
-		try {
-			FileReader	fr = new FileReader(Vars.getUserDNAFile());
-			BufferedReader	br = new BufferedReader(fr);
-			for(int i=0;i<5;i++) 
-				if(br.readLine().contains("ERROR"))
-					return false;
-			br = new BufferedReader(fr);//reinitialize it
-			br.readLine();//Skip first row
-			String temp;
-			while((temp = br.readLine()) != null)
-				Vars.userSequence.dna+=temp;
-			Vars.blackBox("dna.txt");
-			return true;
-		}catch (Exception e) {e.printStackTrace();}
-		return false;
-
-	}*/
 
 	public void setResults() {
 		BufferedReader br = null;
@@ -187,9 +167,9 @@ public class ResultsScreenController {
 			res.setMim(line.substring(mimIndex, line.length()-3));
 		res.setNumber(rowNumber++);
 		
-		res.ancestors = new ArrayList<String>(Vars.findAncestors(res.getTaxID()));
-		System.out.println("lel: " + res.ancestors.size() + "   index: " + rowNumber);
-		Result.resultsList.add(res);
+//	res.ancestors = new ArrayList<String>(Vars.findAncestors(res.getTaxID()));
+		System.out.println("index: " + rowNumber);
+		Result.orthology.add(res);
 		
 	}
 
@@ -214,7 +194,7 @@ public class ResultsScreenController {
 		aliasesTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("aliases"));
 		mimTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("mim"));
 		resultsTableColumn.setCellValueFactory(new PropertyValueFactory<Result,String>("results"));
-		resultsList = FXCollections.observableArrayList(Result.resultsList);
+		resultsList = FXCollections.observableArrayList(Result.orthology);
 		resultsTableView.setEditable(true);
 		resultsTableView.getItems().clear();
 		resultsTableView.setItems(resultsList);//Set the list before this command

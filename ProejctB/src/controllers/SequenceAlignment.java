@@ -1,7 +1,7 @@
 package controllers;
 import java.util.*;
 
-import Entities.Sequence;
+import entities.Sequence;
 
 public class SequenceAlignment {
 	static final int GAP_PENALTY = 2;

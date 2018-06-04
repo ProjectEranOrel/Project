@@ -7,8 +7,8 @@ import java.net.URISyntaxException;
 
 import javax.swing.JOptionPane;
 
-import Entities.Main;
-import Entities.Vars;
+import entities.Main;
+import entities.Vars;
 import javafx.stage.FileChooser;
 
 public class GetResultsScreenController {

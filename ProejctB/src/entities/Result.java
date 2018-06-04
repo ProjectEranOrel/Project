@@ -1,4 +1,4 @@
-package Entities;
+package entities;
 
 import java.util.ArrayList;
 
@@ -15,10 +15,9 @@ public class Result {
 	public ArrayList<Lineage> lineage = new ArrayList<Lineage>();
 	private int number; // row number in table
 	private String TaxID;
-	public ArrayList<String> ancestors = new ArrayList<String>();
 	
 	
-	public static ArrayList<Result> resultsList = new ArrayList<Result>();
+	public static ArrayList<Result> orthology = new ArrayList<Result>();
 
 	public String getOrgName() {
 		return orgName;
@@ -90,6 +89,4 @@ public class Result {
 	public void setTaxID(String taxID) {
 		TaxID = taxID;
 	}
-
-
 }

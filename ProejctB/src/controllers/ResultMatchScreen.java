@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-import Entities.Sequence;
-import Entities.Taxonomy;
-import Entities.Vars;
+import entities.Sequence;
+import entities.Taxonomy;
+import entities.Vars;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TableColumn;

@@ -1,4 +1,4 @@
-package Entities;
+package entities;
 
 public class Lineage {
 	private String taxID;
