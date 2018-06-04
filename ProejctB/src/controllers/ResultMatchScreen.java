@@ -1,78 +1,67 @@
 package controllers;
 
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Random;
 
 import entities.Sequence;
 import entities.Taxonomy;
-import entities.Vars;
-import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.util.Callback;
+
+
 public class ResultMatchScreen 
 {
-	public TextArea selectedFasta;
-	public TextArea inputFasta;
-	public TableView<Taxonomy> selectedTable;
-	public static Collection<Taxonomy> extraEntires;
+	@FXML
+	public TableView<Taxonomy> resTable;
+
+
 	@SuppressWarnings("unchecked")
 	public void initialize()
 	{
-		TableColumn<Taxonomy,String> selectedIDcol = new TableColumn<>("Taxonomy ID");
-		selectedIDcol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
+		TableColumn<Taxonomy, String> IDCol = new TableColumn<>("Tax ID");
+		IDCol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getTaxID()));
 
-		TableColumn<Taxonomy, String> selectedNameCol = new TableColumn<>("Organism name");
-		selectedNameCol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
+		TableColumn<Taxonomy, String> nameCol = new TableColumn<>("Organism name");
+		nameCol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getOrganism()));
-		
-		TableColumn<Taxonomy, Number> matchScoreCol = new TableColumn<>("Match score");
-		/*matchScoreCol.setCellValueFactory(cellData -> 
-		new ReadOnlyDoubleWrapper(cellData.getValue().getSequence().getMatchScore()));*/
 
-		selectedTable.getColumns().addAll(selectedIDcol,selectedNameCol,matchScoreCol);
-		/*inputFasta.setText(Vars.userSequence.getDNA());
-		ObservableList<Taxonomy> selectedData = TreeScreenController.selectedData;
-		selectedTable.getItems().addAll(selectedData);
-		selectedTable.getSortOrder().add(matchScoreCol);*/
-		Thread t1 = new Thread(new Runnable() {
-			@Override public void run() {
-				while(true)
+		TableColumn<Taxonomy, Sequence> scoreCol = new TableColumn<>("Match score");
+		scoreCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<Sequence>(cellData.getValue().getSequence()));
+		scoreCol.setCellFactory(new Callback<TableColumn<Taxonomy, Sequence>,TableCell<Taxonomy, Sequence>>()
+		{
+			@Override
+			public TableCell<Taxonomy, Sequence> call(TableColumn<Taxonomy, Sequence> arg0) 
+			{
+				final TableCell<Taxonomy, Sequence> cell = new TableCell<Taxonomy, Sequence>()
 				{
-					int num = new Random().nextInt(200);
-					ArrayList<Taxonomy> data = new ArrayList<Taxonomy>();
-					data.add(new Taxonomy("GX88"+num,"Solgaleo"+num,false));
-					Platform.runLater(new Runnable() 
+					@Override
+					public void updateItem(final Sequence item, boolean empty)
 					{
-						@Override public void run() 
-						{
-							addEntries(data);
-						}
-					});
+						super.updateItem(item, empty);
+						if(!empty)
+							if (item.getMatchScore()==-1)
+								this.setText("No DNA sequence was found"); 
+							else 
+								this.setText(""+item.getMatchScore());
 
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
-				}
+				};
+				return cell;
 			}
+
 		});
-		t1.start();
+		resTable.getColumns().addAll(IDCol,nameCol,scoreCol);
 	}
-	public void onClickSelectedTable()
+
+	public void setItems(ArrayList<Taxonomy> items)
 	{
-		Taxonomy chosen = selectedTable.getSelectionModel().getSelectedItem();
-		if(chosen!=null)
-			selectedFasta.setText(chosen.getSequence().getDNA());
+		resTable.getItems().setAll(items);
 	}
-	public void addEntries(Collection<Taxonomy> entires)
-	{
-		selectedTable.getItems().addAll(entires);
-		selectedTable.setItems(selectedTable.getItems());
-	}
+
 }
