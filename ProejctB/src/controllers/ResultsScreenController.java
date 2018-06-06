@@ -171,6 +171,7 @@ public class ResultsScreenController {
 		System.out.println("index: " + rowNumber);
 		Result.orthology.add(res);
 		
+		
 	}
 
 
