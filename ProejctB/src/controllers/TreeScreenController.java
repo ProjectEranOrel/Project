@@ -211,19 +211,33 @@ public class TreeScreenController
 	{
 		selectedData = selectedTable.getItems();
 		ArrayList<Taxonomy> itemsToBeCompared = new ArrayList<Taxonomy>();
-		for(int i=0;i<selectedData.size();i++)
+		if(Vars.userSequence==null)
+			Vars.userSequence = Vars.setSequence(Vars.userResult.getGeneID());
+		/*for(int i=0;i<selectedData.size();i++)
 		{
 			Taxonomy item = selectedData.get(i);
 			int index = findInOrthology(item.getTaxID());
 			if(index>-1)
 			{
-				item.setSequence(Vars.setSequence(resultList.get(index).getGeneID()));
+				item.setSequence(Vars.compare(resultList.get(index).getGeneID()));
 				if(item.getSequence().getDNA().equals("bad dna"))
 					item.getSequence().setMatchScore(-1);
 				else item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence()));
-				//else item.getSequence().setMatchScore(new Sequence(Vars.userResult.getTaxID()).compare(item.getSequence()));
 				itemsToBeCompared.add(item);
 			}
+		}*/
+		for(int i=0;i<resultList.size();i++)
+		{
+			Taxonomy item = new Taxonomy(resultList.get(i).getTaxID(),resultList.get(i).getOrgName(),false);
+			item.setSequence(Vars.compare(resultList.get(i).getGeneID()));
+			if(item.getSequence().getDNA().equals("bad dna"))
+				item.getSequence().setMatchScore(-1);
+			else
+			{
+				item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence()));
+				System.out.println(item.getSequence().getMatchScore());
+			}
+			itemsToBeCompared.add(item);
 		}
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/ResultMatchScreen.fxml"));
