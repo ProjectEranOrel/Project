@@ -97,9 +97,13 @@ public class Vars {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String st = br.readLine();
 			br.close();
+			System.out.println("accession number: "+st);
 			int index = st.indexOf(".");
+			if(index>-1)
+				cmdArray[2] = st.substring(0,index);
+			else cmdArray[2] = st;
 			cmdArray[1] = "getFasta.pl";
-			cmdArray[2] = st.substring(0,index);
+			
 			Runtime.getRuntime().exec(cmdArray).waitFor();
 		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block

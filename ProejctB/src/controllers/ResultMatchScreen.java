@@ -59,9 +59,9 @@ public class ResultMatchScreen
 		resTable.getColumns().addAll(IDCol,nameCol,scoreCol);
 	}
 
-	public void setItems(ArrayList<Taxonomy> items)
+	public void setItems(ArrayList<Taxonomy> itemsToBeCompared)
 	{
-		resTable.getItems().setAll(items);
+		resTable.getItems().setAll(itemsToBeCompared);
 	}
 
 }
