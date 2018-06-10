@@ -19,17 +19,21 @@ public class SearchScreenController
 	@FXML
 	public Text firstMatchText, bestMatchText;
 	@FXML
-	public CheckBox firstMatchCheckBox, bestMatchCheckBox;
+	public static CheckBox firstMatchCheckBox;
 	@FXML
-	public TextField fromTextField, toTextField;
+	public CheckBox bestMatchCheckBox;
+	@FXML
+	public static TextField fromTextField;
+	@FXML
+	public static TextField toTextField;
 	public ArrayList<Integer> clustersIndexes = new ArrayList<Integer>();
-/*T2T
+	/*T2T
   1.Create sequence from DNA File from perl - create a function that does that
   2.Do 1 by running eran's function and reading the file it returns(Down here there's an example of creating clusters and a sequence)
   To Do:
   3.Learn how to search close DNAs
   4.Compare and write in the table, send out the best
-  
+
   CHANGE: Add search bars for tableview*/
 
 
@@ -66,8 +70,8 @@ public class SearchScreenController
 		bestMatchCheckBox.setSelected(true);
 	}
 
-	public void onSearch() {
-	
+	public static void onSearch() {
+
 		double maxScore = 0, score=0;
 		/*		//Run a loop to look for dnas in the db, get them and run them through the black box and get File pointer
 		ArrayList<SequenceAlignment> alignedClustersList = new ArrayList<SequenceAlignment>();
@@ -79,17 +83,17 @@ public class SearchScreenController
 		System.out.println("lel");
 		Sequence toCompareDNA = null;
 		//SAYING WE HAVE ANOTHER SEQUENCE BY NOW(toCompareDNA)
-//TEST HOW TO ADD CLUSTERS
+		//TEST HOW TO ADD CLUSTERS
 		toCompareDNA = new Sequence("abcbacacbcabcabacabcabcacbacabcacbacabcabcacba");
 		toCompareDNA.clusters.add(new Cluster(0,3, toCompareDNA.getDNA().substring(0,3)));//The correct form! ~~~~~~~~~~~~~~~~~ !
-		
+
 		/**          INCORRECT !!!!!!!           **/
 		toCompareDNA.clusters.add(new Cluster(4,9, "bca"));
 		toCompareDNA.clusters.add(new Cluster(10,17, "cba"));
 		toCompareDNA.clusters.add(new Cluster(18,30, "cbc"));
 		toCompareDNA.clusters.add(new Cluster(31,35, "aaa"));
 		toCompareDNA.clusters.add(new Cluster(36,45, "aba"));
-		
+
 		Vars.userSequence = new Sequence("abcacabcabcabcabcacbacabcacbacbacabcacbabacbca");
 		Vars.userSequence.clusters.add(new Cluster(0,3, "abc"));
 		Vars.userSequence.clusters.add(new Cluster(4,9, "ccc"));
@@ -97,10 +101,11 @@ public class SearchScreenController
 		Vars.userSequence.clusters.add(new Cluster(18,30, "aba"));
 		Vars.userSequence.clusters.add(new Cluster(31,35, "aaa"));
 		Vars.userSequence.clusters.add(new Cluster(36,45, "aba"));
-//TEST CLUSTERS
-/* CHANGE - USE THE BBOX TO CREATE THE CLUSTERS AND SEQUENCES*/
+		//TEST CLUSTERS
+		/* CHANGE - USE THE BBOX TO CREATE THE CLUSTERS AND SEQUENCES*/
 		//First match
-score = toCompareDNA.getMatchScore();		if(firstMatchCheckBox.isSelected()) {
+		score = toCompareDNA.getMatchScore();
+		if(firstMatchCheckBox.isSelected()) {
 			if(score>Integer.parseInt(fromTextField.getText()) && score<Integer.parseInt(toTextField.getText())) {
 				System.out.println("Sequence FOUND!");
 				Vars.foundSequence = toCompareDNA;
@@ -108,6 +113,6 @@ score = toCompareDNA.getMatchScore();		if(firstMatchCheckBox.isSelected()) {
 			else
 				System.out.println("seqvence no found");
 		}else if(score>maxScore) maxScore=score;
-		
+
 	}
 }

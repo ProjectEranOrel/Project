@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import java.util.concurrent.TimeUnit;
@@ -226,19 +227,22 @@ public class TreeScreenController
 				itemsToBeCompared.add(item);
 			}
 		}*/
-		for(int i=0;i<resultList.size();i++)
-		{
-			Taxonomy item = new Taxonomy(resultList.get(i).getTaxID(),resultList.get(i).getOrgName(),false);
-			item.setSequence(Vars.compare(resultList.get(i).getGeneID()));
-			if(item.getSequence().getDNA().equals("bad dna"))
-				item.getSequence().setMatchScore(-1);
-			else
+		try {
+			for(int i=0;i<resultList.size();i++)
 			{
-				item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence()));
-				System.out.println(item.getSequence().getMatchScore());
+				Taxonomy item = new Taxonomy(resultList.get(i).getTaxID(),resultList.get(i).getOrgName(),false);
+				item.setSequence(Vars.setSequence(resultList.get(i).getGeneID()));
+				if(item.getSequence().getDNA().equals("bad dna"))
+					item.getSequence().setMatchScore(-1);
+				else
+				{
+					item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence()));
+					System.out.println("printing");
+					System.out.println(item.getSequence().getMatchScore());
+				}
+				itemsToBeCompared.add(item);
 			}
-			itemsToBeCompared.add(item);
-		}
+		}catch(Exception e) {e.printStackTrace();}
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/ResultMatchScreen.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();

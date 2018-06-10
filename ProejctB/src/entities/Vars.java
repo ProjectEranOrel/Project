@@ -52,6 +52,7 @@ public class Vars {
 	public static Result userResult;//The entry the user chose
 	public static Taxonomy root = null;
 	public static String[] nodesArray = null;
+	public static int i=0;
 
 	//Vars.root = func(userResult.getTaxID());
 	@SuppressWarnings({ "resource", "finally" })
@@ -97,7 +98,7 @@ public class Vars {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String st = br.readLine();
 			br.close();
-			System.out.println("accession number: "+st);
+			//System.out.println("accession number: "+st);
 			int index = st.indexOf(".");
 			if(index>-1)
 				cmdArray[2] = st.substring(0,index);
@@ -164,8 +165,10 @@ public class Vars {
 
 			/*        Clusters       */
 			fr = new FileReader(blackBox(dnaFile.getPath()));
-
 			br = new BufferedReader(fr);
+			
+
+			
 			String start=br.readLine()/*=0*/, end;
 			while((end = br.readLine()) != null) {
 				sequence.clusters.add(new Cluster(Integer.parseInt(start), Integer.parseInt(end), 

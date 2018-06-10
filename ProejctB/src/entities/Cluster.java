@@ -11,7 +11,7 @@ public class Cluster{
 	public Cluster(int start, int end, String dnaCluster) {
 		this.start = start;
 		this.end = end;
-		this.hiddenRepeat = findHiddenRepeat(dnaCluster);
+		hiddenRepeat = findHiddenRepeat(dnaCluster);
 		this.dnaCluster = dnaCluster;
 	}
 

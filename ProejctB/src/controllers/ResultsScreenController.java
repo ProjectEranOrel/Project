@@ -168,7 +168,6 @@ public class ResultsScreenController {
 		res.setNumber(rowNumber++);
 		
 //	res.ancestors = new ArrayList<String>(Vars.findAncestors(res.getTaxID()));
-		System.out.println("index: " + rowNumber);
 		Result.orthology.add(res);
 		
 		

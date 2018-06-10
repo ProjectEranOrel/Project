@@ -1,15 +1,17 @@
 package entities;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
-import controllers.ParseSourceCode;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
@@ -33,6 +35,7 @@ public class Main extends Application
 		// showScreen("GetResultsScreen", "");
 
 	}
+
 	public static void showScreen(String screenName, String screenTitle) 
 	{
 		try {
@@ -42,6 +45,9 @@ public class Main extends Application
 			primaryStage.setScene(currentScene);
 			primaryStage.setTitle(screenTitle);
 			primaryStage.show();
+			  Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+			  primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2); 
+			  primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 4); 
 		}catch(Exception e) {e.printStackTrace();}
 	}
 	/*public static void showPopUpWait(String screenName) {
@@ -105,7 +111,68 @@ public class Main extends Application
 		Vars.setNodesArray();
 		launch(args);
 		//ParseSourceCode.getLineage("9615");
+		
+//		
+//		double maxScore = 0, score=0;
+//		/*		//Run a loop to look for dnas in the db, get them and run them through the black box and get File pointer
+//		ArrayList<SequenceAlignment> alignedClustersList = new ArrayList<SequenceAlignment>();
+//		for(int i=0;i<Math.min((double)Main.clustersIndexes.size(), (double)clustersIndexes.size());++i) {
+//			ADD TO THE SEQUENCEALIGNMENT INDEX VARIABLES TO KNOW WHICH CLUSTER IT IS REPRESENTING
+//			alignedClustersList.add(i, new SequenceAlignment());
+//			alignedClustersList.get(i).calcOptimalAlignment(Main.userSequence,Main.);//Use the indexes on both files and align each cluster against the other
+//		 */		
+//		
+//		Sequence toCompareDNA = test("C:\\Users\\Orel\\git\\Project\\ProejctB\\dna.txt");
+//		
+///*		toCompareDNA.clusters.add(new Cluster(0,3, "abc"));
+//		toCompareDNA.clusters.add(new Cluster(3,9, "ccc"));
+//		toCompareDNA.clusters.add(new Cluster(9,17, "cba"));
+//		toCompareDNA.clusters.add(new Cluster(17,30, "cbc"));
+//		toCompareDNA.clusters.add(new Cluster(30,35, "aaa"));
+//		toCompareDNA.clusters.add(new Cluster(35,45, "aba"));*/
+//
+//		Vars.userSequence = test("C:\\Users\\Orel\\git\\Project\\ProejctB\\dna1.txt");
+//		//Vars.setSequence(geneID)
+///*		Vars.userSequence.clusters.add(new Cluster(0,3, "abc"));
+//		Vars.userSequence.clusters.add(new Cluster(3,9, "ccc"));
+//		Vars.userSequence.clusters.add(new Cluster(9,17, "cba"));
+//		Vars.userSequence.clusters.add(new Cluster(17,30, "cbc"));
+//		Vars.userSequence.clusters.add(new Cluster(30,35, "aaa"));
+//		Vars.userSequence.clusters.add(new Cluster(35,45, "aba"));*/
+//		for(int i=0;i<Math.min((double)Vars.userSequence.clusters.size(), (double)toCompareDNA.clusters.size());i++)
+//			System.out.println(Vars.userSequence.clusters.get(i).getHiddenRepeat() + "     " + toCompareDNA.clusters.get(i).getHiddenRepeat());
+//
+//
+//		toCompareDNA.setMatchScore(Vars.userSequence.compare(toCompareDNA));
+//		System.out.println(toCompareDNA.getMatchScore());
 
 	}
+	
+	public static Sequence test(String path) {
+		Sequence sequence = new Sequence();
+		try {
+			FileReader fr = new FileReader(new File(path));
+			BufferedReader br = new BufferedReader(fr);
+			br.readLine();//First line is junk
+			/*        DNA          */
+			String string = "";
+			while((string=br.readLine())!=null) 
+				sequence.dna+= string;
+		/*        Clusters       */
+		fr = new FileReader(Vars.blackBox(path));
+
+		br = new BufferedReader(fr);
+		String start=br.readLine()/*=0*/, end;
+		while((end = br.readLine()) != null) {
+			sequence.clusters.add(new Cluster(Integer.parseInt(start), Integer.parseInt(end), 
+					sequence.dna.substring(Integer.parseInt(start), Integer.parseInt(end))));
+			
+			start = end;
+		}
+		return sequence;
+		}catch (Exception e) {e.printStackTrace();return null;}
+	}
+	
+	
 
 }
