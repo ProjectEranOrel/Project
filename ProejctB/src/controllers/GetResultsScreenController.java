@@ -59,6 +59,7 @@ public class GetResultsScreenController
 			};thread.run();
 			firstUpload = false;
 		}
+		
 
 		String filePath = Vars.desktopPath + "\\gene_results.txt";
 		Vars.resultsFile = new File(filePath);
