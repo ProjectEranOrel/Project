@@ -1,12 +1,8 @@
 package controllers;
 
-import java.io.PrintWriter;
+
 import java.util.ArrayList;
-
-import java.util.concurrent.TimeUnit;
-
 import entities.Result;
-import entities.Sequence;
 import entities.Taxonomy;
 import entities.Vars;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -14,15 +10,15 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+
 
 
 
@@ -30,21 +26,15 @@ import javafx.stage.StageStyle;
 public class TreeScreenController 
 {
 	public TreeTableView<Taxonomy> treeTable;
-	public static ObservableList<Taxonomy> selectedData;
 	public TableView<Taxonomy> selectedTable;
+	public ProgressIndicator pi;
 	private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
 	private ArrayList<Result> resultList;
-	int cnt = 0;
-
-	private int startIndex, endIndex;
 
 	@SuppressWarnings("unchecked")
 	public void initialize()
 	{
-		/*for(int i=0;i<Result.orthology.size();i++)
-			if(Vars.setSequence(Result.orthology.get(i).getGeneID()).getDNA().equals("bad dna"))
-				System.out.println("BAD "+i);
-			else System.out.println("Has dna...");*/
+		pi.setVisible(false);
 		resultList = Result.orthology;
 		TreeTableColumn<Taxonomy, String> IDCol = new TreeTableColumn<>("Taxonomy ID");
 		IDCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<Taxonomy, String> param) -> 
@@ -83,14 +73,6 @@ public class TreeScreenController
 		treeTable.setRoot(root);
 		treeTable.setShowRoot(false);
 	}
-
-	private int findInOrthology(String taxID)
-	{
-		for(int i=0;i<resultList.size();i++)
-			if(resultList.get(i).getTaxID().equals(taxID))
-				return i;
-		return -1;
-	}
 	//Checks if the given taxID is an ancestor of a certain entry in the orthology list
 	private ArrayList<Taxonomy> isAnAncestor(String taxID)
 	{
@@ -101,7 +83,6 @@ public class TreeScreenController
 			while(Vars.nodesArray[index]!=null && !Vars.nodesArray[index].equals(""+index))
 				if(Vars.nodesArray[index].equals(taxID))
 				{
-
 					Taxonomy tax = new Taxonomy(resultList.get(i).getTaxID(),resultList.get(i).getOrgName(),false);	
 					res.add(tax);
 					break;
@@ -113,17 +94,32 @@ public class TreeScreenController
 	public void onAdd()
 	{
 		ObservableList<TreeItem<Taxonomy>> selectedItems = treeTable.getSelectionModel().getSelectedItems();
+		
 		for(int i=0;i<selectedItems.size();i++)
 		{
 			Taxonomy chosen = selectedItems.get(i).getValue();
-			if(findInOrthology(chosen.getTaxID())>-1)//If the user marked an entry from the orthology
-				selectedTable.getItems().add(chosen);
+			boolean add = true;
+			int index = Vars.findInOrthology(chosen.getTaxID());
+			if(index>-1)//If the user marked an entry from the orthology
+			{
+				Result res = resultList.get(index);
+				Taxonomy orthologyEntry = new Taxonomy(res.getTaxID(),res.getOrgName(),false);
+				for(int j=0;j<selectedTable.getItems().size();j++)
+					if(selectedTable.getItems().get(j).getTaxID().equals(orthologyEntry.getTaxID()))
+					{
+						add = false;
+						break;
+					}
+				if(add)
+					selectedTable.getItems().add(orthologyEntry);
+				
+			}
 			else//We check if the marked entry is an ancestor of certain entries in the orthology and add those to the table
 			{
 				ArrayList<Taxonomy> orthologyEntries = isAnAncestor(chosen.getTaxID());
 				for(int j=0;j<orthologyEntries.size();j++)
 				{
-					boolean add = true;
+					add = true;
 					for(int k=0;k<selectedTable.getItems().size();k++)
 					{
 						if(selectedTable.getItems().get(k).getTaxID().equals(orthologyEntries.get(j).getTaxID()))
@@ -151,10 +147,22 @@ public class TreeScreenController
 		if(chosen != null && chosen.getValue().isExpandable() && chosen.getChildren().size()==0)//If the chosen table entry has children and they weren't retrieved yet
 		{
 			System.out.println("Starting to expand...");
-			if(chosen.getValue().getOrganism().contains("*"))
-				populateTreeMarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
-			else
-				populateTreeUnmarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
+			pi.setVisible(true);
+			Thread t = new Thread(new Runnable() 
+			{
+				@Override
+				public void run() 
+				{
+
+					if(chosen.getValue().getOrganism().contains("*"))
+						populateTreeMarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
+					else
+						populateTreeUnmarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
+					pi.setVisible(false);
+				}
+
+			});
+			t.start();
 		}
 	}
 	private void addSonsFromOrthology(TreeItem<Taxonomy> item)
@@ -210,47 +218,18 @@ public class TreeScreenController
 
 	public void compare()
 	{
-		selectedData = selectedTable.getItems();
-		ArrayList<Taxonomy> itemsToBeCompared = new ArrayList<Taxonomy>();
 		if(Vars.userSequence==null)
 			Vars.userSequence = Vars.setSequence(Vars.userResult.getGeneID());
-		/*for(int i=0;i<selectedData.size();i++)
-		{
-			Taxonomy item = selectedData.get(i);
-			int index = findInOrthology(item.getTaxID());
-			if(index>-1)
-			{
-				item.setSequence(Vars.compare(resultList.get(index).getGeneID()));
-				if(item.getSequence().getDNA().equals("bad dna"))
-					item.getSequence().setMatchScore(-1);
-				else item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence()));
-				itemsToBeCompared.add(item);
-			}
-		}*/
 		try {
-			for(int i=0;i<resultList.size();i++)
-			{
-				Taxonomy item = new Taxonomy(resultList.get(i).getTaxID(),resultList.get(i).getOrgName(),false);
-				item.setSequence(Vars.setSequence(resultList.get(i).getGeneID()));
-				if(item.getSequence().getDNA().equals("bad dna"))
-					item.getSequence().setMatchScore(-1);
-				else
-				{
-					item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence()));
-					System.out.println("printing");
-					System.out.println(item.getSequence().getMatchScore());
-				}
-				itemsToBeCompared.add(item);
-			}
-		}catch(Exception e) {e.printStackTrace();}
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/ResultMatchScreen.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/progressScreen.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
-			ResultMatchScreen controller = fxmlLoader.getController();
-			controller.setItems(itemsToBeCompared);
+			ProgressScreenController controller = fxmlLoader.getController();
+			controller.itemsToBeCompared.addAll(new ArrayList<Taxonomy>(selectedTable.getItems()));
 			Stage stage = new Stage();
-			stage.setScene(new Scene(root1));  
+			stage.setScene(new Scene(root1));
+			controller.stage = stage;
 			stage.show();
+
 		} 
 		catch(Exception e) 
 		{
@@ -259,27 +238,6 @@ public class TreeScreenController
 		selectedTable.getItems().removeAll(selectedTable.getItems());
 	}
 
-	private ArrayList<Taxonomy> getChildren(Taxonomy tax,ArrayList<Taxonomy> res)
-	{
-		ArrayList<Taxonomy> sons = tax.getSons();
-		for(int i=0;i<sons.size();i++)
-		{
-			Taxonomy son = sons.get(i);
-			if(son.getOrganism().contains("**"))
-				for(int j=0;j<resultList.size();j++)
-					if(resultList.get(j).getTaxID().equals(son.getTaxID()))
-					{
-						son.setSequence(Vars.setSequence(resultList.get(j).getGeneID()));
-						if(son.getSequence().getDNA().equals("bad dna"))
-							son.getSequence().setMatchScore(-1);
-						else son.getSequence().setMatchScore(new Sequence(Vars.userResult.getTaxID()).compare(son.getSequence()));	
-						res.add(son);
-						if(son.isExpandable())
-							getChildren(son,res);
-						break;
-					}
-		}
-		return res;
-	}
+
 
 }

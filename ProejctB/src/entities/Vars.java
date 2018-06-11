@@ -71,6 +71,15 @@ public class Vars {
 			return dna;
 		}
 	}
+	
+	public static int findInOrthology(String taxID)
+	{
+		ArrayList<Result> resultList = Result.orthology;
+		for(int i=0;i<resultList.size();i++)
+			if(resultList.get(i).getTaxID().equals(taxID))
+				return i;
+		return -1;
+	}
 
 	public static void setUserDNAFile(File file) {
 		userDNAFile = file;

@@ -8,14 +8,15 @@ import javax.swing.JOptionPane;
 
 import entities.Main;
 import entities.Result;
-import entities.Sequence;
 import entities.Vars;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -37,10 +38,12 @@ public class ResultsScreenController {
 	@FXML
 	Button checkAllButton, checkSelectedButton;
 	private int rowNumber = 0;
+	public ProgressBar fpb;
 
 	Thread t;
 
 	public void initialize() {
+		fpb.setVisible(false);
 		checkAllText.setVisible(false);
 		if(Vars.isUserDNA) {
 			userResults();
@@ -79,7 +82,14 @@ public class ResultsScreenController {
 		if((Vars.userResult = resultsTableView.getSelectionModel().getSelectedItem()) == null) {
 			JOptionPane.showMessageDialog(null, "Please select a result", "Warning",
 					JOptionPane.WARNING_MESSAGE); return;}
-		Main.showScreen("TreeScreen", "bbb");
+		fpb.setVisible(true);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Platform.runLater(()->Main.showScreen("TreeScreen", "bbb"));
+			}
+			
+		}).start();
 	}
 
 	public void onCheckSelected() {
