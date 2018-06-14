@@ -218,13 +218,15 @@ public class TreeScreenController
 
 	public void compare()
 	{
+
 		if(Vars.userSequence==null)
 			Vars.userSequence = Vars.setSequence(Vars.userResult.getGeneID());
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/progressScreen.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
 			ProgressScreenController controller = fxmlLoader.getController();
-			controller.itemsToBeCompared.addAll(new ArrayList<Taxonomy>(selectedTable.getItems()));
+		//	controller.itemsToBeCompared.addAll(new ArrayList<Taxonomy>(selectedTable.getItems()));
+			controller.itemsToBeCompared.addAll(compareToAll());
 			Stage stage = new Stage();
 			stage.setScene(new Scene(root1));
 			controller.stage = stage;
@@ -238,6 +240,16 @@ public class TreeScreenController
 		selectedTable.getItems().removeAll(selectedTable.getItems());
 	}
 
+	public static ArrayList<Taxonomy> compareToAll(){
+		ArrayList<Taxonomy> arr = new ArrayList<Taxonomy>();
+		for(int i=0;i<Result.orthology.size();++i) {
+			Taxonomy tax = new Taxonomy();
+			tax.setTaxID(Result.orthology.get(i).getTaxID());
+			tax.geneID = Result.orthology.get(i).getGeneID();
+			arr.add(tax);
+		}
+		return arr;
+	}
 
 
 }

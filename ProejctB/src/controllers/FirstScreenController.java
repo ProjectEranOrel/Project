@@ -38,6 +38,7 @@ public class FirstScreenController {
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("FASTA files", "*.FASTA", "*.txt");  
 		fileChooser.getExtensionFilters().add(extFilter);
 		Vars.setUserDNAFile(fileChooser.showOpenDialog(Main.primaryStage));
+		System.out.println(Vars.getUserDNAFile().isFile());
 		if(Vars.getUserDNAFile().exists()) {
 			fileNameText.setText(Vars.getUserDNAFile().getName());
 			subtitleText.setText("Please insert gene's Tax ID");

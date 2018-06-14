@@ -31,8 +31,8 @@ public class Main extends Application
 		popup.initModality(Modality.APPLICATION_MODAL);
 		popup.initOwner(primaryStage);
 		popup = new Stage();
-		showScreen("GetResultsScreen", "Selected DNA Tree");
-		// showScreen("GetResultsScreen", "");
+		//showScreen("FirstScreen", Vars.firstScreenTitle);
+		 showScreen("GetResultsScreen", "");
 
 	}
 
@@ -108,6 +108,7 @@ public class Main extends Application
   Vars.setNodesList();
   long endTime = System.nanoTime(); 
   System.out.println("Time: " + TimeUnit.SECONDS.convert((endTime-startTime), TimeUnit.NANOSECONDS) + "s");*/
+		Vars.setFamilies();
 		Vars.setNodesArray();
 		launch(args);
 		//ParseSourceCode.getLineage("9615");
@@ -150,9 +151,10 @@ public class Main extends Application
 	
 	public static Sequence test(String path) {
 		Sequence sequence = new Sequence();
+		BufferedReader br = null;
 		try {
 			FileReader fr = new FileReader(new File(path));
-			BufferedReader br = new BufferedReader(fr);
+			br = new BufferedReader(fr);
 			br.readLine();//First line is junk
 			/*        DNA          */
 			String string = "";
@@ -171,6 +173,7 @@ public class Main extends Application
 		}
 		return sequence;
 		}catch (Exception e) {e.printStackTrace();return null;}
+		finally {try {br.close();} catch (IOException e) {e.printStackTrace();}}
 	}
 	
 	

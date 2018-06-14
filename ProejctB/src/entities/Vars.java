@@ -8,27 +8,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Vars {
-	
-	public static final String ANSI_RESET = "\u001B[0m";
-	public static final String ANSI_BLACK = "\u001B[30m";
-	public static final String ANSI_RED = "\u001B[31m";
-	public static final String ANSI_GREEN = "\u001B[32m";
-	public static final String ANSI_YELLOW = "\u001B[33m";
-	public static final String ANSI_BLUE = "\u001B[34m";
-	public static final String ANSI_PURPLE = "\u001B[35m";
-	public static final String ANSI_CYAN = "\u001B[36m";
-	public static final String ANSI_WHITE = "\u001B[37m";
-	
+
 	public static final String genBankLink = "ftp://ftp.ncbi.nlm.nih.gov/genomes/";
 	public static final String searchLink = "https://www.ncbi.nlm.nih.gov/gene/?Term=";
 	public static final String orthoSearchLink = "https://www.ncbi.nlm.nih.gov/gene/";
@@ -52,9 +39,87 @@ public class Vars {
 	public static Result userResult;//The entry the user chose
 	public static Taxonomy root = null;
 	public static String[] nodesArray = null;
+	public static String[][] families = new String[20][6];
 	public static int i=0;
 
 	//Vars.root = func(userResult.getTaxID());
+
+	public static void setFamilies() {
+		families[0][0] = "AGT";families[0][3] = "ATG";
+		families[0][1] = "GAT";families[0][4] = "GTA";
+		families[0][2] = "TGA";families[0][5] = "TAG";
+
+		families[1][0] = "AGC";families[1][3] = "ACG";
+		families[1][1] = "GAC";families[1][4] = "GCA";
+		families[1][2] = "CGA";families[1][5] = "CAG";
+
+		families[2][0] = "ACT";families[2][3] = "ATC";
+		families[2][1] = "CAT";families[2][4] = "CTA";
+		families[2][2] = "ACT";families[2][5] = "ATC";
+
+		families[3][0] = "GTC";families[3][3] = "GCT";
+		families[3][1] = "TGC";families[3][4] = "TCG";
+		families[3][2] = "CGT";families[3][5] = "CTG";
+//cc
+		families[4][0] = "CGC";families[4][1] = "CCG";
+		families[4][2] = "GCC";
+
+		families[5][0] = "CTC";families[5][1] = "CCT";
+		families[5][2] = "TCC";
+
+		families[6][0] = "CAC";families[6][1] = "CCA";
+		families[6][2] = "ACC";
+//gg
+		families[7][0] = "GAG";families[7][1] = "GGA";
+		families[7][2] = "AGG";
+
+		families[8][0] = "GTG";families[8][1] = "GGT";
+		families[8][2] = "TGG";
+
+		families[9][0] = "GCG";families[9][1] = "GGC";
+		families[9][2] = "CGG";
+//aa
+		families[10][0] = "AGA";families[10][1] = "AAG";
+		families[10][2] = "AGG";
+
+		families[11][0] = "ATA";families[11][1] = "AAT";
+		families[11][2] = "TAA";
+
+		families[12][0] = "ACA";families[12][1] = "AAC";
+		families[12][2] = "CAA";
+//tt
+		families[13][0] = "TCT";families[13][1] = "TTC";
+		families[13][2] = "CTT";
+
+		families[14][0] = "TAT";families[14][1] = "TTA";
+		families[14][2] = "ATT";
+		
+		families[15][0] = "TGT";families[15][1] = "TTG";
+		families[15][2] = "GTT";
+		
+		families[16][0]="TTT";
+		families[17][0]="AAA";
+		families[18][0]="GGG";
+		families[19][0]="CCC";
+
+	}
+
+	public static boolean isInSameFamily(String hidden1, String hidden2) {
+		int hidden1Family = 0;
+		loop:
+		for(int row=0;row<20;row++)
+			for(int col=0;col<6;col++)
+				if(families[row][col] == null) break;
+				else if(hidden1.equals(families[row][col])) {
+					hidden1Family = row;break loop;
+				}
+		for(int i=0;i<6;++i) 
+			if(hidden2.equals(families[hidden1Family][i])) 
+				return true;
+			
+		return false;
+	}
+
 	@SuppressWarnings({ "resource", "finally" })
 	public static String readDNAFile() {
 		BufferedReader br = null;
@@ -71,7 +136,7 @@ public class Vars {
 			return dna;
 		}
 	}
-	
+
 	public static int findInOrthology(String taxID)
 	{
 		ArrayList<Result> resultList = Result.orthology;
@@ -113,7 +178,7 @@ public class Vars {
 				cmdArray[2] = st.substring(0,index);
 			else cmdArray[2] = st;
 			cmdArray[1] = "getFasta.pl";
-			
+
 			Runtime.getRuntime().exec(cmdArray).waitFor();
 		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -156,7 +221,7 @@ public class Vars {
 		try {
 			if(geneID.equals("userDNA")) 
 				dnaFile = Vars.userDNAFile;
-		
+
 			else
 				dnaFile = getDNAByGI(geneID);
 			fr = new FileReader(dnaFile);
@@ -175,9 +240,9 @@ public class Vars {
 			/*        Clusters       */
 			fr = new FileReader(blackBox(dnaFile.getPath()));
 			br = new BufferedReader(fr);
-			
 
-			
+
+
 			String start=br.readLine()/*=0*/, end;
 			while((end = br.readLine()) != null) {
 				sequence.clusters.add(new Cluster(Integer.parseInt(start), Integer.parseInt(end), 
@@ -202,29 +267,6 @@ public class Vars {
 			return true;
 		} catch (IOException e) {e.printStackTrace(); return false;}
 
-	}
-
-	public static File trimNodesFile() {
-		File file = null;
-		try {
-			file = new File("nodes.dmp");
-			if(!file.isFile()) {
-				setTaxDmpFile();
-			}
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
-			PrintWriter writer = new PrintWriter("nodes.txt", "UTF-8");
-			String str = "", strToWrite="";
-			int i=0;
-			while((str = br.readLine()) != null) 
-				strToWrite+=str.substring(0, str.indexOf("|", str.indexOf("|")+1)) + "\n";
-
-
-			writer.write(strToWrite);
-			file.delete();
-
-		}catch(Exception e) {e.printStackTrace();}
-		return file;
 	}
 
 
@@ -283,11 +325,11 @@ public class Vars {
 	}
 	public static void setNodesArray(){
 		ArrayList<Node> nodesList = new ArrayList<Node>();
-
+		BufferedReader br = null;
 		int max = 0;
 		try {
 			FileReader fr = new FileReader(new File("nodes.dmp"));
-			BufferedReader br = new BufferedReader(fr);
+			br = new BufferedReader(fr);
 			String str, son, father;
 			while((str = br.readLine())!=null) {
 				son = str.substring(0, str.indexOf("\t"));
@@ -308,11 +350,12 @@ public class Vars {
 			Arrays.fill(nodesArray, null);
 			for(int i=0;i<nodesList.size();++i)
 				nodesArray[Integer.parseInt(nodesList.get(i).getSonTaxID())] = nodesList.get(i).getFatherTaxID();
-			
+
 		}catch (Exception e) {e.printStackTrace();}
+		finally {try {br.close();} catch (IOException e) {e.printStackTrace();}}
 	}
 
-/*	public static ArrayList<String> findAncestors(String taxID)
+	/*	public static ArrayList<String> findAncestors(String taxID)
 	{
 		if(nodesArray == null)
 			Vars.setNodesArray();

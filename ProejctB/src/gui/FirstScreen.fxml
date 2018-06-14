@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="297.0" prefWidth="534.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FirstScreenController">
    <children>
-      <ImageView fitHeight="315.0" fitWidth="536.0" layoutX="-1.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="315.0" fitWidth="536.0" layoutX="-1.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../pictures/FirstScreen2.png" />
          </image>
@@ -29,5 +29,6 @@
          </image>
       </ImageView>
       <TextField fx:id="uploadTextField" layoutX="26.0" layoutY="139.0" onKeyPressed="#onInputKeyPressed" prefHeight="34.0" prefWidth="360.0" style="-fx-background-color: #E3FAE1; -fx-border-color: #525252;" />
+      <Text fx:id="fileNameText" layoutX="142.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" />
    </children>
 </AnchorPane>

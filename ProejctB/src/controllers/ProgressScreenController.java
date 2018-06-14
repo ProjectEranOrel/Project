@@ -42,10 +42,11 @@ public class ProgressScreenController {
 					int index = Vars.findInOrthology(item.getTaxID());
 					if(index>-1)
 					{
-						item.setSequence(Vars.compare(resultList.get(index).getGeneID()));
+						item.setSequence(Vars.setSequence(resultList.get(index).getGeneID()));
+						//item.setSequence(Vars.compare(resultList.get(index).getGeneID()));
 						if(item.getSequence().getDNA().equals("bad dna"))
 							item.getSequence().setMatchScore(-1);
-						else item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence()));
+						else { item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence())); System.out.println(item.getSequence().getMatchScore());}
 						alreadyCompared.add(item);
 					}
 					updateProgress(i, itemsToBeCompared.size()-1);	

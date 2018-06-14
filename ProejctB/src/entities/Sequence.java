@@ -22,14 +22,21 @@ public class Sequence {
 		PrintWriter pr = null;
 		try {
 			pr = new PrintWriter("test"+ Vars.i++  +".txt", "UTF-8");
-			int userClusterNum = 0, toCompareClusterNum = 0, startIndex=0, endIndex=0, matchNumber=0, compares = 0;
+			@SuppressWarnings("unused")
+			int userClusterNum = 0, toCompareClusterNum = 0, startIndex=0, endIndex=0, matchNumber=0, compares =0;
 			String cluster1="", cluster2="";
 			/*           CHECK IF HIDDEN REPEATS OF 2 CLUSTERS ARE EQUAL        */		
+			if(toCompareClusterNum<toCompareDNA.clusters.size() && userClusterNum<clusters.size())
+				pr = new PrintWriter("test"+ Vars.i++  +".txt", "UTF-8");
+
 			while(toCompareClusterNum<toCompareDNA.clusters.size() && userClusterNum<clusters.size() ) {//Go over all the clusters and check their hidden repeat
-				
+				/*WRITE, DELETE LATER */
 				pr.write(clusters.get(userClusterNum).getDnaCluster() + "\n" + toCompareDNA.clusters.get(toCompareClusterNum).getDnaCluster() + "\n" +
 						clusters.get(userClusterNum).getHiddenRepeat() + "	" + toCompareDNA.clusters.get(toCompareClusterNum).getHiddenRepeat() + "\n");
-				if(!(clusters.get(userClusterNum).getHiddenRepeat().equals(toCompareDNA.clusters.get(toCompareClusterNum).getHiddenRepeat()))) {
+				/*WRITE, DELETE LATER */
+				
+				/*if(!(clusters.get(userClusterNum).getHiddenRepeat().equals(toCompareDNA.clusters.get(toCompareClusterNum).getHiddenRepeat()))) {*/
+					if(!(Vars.isInSameFamily(clusters.get(userClusterNum).getHiddenRepeat(),toCompareDNA.clusters.get(toCompareClusterNum).getHiddenRepeat()))) {
 					if( clusters.get(userClusterNum).getEnd() == toCompareDNA.clusters.get(toCompareClusterNum).getEnd()) {
 						userClusterNum++;toCompareClusterNum++;
 					}
@@ -93,7 +100,8 @@ public class Sequence {
 			return ((double)matchNumber/(Math.min((double)dna.length(), (double)(toCompareDNA.getDNA()).length())))*100;
 		}
 		catch (Exception e) {
-			e.printStackTrace();		return matchScore;
+			e.printStackTrace();
+			return matchScore;
 		}finally {
 			pr.close();
 		}
