@@ -11,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 
 
@@ -46,7 +45,11 @@ public class ProgressScreenController {
 						//item.setSequence(Vars.compare(resultList.get(index).getGeneID()));
 						if(item.getSequence().getDNA().equals("bad dna"))
 							item.getSequence().setMatchScore(-1);
-						else { item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence())); System.out.println(item.getSequence().getMatchScore());}
+						else 
+						{ 
+							item.getSequence().setMatchScore(Vars.userSequence.compare(item.getSequence())); 
+							System.out.println(item.getSequence().getMatchScore());
+						}
 						alreadyCompared.add(item);
 					}
 					updateProgress(i, itemsToBeCompared.size()-1);	

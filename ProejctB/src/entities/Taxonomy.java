@@ -27,12 +27,12 @@ public class Taxonomy {
 			setSequence(new Sequence());
 			
 		}
-		public Taxonomy(String taxID, String organism, boolean isExpandable) 
+		public Taxonomy(String taxID, String organism) 
 		{
 			super();
 			this.taxID = taxID;
 			this.organism = organism;
-			this.isExpandable = isExpandable;
+			//this.isExpandable = isExpandable;
 		}
 		
 		public ArrayList<Taxonomy> getSons() {

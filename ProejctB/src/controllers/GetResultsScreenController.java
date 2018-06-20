@@ -58,15 +58,16 @@ public class GetResultsScreenController
 				}
 			};thread.run();
 			firstUpload = false;
+
+
+
+			String filePath = Vars.desktopPath + "\\gene_results.txt";
+			Vars.resultsFile = new File(filePath);
+			if(Vars.resultsFile.isFile())
+				System.out.println("IS FILE!");
+
+			//Main.showScreen("ResultsScreen", Vars.resultsScreenScreenTitle);
 		}
-		
 
-		String filePath = Vars.desktopPath + "\\gene_results.txt";
-		Vars.resultsFile = new File(filePath);
-		if(Vars.resultsFile.isFile())
-			System.out.println("IS FILE!");
-
-		//Main.showScreen("ResultsScreen", Vars.resultsScreenScreenTitle);
 	}
-
 }

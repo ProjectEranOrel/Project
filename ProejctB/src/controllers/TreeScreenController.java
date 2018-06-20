@@ -28,7 +28,8 @@ public class TreeScreenController
 	public TreeTableView<Taxonomy> treeTable;
 	public TableView<Taxonomy> selectedTable;
 	public ProgressIndicator pi;
-	private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
+	//private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
+	private ArrayList<TreeItem<Taxonomy>> selectedItems = new ArrayList<TreeItem<Taxonomy>>();
 	private ArrayList<Result> resultList;
 
 	@SuppressWarnings("unchecked")
@@ -66,8 +67,8 @@ public class TreeScreenController
 		for(int i=0;i<data.size();i++)
 		{
 			TreeItem<Taxonomy> item = new TreeItem<Taxonomy>(data.get(i));
-			if(data.get(i).getOrganism().contains("*"))
-				addSonsFromOrthology(item);
+			/*if(data.get(i).getOrganism().contains("*"))
+				addSonsFromOrthology(item);*/
 			root.getChildren().add(item);
 		}
 		treeTable.setRoot(root);
@@ -83,7 +84,7 @@ public class TreeScreenController
 			while(Vars.nodesArray[index]!=null && !Vars.nodesArray[index].equals(""+index))
 				if(Vars.nodesArray[index].equals(taxID))
 				{
-					Taxonomy tax = new Taxonomy(resultList.get(i).getTaxID(),resultList.get(i).getOrgName(),false);	
+					Taxonomy tax = new Taxonomy(resultList.get(i).getTaxID(),resultList.get(i).getOrgName());	
 					res.add(tax);
 					break;
 				}
@@ -94,7 +95,6 @@ public class TreeScreenController
 	public void onAdd()
 	{
 		ObservableList<TreeItem<Taxonomy>> selectedItems = treeTable.getSelectionModel().getSelectedItems();
-		
 		for(int i=0;i<selectedItems.size();i++)
 		{
 			Taxonomy chosen = selectedItems.get(i).getValue();
@@ -103,7 +103,8 @@ public class TreeScreenController
 			if(index>-1)//If the user marked an entry from the orthology
 			{
 				Result res = resultList.get(index);
-				Taxonomy orthologyEntry = new Taxonomy(res.getTaxID(),res.getOrgName(),false);
+				Taxonomy orthologyEntry = new Taxonomy(res.getTaxID(),res.getOrgName());
+				//Checking whether the selected entry is already in the table
 				for(int j=0;j<selectedTable.getItems().size();j++)
 					if(selectedTable.getItems().get(j).getTaxID().equals(orthologyEntry.getTaxID()))
 					{
@@ -111,8 +112,7 @@ public class TreeScreenController
 						break;
 					}
 				if(add)
-					selectedTable.getItems().add(orthologyEntry);
-				
+					selectedTable.getItems().add(orthologyEntry);		
 			}
 			else//We check if the marked entry is an ancestor of certain entries in the orthology and add those to the table
 			{
@@ -140,9 +140,9 @@ public class TreeScreenController
 	}
 	public void onClick() 
 	{
-		if(selectedItemsIndexes.contains(treeTable.getSelectionModel().getSelectedIndex()))
+		/*if(selectedItems.contains(treeTable.getSelectionModel().getSelectedItem()))
 			return;
-		selectedItemsIndexes.add(treeTable.getSelectionModel().getSelectedIndex());
+		selectedItems.add(treeTable.getSelectionModel().getSelectedItem());*/
 		TreeItem<Taxonomy> chosen = treeTable.getSelectionModel().getSelectedItem();
 		if(chosen != null && chosen.getValue().isExpandable() && chosen.getChildren().size()==0)//If the chosen table entry has children and they weren't retrieved yet
 		{
@@ -155,7 +155,10 @@ public class TreeScreenController
 				{
 
 					if(chosen.getValue().getOrganism().contains("*"))
-						populateTreeMarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
+					{
+						//addSonsFromOrthology(chosen);
+						populateTreeMarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);	
+					}
 					else
 						populateTreeUnmarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
 					pi.setVisible(false);
@@ -170,7 +173,7 @@ public class TreeScreenController
 		for(int j=0;j<resultList.size();j++)
 		{
 			Result res = resultList.get(j);//An entry from the orthology
-			if(Vars.nodesArray[Integer.parseInt(res.getTaxID())].equals(item.getValue().getTaxID()))//If the item from the tree is the father of the entry from the orthology
+			if(Vars.nodesArray[Integer.parseInt(res.getTaxID())].equals(item.getValue().getTaxID()))//If the item from the tree is the father of an entry from the orthology
 			{
 				//We check if the son is already in the tree
 				boolean stopped = false;
@@ -179,14 +182,15 @@ public class TreeScreenController
 					Taxonomy son = item.getChildren().get(k).getValue();
 					if(son.getTaxID().equals(res.getTaxID()))
 					{
-						son.setOrganism("**"+son.getOrganism()+"**");
+						if(!son.getOrganism().contains("**"))
+							son.setOrganism("**"+son.getOrganism()+"**");
 						stopped = true;
 						break;
 					}
 				}
-				if(!stopped)
-					item.getChildren().add(new TreeItem<Taxonomy>(new Taxonomy(res.getTaxID(),"**"+res.getOrgName()+"**",false)));
-				break;
+				if(!stopped)//The son isn't present in the tree yet, so we add it
+					item.getChildren().add(new TreeItem<Taxonomy>(new Taxonomy(res.getTaxID(),"**"+res.getOrgName()+"**")));
+				//break;
 			}
 		}
 	}
@@ -196,9 +200,18 @@ public class TreeScreenController
 		{
 			Taxonomy son = sons.get(i);  
 			TreeItem<Taxonomy> sonItem = new TreeItem<Taxonomy>(son);
-			addSonsFromOrthology(sonItem);
+			//addSonsFromOrthology(sonItem);
 			if(son.isExpandable() && depth>0)
-				populateTreeMarked(sonItem,son.getSons(),depth-1);	
+			{
+				//addSonsFromOrthology(sonItem);
+				populateTreeMarked(sonItem,son.getSons(),depth-1);
+			}
+			for(int j=0;j<resultList.size();j++)
+				if(son.getTaxID().equals(resultList.get(j).getTaxID()))
+				{
+						son.setOrganism("**"+son.getOrganism()+"**");
+						break;//The son appears only once in the orthology, so there is not reason to continue the loop
+				}
 			chosenTreeItem.getChildren().add(sonItem);
 		}
 	}
@@ -213,9 +226,6 @@ public class TreeScreenController
 			chosenTreeItem.getChildren().add(sonItem);
 		}
 	}
-
-
-
 	public void compare()
 	{
 
@@ -225,8 +235,8 @@ public class TreeScreenController
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/progressScreen.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
 			ProgressScreenController controller = fxmlLoader.getController();
-		//	controller.itemsToBeCompared.addAll(new ArrayList<Taxonomy>(selectedTable.getItems()));
-			controller.itemsToBeCompared.addAll(compareToAll());
+			controller.itemsToBeCompared.addAll(new ArrayList<Taxonomy>(selectedTable.getItems()));
+			//controller.itemsToBeCompared.addAll(compareToAll());
 			Stage stage = new Stage();
 			stage.setScene(new Scene(root1));
 			controller.stage = stage;
