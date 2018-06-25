@@ -43,6 +43,8 @@ public class ProgressScreenController {
 					{
 						item.setSequence(Vars.setSequence(resultList.get(index).getGeneID()));
 						//item.setSequence(Vars.compare(resultList.get(index).getGeneID()));
+						System.out.println(resultList.get(index).getGeneID());
+						System.out.println(resultList.get(index).getTaxID());
 						if(item.getSequence().getDNA().equals("bad dna"))
 							item.getSequence().setMatchScore(-1);
 						else 

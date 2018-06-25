@@ -3,7 +3,7 @@ use LWP::Simple;
 
 #assemble the URL
 $base = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
-$url = $base . "efetch.fcgi?db=nucleotide&id=$ARGV[0]&rettype=acc";
+$url = $base . "efetch.fcgi?db=gene&id=$ARGV[0]&rettype=acc&retmode=text";
 
 #post the URL
 $output = get($url);
