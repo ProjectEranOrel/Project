@@ -156,6 +156,7 @@ public class Vars {
 
 	public static File getDNAByGI(String gi)
 	{
+		System.out.println("lelelel");
 		String[] cmdArray = new String[3];
 		cmdArray[0] = "C:\\Perl64\\bin\\perl";
 		cmdArray[1] = "getacc.pl";
@@ -204,7 +205,9 @@ public class Vars {
 		}
 		return new File("dna.txt");
 	}
-	
+
+
+
 	private static boolean isAccessionNumber(String st,int index)
 	{
 		if(!(Character.isLetter(st.charAt(index-1)) && Character.isLetter(st.charAt(index-2)) && st.charAt(index-3)==' '))
@@ -243,6 +246,7 @@ public class Vars {
 
 	@SuppressWarnings("resource")
 	public static Sequence setSequence(String geneID) {
+		System.out.println("setSequence");
 		FileReader fr;
 		BufferedReader br;
 		File dnaFile;
@@ -259,8 +263,14 @@ public class Vars {
 			if(!isErrorDNA(dnaFile)) {
 				System.out.println("bad sequence! Bad GI");
 				sequence.setDNA("bad dna");return sequence;
-			}
-			br.readLine();//First line is junk
+			} 
+			String x;
+
+			do
+				if((x = br.readLine()) == null)
+					{System.out.println("damn");  return null;}
+			while(!isLineDNA(x));//Get to the row where the DNA sequence begins
+
 			/*        DNA          */
 			String string = "";
 			while((string=br.readLine())!=null) 
@@ -280,6 +290,12 @@ public class Vars {
 			}
 		}catch(Exception e) {e.printStackTrace(); sequence = null;}
 		return sequence;
+	}
+
+	public static boolean isLineDNA(String line) {
+		if(!line.matches("[AGCT]+") || !line.matches("[agct]+"))
+			return false;
+		return true;
 	}
 
 	@SuppressWarnings("resource")
