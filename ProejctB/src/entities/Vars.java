@@ -60,7 +60,7 @@ public class Vars {
 		families[3][0] = "GTC";families[3][3] = "GCT";
 		families[3][1] = "TGC";families[3][4] = "TCG";
 		families[3][2] = "CGT";families[3][5] = "CTG";
-		//cc
+//cc
 		families[4][0] = "CGC";families[4][1] = "CCG";
 		families[4][2] = "GCC";
 
@@ -69,7 +69,7 @@ public class Vars {
 
 		families[6][0] = "CAC";families[6][1] = "CCA";
 		families[6][2] = "ACC";
-		//gg
+//gg
 		families[7][0] = "GAG";families[7][1] = "GGA";
 		families[7][2] = "AGG";
 
@@ -78,7 +78,7 @@ public class Vars {
 
 		families[9][0] = "GCG";families[9][1] = "GGC";
 		families[9][2] = "CGG";
-		//aa
+//aa
 		families[10][0] = "AGA";families[10][1] = "AAG";
 		families[10][2] = "AGG";
 
@@ -87,16 +87,16 @@ public class Vars {
 
 		families[12][0] = "ACA";families[12][1] = "AAC";
 		families[12][2] = "CAA";
-		//tt
+//tt
 		families[13][0] = "TCT";families[13][1] = "TTC";
 		families[13][2] = "CTT";
 
 		families[14][0] = "TAT";families[14][1] = "TTA";
 		families[14][2] = "ATT";
-
+		
 		families[15][0] = "TGT";families[15][1] = "TTG";
 		families[15][2] = "GTT";
-
+		
 		families[16][0]="TTT";
 		families[17][0]="AAA";
 		families[18][0]="GGG";
@@ -107,16 +107,16 @@ public class Vars {
 	public static boolean isInSameFamily(String hidden1, String hidden2) {
 		int hidden1Family = 0;
 		loop:
-			for(int row=0;row<20;row++)
-				for(int col=0;col<6;col++)
-					if(families[row][col] == null) break;
-					else if(hidden1.equals(families[row][col])) {
-						hidden1Family = row;break loop;
-					}
+		for(int row=0;row<20;row++)
+			for(int col=0;col<6;col++)
+				if(families[row][col] == null) break;
+				else if(hidden1.equals(families[row][col])) {
+					hidden1Family = row;break loop;
+				}
 		for(int i=0;i<6;++i) 
 			if(hidden2.equals(families[hidden1Family][i])) 
 				return true;
-
+			
 		return false;
 	}
 
@@ -156,7 +156,6 @@ public class Vars {
 
 	public static File getDNAByGI(String gi)
 	{
-		System.out.println("lelelel");
 		String[] cmdArray = new String[3];
 		cmdArray[0] = "C:\\Perl64\\bin\\perl";
 		cmdArray[1] = "getacc.pl";
@@ -171,29 +170,15 @@ public class Vars {
 		try {
 			file = new File("acc_num.txt");
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			/*String st = br.readLine();
+			String st = br.readLine();
 			br.close();
 			//System.out.println("accession number: "+st);
 			int index = st.indexOf(".");
 			if(index>-1)
 				cmdArray[2] = st.substring(0,index);
 			else cmdArray[2] = st;
-			cmdArray[1] = "getFasta.pl";*/
-			String st;
-			while((st=br.readLine())!=null)//We don't know in what line the accession number is found
-			{
-				System.out.println(st);
-				int index = st.indexOf("_");
-				//Making sure we found the accession number
-				if(index>-1 && isAccessionNumber(st, index))
-				{
-					cmdArray[2] = st.substring(index-2, index+7);
-					break;
-				}
-			}
-			br.close();
 			cmdArray[1] = "getFasta.pl";
-			System.out.println("Accession number: "+cmdArray[2]);
+
 			Runtime.getRuntime().exec(cmdArray).waitFor();
 		} catch (IOException | InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -204,23 +189,6 @@ public class Vars {
 			//file.delete();
 		}
 		return new File("dna.txt");
-	}
-
-
-
-	private static boolean isAccessionNumber(String st,int index)
-	{
-		if(!(Character.isLetter(st.charAt(index-1)) && Character.isLetter(st.charAt(index-2)) && st.charAt(index-3)==' '))
-			return false;
-		for(int i=1;i<7;i++)
-		{
-			if(st.length()==index+i)//It's too short
-				return false;
-			System.out.println(st.charAt(index+i));
-			if(!Character.isDigit(st.charAt(index+i)))
-				return false;
-		}
-		return true;
 	}
 
 	public static File blackBox(String filePath)
@@ -246,7 +214,6 @@ public class Vars {
 
 	@SuppressWarnings("resource")
 	public static Sequence setSequence(String geneID) {
-		System.out.println("setSequence");
 		FileReader fr;
 		BufferedReader br;
 		File dnaFile;
@@ -263,14 +230,8 @@ public class Vars {
 			if(!isErrorDNA(dnaFile)) {
 				System.out.println("bad sequence! Bad GI");
 				sequence.setDNA("bad dna");return sequence;
-			} 
-			String x;
-
-			do
-				if((x = br.readLine()) == null)
-					{System.out.println("damn");  return null;}
-			while(!isLineDNA(x));//Get to the row where the DNA sequence begins
-
+			}
+			br.readLine();//First line is junk
 			/*        DNA          */
 			String string = "";
 			while((string=br.readLine())!=null) 
@@ -290,12 +251,6 @@ public class Vars {
 			}
 		}catch(Exception e) {e.printStackTrace(); sequence = null;}
 		return sequence;
-	}
-
-	public static boolean isLineDNA(String line) {
-		if(!line.matches("[AGCT]+") || !line.matches("[agct]+"))
-			return false;
-		return true;
 	}
 
 	@SuppressWarnings("resource")
