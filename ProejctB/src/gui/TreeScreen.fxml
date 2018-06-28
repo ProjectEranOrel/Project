@@ -8,8 +8,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="599.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TreeScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="599.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TreeScreenController">
    <children>
       <ImageView fitHeight="681.0" fitWidth="1318.0" layoutX="-244.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -18,7 +19,7 @@
       </ImageView>
       <TreeTableView fx:id="treeTable" layoutX="18.0" layoutY="14.0" onMouseClicked="#onClick" prefHeight="309.0" prefWidth="563.0" style="-fx-border-color: #7C7C7C;" />
       <ProgressIndicator fx:id="pi" layoutX="274.0" layoutY="156.0" />
-      <Button fx:id="compareButton" layoutX="238.0" layoutY="559.0" mnemonicParsing="false" onAction="#compare" prefHeight="51.0" prefWidth="124.0" text="Compare" textFill="RED">
+      <Button fx:id="compareButton" layoutX="238.0" layoutY="572.0" mnemonicParsing="false" onAction="#compare" onMouseEntered="#displayMessage" onMouseExited="#removeMessage" prefHeight="51.0" prefWidth="124.0" text="Compare" textFill="RED">
          <font>
             <Font name="System Bold" size="18.0" />
          </font></Button>
@@ -31,5 +32,9 @@
             <Font name="System Bold" size="14.0" />
          </font></Button>
       <TableView fx:id="selectedTable" layoutX="18.0" layoutY="341.0" prefHeight="200.0" prefWidth="424.0" style="-fx-border-color: #7C7C7C;" />
+      <Text fx:id="warningText" fill="RED" layoutX="154.0" layoutY="561.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You must choose at least one entry for comparison!">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Text>
    </children>
 </AnchorPane>

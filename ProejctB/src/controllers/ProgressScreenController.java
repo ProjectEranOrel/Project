@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
+/*hggfhgh**/
 
 
 
@@ -26,8 +27,6 @@ public class ProgressScreenController {
 
 	public void initialize()
 	{
-		pb.setProgress(0d);
-		//pi.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
 		ArrayList<Result> resultList = Result.orthology;
 		Task<Void> task = new Task<Void>()
 		{
@@ -35,6 +34,9 @@ public class ProgressScreenController {
 			@Override
 			protected Void call() throws Exception 
 			{
+				updateProgress(0, itemsToBeCompared.size()-1);
+				if(Vars.userSequence==null)
+					Vars.userSequence = Vars.setSequence(Vars.userResult.getGeneID());
 				for(i=0;i<itemsToBeCompared.size();i++)
 				{
 					Taxonomy item = itemsToBeCompared.get(i);

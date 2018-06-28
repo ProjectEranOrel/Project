@@ -1,16 +1,17 @@
 package controllers;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import entities.Main;
 import entities.Vars;
-import javafx.application.Platform;
-import javafx.scene.control.ProgressBar;
 import javafx.stage.FileChooser;
 
 public class GetResultsScreenController 
@@ -44,6 +45,29 @@ public class GetResultsScreenController
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("txt (*.txt)", "*.txt");  
 		fileChooser.getExtensionFilters().add(extFilter);
 		Vars.resultsFile = fileChooser.showOpenDialog(Main.primaryStage);
+		if(Vars.resultsFile==null)
+		{
+			JFrame jf=new JFrame();
+	        jf.setAlwaysOnTop(true);
+			JOptionPane.showMessageDialog(jf, "You must select a text file before proceeding.", "Error",JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(Vars.resultsFile));
+			String line = br.readLine();
+			br.close();
+			if(!line.contains("tax_id	Org_name	GeneID	CurrentID	Status	Symbol	Aliases	description	other_designations	map_location	chromosome	genomic_nucleotide_accession.version	start_position_on_the_genomic_accession	end_position_on_the_genomic_accession	orientation	exon_count	OMIM"))
+			{
+				JFrame jf=new JFrame();
+		        jf.setAlwaysOnTop(true);
+				JOptionPane.showMessageDialog(jf, "The file you selected isn't a valid orthology file!", "Error",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Main.showScreen("ResultsScreen", Vars.resultsScreenScreenTitle);
 	}
 

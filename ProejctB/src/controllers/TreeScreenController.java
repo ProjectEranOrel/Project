@@ -2,6 +2,7 @@ package controllers;
 
 
 import java.util.ArrayList;
+
 import entities.Result;
 import entities.Taxonomy;
 import entities.Vars;
@@ -17,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 
@@ -27,6 +29,7 @@ public class TreeScreenController
 {
 	public TreeTableView<Taxonomy> treeTable;
 	public TableView<Taxonomy> selectedTable;
+	public Text warningText;
 	public ProgressIndicator pi;
 	//private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
 	private ArrayList<TreeItem<Taxonomy>> selectedItems = new ArrayList<TreeItem<Taxonomy>>();
@@ -35,6 +38,7 @@ public class TreeScreenController
 	@SuppressWarnings("unchecked")
 	public void initialize()
 	{
+		warningText.setVisible(false);
 		pi.setVisible(false);
 		resultList = Result.orthology;
 		TreeTableColumn<Taxonomy, String> IDCol = new TreeTableColumn<>("Taxonomy ID");
@@ -200,12 +204,9 @@ public class TreeScreenController
 		{
 			Taxonomy son = sons.get(i);  
 			TreeItem<Taxonomy> sonItem = new TreeItem<Taxonomy>(son);
-			//addSonsFromOrthology(sonItem);
+			
 			if(son.isExpandable() && depth>0)
-			{
-				//addSonsFromOrthology(sonItem);
 				populateTreeMarked(sonItem,son.getSons(),depth-1);
-			}
 			for(int j=0;j<resultList.size();j++)
 				if(son.getTaxID().equals(resultList.get(j).getTaxID()))
 				{
@@ -228,9 +229,8 @@ public class TreeScreenController
 	}
 	public void compare()
 	{
-
-		if(Vars.userSequence==null)
-			Vars.userSequence = Vars.setSequence(Vars.userResult.getGeneID());
+		if(warningText.isVisible())
+			return;
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/progressScreen.fxml"));
 			Parent root1 = (Parent) fxmlLoader.load();
@@ -248,6 +248,17 @@ public class TreeScreenController
 			e.printStackTrace();
 		}
 		selectedTable.getItems().removeAll(selectedTable.getItems());
+	}
+	
+	public void displayMessage()
+	{
+		if(selectedTable.getItems().size()==0)
+			warningText.setVisible(true);
+	}
+	
+	public void removeMessage()
+	{	
+		warningText.setVisible(false);
 	}
 
 	public static ArrayList<Taxonomy> compareToAll(){
