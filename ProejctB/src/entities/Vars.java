@@ -44,7 +44,7 @@ public class Vars {
 
 	//Vars.root = func(userResult.getTaxID());
 
-	public static void setFamilies() {
+	public static void setFamilies() {//This function sets families for the compare function, sets every possibility to set ATGC into 3 places
 		families[0][0] = "AGT";families[0][3] = "ATG";
 		families[0][1] = "GAT";families[0][4] = "GTA";
 		families[0][2] = "TGA";families[0][5] = "TAG";
@@ -103,7 +103,12 @@ public class Vars {
 		families[19][0]="CCC";
 
 	}
-
+/**
+ * This function checks if 2 hidden repeats belong to the same family and can be compared
+ * @param hidden1 - hidden repeat 1
+ * @param hidden2 - hidden repeat 2
+ * @return true - belong to the same family, false - does not belong to the same family
+ */
 	public static boolean isInSameFamily(String hidden1, String hidden2) {
 		int hidden1Family = 0;
 		loop:
@@ -119,7 +124,10 @@ public class Vars {
 			
 		return false;
 	}
-
+/**
+ * This function reads a dna file and returns the dna written within as a String
+ * @return A string of the DNA found within a DNA file
+ */
 	@SuppressWarnings({ "resource", "finally" })
 	public static String readDNAFile() {
 		BufferedReader br = null;
@@ -136,7 +144,11 @@ public class Vars {
 			return dna;
 		}
 	}
-
+/**
+ * Checks if a taxonomy ID is within an orthology list
+ * @param taxonomy id of a tax node
+ * @return i - the location of the tax ID in the orthology list, -1 - not found.
+ */
 	public static int findInOrthology(String taxID)
 	{
 		ArrayList<Result> resultList = Result.orthology;
@@ -153,7 +165,12 @@ public class Vars {
 	public static File getUserDNAFile() {
 		return userDNAFile;
 	}
-
+/**
+ *  This function gets a gene ID, uses the given function and a perl function to get it's dna from the ncbi site
+ *  and returns the DNA file that was found in the ncbi database
+ * @param Gene ID
+ * @return DNA file
+ */
 	public static File getDNAByGI(String gi)
 	{
 		String[] cmdArray = new String[3];
@@ -172,7 +189,7 @@ public class Vars {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String st = br.readLine();
 			br.close();
-			//System.out.println("accession number: "+st);
+
 			int index = st.indexOf(".");
 			if(index>-1)
 				cmdArray[2] = st.substring(0,index);
@@ -201,7 +218,6 @@ public class Vars {
 		catch (IOException | InterruptedException  e) 
 		{
 			e.printStackTrace();
-			System.out.println("Please check if the executable is located in your desktop");
 		}
 		return new File("clusters.txt");
 	}
@@ -228,7 +244,6 @@ public class Vars {
 			br = new BufferedReader(fr);
 
 			if(!isErrorDNA(dnaFile)) {
-				System.out.println("bad sequence! Bad GI");
 				sequence.setDNA("bad dna");return sequence;
 			}
 			br.readLine();//First line is junk
@@ -268,13 +283,19 @@ public class Vars {
 		} catch (IOException e) {e.printStackTrace(); return false;}
 
 	}
-
-
+/**
+ * Takes out the nodes.txt file from the dmp file
+ */
 	public static void setTaxDmpFile() {
 		downloadFile("taxdmp.zip","ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip");
 		extractFromZip("nodes.dmp", "taxdmp.zip", true);
 	}
 
+	/**
+	 * This function gets a file name and a url and downloads the filename from the fileURL
+	 * @param fileName the name of the file
+	 * @param fileUrl the url from where the file will be downloaded
+	 */
 
 	public static void downloadFile(String fileName, String fileUrl){
 		try {
@@ -298,6 +319,13 @@ public class Vars {
 		}catch(Exception e) {e.printStackTrace();}
 	}
 
+	/**
+	 * This function extracts a file by the name fileToBeExtracted from zipPackage, and whether to delete the zip afterwards or not
+	 * @param fileToBeExtracted name of the file to be extracted
+	 * @param zipPackage name of the zip
+	 * @param toDelete	whether to delete the zip afterwards or not
+	 */
+	
 	public static void extractFromZip(String fileToBeExtracted, String zipPackage, boolean toDelete) {
 		try {
 			OutputStream out = new FileOutputStream(fileToBeExtracted);
@@ -323,6 +351,11 @@ public class Vars {
 			}
 		}catch(Exception e) {e.printStackTrace();}
 	}
+	
+	/**
+	 * This function reads the nodes file we extract from a zip, and parse it into a an arraylist from later uses
+	 */
+	
 	public static void setNodesArray(){
 		ArrayList<Node> nodesList = new ArrayList<Node>();
 		BufferedReader br = null;
@@ -343,9 +376,8 @@ public class Vars {
 					if(Integer.parseInt(father)>max)
 						max = Integer.parseInt(father);
 			}
-			if(max == 0) {
-				System.out.println("File is empty or non existent!"); return;}
-			System.out.println(max);
+			if(max == 0) return;
+
 			nodesArray = new String[max+1];
 			Arrays.fill(nodesArray, null);
 			for(int i=0;i<nodesList.size();++i)
@@ -355,30 +387,6 @@ public class Vars {
 		finally {try {br.close();} catch (IOException e) {e.printStackTrace();}}
 	}
 
-	/*	public static ArrayList<String> findAncestors(String taxID)
-	{
-		if(nodesArray == null)
-			Vars.setNodesArray();
-		//ArrayList<Node> nodesList = Vars.nodesList;
-		ArrayList<String> ancestors = new ArrayList<String>();
-		//String currAncestor = parentColumn.get(sonColumn.indexOf(taxID));
-		int index = getSonIndex(Vars.nodesList,taxID);
-		if(index==-1) return null;
-		String currAncestor = Vars.nodesList.get(index).getFatherTaxID();
-		String nextAncestor = null;
-		ancestors.add(currAncestor);
-		while(true)
-		{
-			//nextAncestor = parentColumn.get(sonColumn.indexOf(currAncestor));
-			index = getSonIndex(Vars.nodesList,currAncestor);
-			if(index==-1) return ancestors;
-			nextAncestor = Vars.nodesList.get(index).getFatherTaxID();
-			if(currAncestor.equals(nextAncestor)) break;
-			ancestors.add(nextAncestor);
-			currAncestor = nextAncestor;
-		}
-		return ancestors;
-	}*/
 
 
 }

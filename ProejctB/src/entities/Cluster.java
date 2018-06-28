@@ -34,6 +34,12 @@ public class Cluster{
 		this.end = end;
 	}
 
+	
+	/**
+	 * This function finds hidden repeats in a given sequence
+	 * @param seg is the sequence given
+	 * @return the hidden repeat of the sequence
+	 */
 	public String findHiddenRepeat(String seg) {
 		int codonSize = 3;
 		int count=1;

@@ -11,7 +11,6 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import org.apache.commons.net.ftp.FTPClient;
 
 import entities.Result;
 import entities.Taxonomy;
@@ -23,12 +22,14 @@ public class ParseSourceCode {
 	private static final String father = "</UL>";
 	private static final String notExpandable = "square";
 
-	/*public static void main(String args[]) 
-	{
-		getLineage("672");
-	}*/
-	public static ArrayList<Taxonomy> getLineage(String taxID) { // First page3
-		System.out.println(taxID);
+
+	
+	/**
+	 * This function parses the source code of the tax id's lineage into an arraylist of it's lineage
+	 * @param taxID the taxonomy ID of the node we are currently working on
+	 * @return returns an arraylist of all the lineage of the node
+	 */
+	public static ArrayList<Taxonomy> getLineage(String taxID) { 
 		URLConnection conn;
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
@@ -41,7 +42,6 @@ public class ParseSourceCode {
 
 			if(!lineage.contains("STRONG")) 
 				return getLineageModifier(br);
-			System.out.println("returned");
 
 
 
@@ -86,7 +86,6 @@ public class ParseSourceCode {
 							if(nextTax ==  Integer.parseInt(Vars.nodesArray[nextTax])) break;
 						}
 				}//for
-				System.out.println("Organism: " + tax.getOrganism());
 			}//outer while
 			taxList.set(0, taxSelected);
 
@@ -97,7 +96,11 @@ public class ParseSourceCode {
 
 
 
-
+/**
+	 * This function parses the source code of the tax id's lineage into an arraylist of it's lineage
+	 * @param taxID the taxonomy ID of the node we are currently working on
+	 * @return returns an arraylist of all the lineage of the node
+ */
 	public static ArrayList<Taxonomy> getLineageModifier(BufferedReader br){
 	
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
@@ -105,9 +108,6 @@ public class ParseSourceCode {
 
 		try {	
 			String lineage = br.readLine();
-			System.out.println(lineage);
-
-
 			int index = 3;//First ahref is irrelevant
 			while(lineage.indexOf("href") != -1) {
 				tax = new Taxonomy();
@@ -146,16 +146,19 @@ public class ParseSourceCode {
 		}catch(Exception e) {e.printStackTrace(); return null;}
 	}
 
+	
+	/**
+	 * This function gets the sons of a given node
+	 * @param taxonomy taxonomy information of the node
+	 * @return returns the taxonomy of the sons
+	 */
 	public static Taxonomy getSons(Taxonomy taxonomy) {
 		Taxonomy root = taxonomy;
 		String taxID=root.getTaxID();
 		root.setExpandable(true);
 		Taxonomy currentTax = root;
-		// CHECK FIRST IF EXPANDABLE, IF NOT, RETURN INFO!
-		//root.set
-		try {
-			/// DO PREV AND CURR TAX! REPARSE!
 
+		try {
 			BufferedReader br = getBufferedReader(Vars.taxonomyBrowser + taxID);
 
 			String inputLine="";
@@ -224,8 +227,7 @@ public class ParseSourceCode {
 								if(nextTax ==  Integer.parseInt(Vars.nodesArray[nextTax])) break;
 							}
 					}//for
-					//	System.out.println("Organism: " + currentTax.getOrganism() +"tax id: " + currentTax.getTaxID() + "  ancestor: " + Result.resultsList.get(j).ancestors.get(k));
-					//	System.out.println("Organism: " + currentTax.getOrganism() +"tax id: " + currentTax.getTaxID() + "  ancestor: " + Result.resultsList.get(j).ancestors.get(k));
+
 
 
 					if((!(lines[i+1].equals(father)))&&(!(lines[i+1].equals(son)))) {
@@ -245,7 +247,9 @@ public class ParseSourceCode {
 	}
 
 
-
+/**
+ * This function parses https://www.ncbi.nlm.nih.gov/gene/?Term= 
+ */
 	public static void parseGeneSearchSourceCode() {
 		try {
 
@@ -304,7 +308,6 @@ public class ParseSourceCode {
 				if(i>=inputLine.length()) break;
 				while(!(inputLine.charAt(i-1)=='>' && inputLine.charAt(i)!='<')) {
 					if(inputLine.charAt(i-1)=='-' && inputLine.charAt(i)=='o' && inputLine.charAt(i+1)=='m' && inputLine.charAt(i+2)=='i') {//Means no aliases, cause we reached the mim
-						System.out.println("No Location!");
 						result.setLocation("none");break;
 					}
 					++i;
@@ -366,7 +369,7 @@ public class ParseSourceCode {
 			}
 
 			br.close();
-		} catch (IOException e) {e.printStackTrace();System.out.println("Link might be broken");}
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	public static String getStr(int i, String inputLine, char notEqual) {
 		String str = "";
@@ -381,18 +384,19 @@ public class ParseSourceCode {
 		return str;
 
 	}
-
+	
+	
+	/**
+	 * This function checks if the DMP.zip file should be updated
+	 */
 	public static void checkTaxDMPUpdate() {//Update later maybe!
 		try {
 			BufferedReader br = getBufferedReader("ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/");
 			String str = "", oldDate, newDate;
-			while(!str.contains("taxdmp.zip")) {
+			while(!str.contains("taxdmp.zip")) 
 				str = br.readLine();
-				System.out.println(str);
-			}
+			
 			newDate = str.substring(str.indexOf("\"",str.indexOf("MB\","+5))+1, str.indexOf(":")-4);
-			System.out.println(newDate);
-
 			File file;
 			if(!(Files.exists(Paths.get("C:\\Users\\Orel\\git\\Project\\ProejctB\\taxdmpdate.txt")))) { 
 				PrintWriter writer = new PrintWriter("taxdmpdate.txt", "UTF-8");
@@ -405,9 +409,7 @@ public class ParseSourceCode {
 			FileReader fr = new FileReader(file);
 			BufferedReader brdmp = new BufferedReader(fr);
 			oldDate = brdmp.readLine();
-			PrintWriter writer = new PrintWriter("taxdmpdate.txt", "UTF-8");
 			String[] oldDateArr = oldDate.split("."), newDateArr = newDate.split(".");//DD-MM-YYYY
-			System.out.println("old: " + oldDate + " new: " + newDate);
 			boolean toDownload = false;
 			if(Integer.parseInt(newDateArr[2]) > Integer.parseInt(oldDateArr[2])) 
 				toDownload=true;
@@ -421,15 +423,11 @@ public class ParseSourceCode {
 				return;
 			//FTPClient client = new FTPClient();
 			//client.connect("ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/");
-
-
-
-
-
-
 		}catch(Exception e) {e.printStackTrace();}
 	}
 
+	
+	
 
 	public static BufferedReader getBufferedReader(String link) {
 		URLConnection conn;
