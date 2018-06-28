@@ -1,5 +1,7 @@
 package controllers;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -43,8 +45,30 @@ public class FirstScreenController {
 			fileNameText.setText(Vars.getUserDNAFile().getName());
 			subtitleText.setText("Please insert gene's Tax ID");
 			searchButton.setText("Submit");
-			
+
 		}
+	}
+	/**
+	 * This function is a test function to check whether the dna file is legit or not
+	 * @param file
+	 * @return
+	 */
+	public boolean isDNAFile(File file) {
+		try {
+			int cnt=0, noDNALines = 0;
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);	
+			String str;
+			while((str = br.readLine()) != null) {
+				cnt++;
+				if(!str.matches("[AGTC]+") || !str.matches("[agtc]+"))
+					noDNALines++;
+			}
+			if(cnt == noDNALines)
+				return false;
+			return true;
+		}catch(Exception e) {return false;}
+
 	}
 
 	public void onInputKeyPressed() {
@@ -80,13 +104,13 @@ public class FirstScreenController {
 				return;
 			}
 			else {				Vars.userResult = new Result();
-				Vars.userResult.setTaxID(uploadTextField.getText());
-				Vars.userResult.setGeneID("userFileUpload");
-				Vars.userSequence = Vars.setSequence("userDNA");
+			Vars.userResult.setTaxID(uploadTextField.getText());
+			Vars.userResult.setGeneID("userFileUpload");
+			Vars.userSequence = Vars.setSequence("userDNA");
 			}
-		
+
 		System.out.println("onSearch");
-		
+
 		if(isResults()) {
 			Vars.setNodesArray();
 			Main.showScreen("GetResultsScreen", Vars.getResultsScreenTitle);
@@ -94,7 +118,7 @@ public class FirstScreenController {
 		else 
 			JOptionPane.showMessageDialog(null, "No Results were found.\nPlease try something else.", "Warning",
 					JOptionPane.WARNING_MESSAGE);
-		
+
 		/*CHANGE check if too many results!(will take too long)*/
 	}
 
@@ -113,10 +137,10 @@ public class FirstScreenController {
 
 			while((str = br.readLine()).contains("gene")&&!str.contains("all")) 
 				Vars.searchWord = str.substring(str.indexOf("gene/") + 5, str.indexOf(">")-2);
-			
+
 			if(str.contains("all"))
 				Vars.searchWord = str.substring(str.indexOf("Term=") + 5, str.indexOf(">")-1);
-			
+
 			return true;
 		}catch(Exception e) {e.printStackTrace(); return false;}
 	}
