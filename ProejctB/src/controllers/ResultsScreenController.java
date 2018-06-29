@@ -22,10 +22,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-/*CHANGE: Download DNA, Search for the matching dna(with name through the site zakharya gave us or taxonomy somehow), download that dna and compare
-  CHANGE Check weather the list is too long to download and warn the user!
-  CHANGE add search options to table
-  CHANGE add a new screen for compared results ( as well as the user results, difference: buttons and another cell(Results)*/
+
 public class ResultsScreenController {
 	public ObservableList <Result> resultsList;
 	ArrayList<Result> resultsArrayList = new ArrayList<Result>();

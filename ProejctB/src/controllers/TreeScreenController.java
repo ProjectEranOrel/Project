@@ -32,10 +32,14 @@ public class TreeScreenController
 	public Text warningText;
 	public ProgressIndicator pi;
 	//private ArrayList<Integer> selectedItemsIndexes = new ArrayList<Integer>();
-	private ArrayList<TreeItem<Taxonomy>> selectedItems = new ArrayList<TreeItem<Taxonomy>>();
+	//private ArrayList<String> selectedItems = new ArrayList<String>();
 	private ArrayList<Result> resultList;
 
 	@SuppressWarnings("unchecked")
+	/**
+	 * This function initializes the screen's various components: The tree presenting the input's heritage, buttons and the table
+	 * containing all the entries that are going to be compared to the input.
+	 */
 	public void initialize()
 	{
 		warningText.setVisible(false);
@@ -48,12 +52,12 @@ public class TreeScreenController
 		TreeTableColumn<Taxonomy, String> nameCol = new TreeTableColumn<>("Organism name");
 		nameCol.setCellValueFactory((TreeTableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getValue().getOrganism()));
-
-
+		
 
 		TableColumn<Taxonomy,String> selectedIDcol = new TableColumn<>("Taxonomy ID");
 		selectedIDcol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
 		new ReadOnlyStringWrapper(param.getValue().getTaxID()));
+		
 
 		TableColumn<Taxonomy, String> selectedNameCol = new TableColumn<>("Organism name");
 		selectedNameCol.setCellValueFactory((TableColumn.CellDataFeatures<Taxonomy, String> param) -> 
@@ -78,7 +82,10 @@ public class TreeScreenController
 		treeTable.setRoot(root);
 		treeTable.setShowRoot(false);
 	}
-	//Checks if the given taxID is an ancestor of a certain entry in the orthology list
+	/**
+	 * This function checks if the given entry is an ancestor of a certain entry in the orthology list
+	 * @param - taxID is the taxonomy ID of the given entry.
+	 */
 	private ArrayList<Taxonomy> isAnAncestor(String taxID)
 	{
 		ArrayList<Taxonomy> res = new ArrayList<Taxonomy>();
@@ -96,6 +103,9 @@ public class TreeScreenController
 		}
 		return res;
 	}
+	/**
+	 * This function adds all the descendents of the marked entry that also appear in the orthology list.
+	 */
 	public void onAdd()
 	{
 		ObservableList<TreeItem<Taxonomy>> selectedItems = treeTable.getSelectionModel().getSelectedItems();
@@ -138,15 +148,23 @@ public class TreeScreenController
 			}
 		}  
 	}
+	/**
+	 * This function removes the entries the user marked in the table that is located in the 
+	 * lower half of the window.
+	 */
 	public void onRemove()
 	{
 		selectedTable.getItems().removeAll(selectedTable.getSelectionModel().getSelectedItems());
 	}
+	/**
+	 * This function checks if the entry user clicked on has descendents, if so it calls
+	 * the appropriate retrieval function: populateTreeMarked or populateTreeUnMarked
+	 */
 	public void onClick() 
 	{
-		/*if(selectedItems.contains(treeTable.getSelectionModel().getSelectedItem()))
+		/*if(selectedItems.contains(treeTable.getSelectionModel().getSelectedItem().getValue().getTaxID()))
 			return;
-		selectedItems.add(treeTable.getSelectionModel().getSelectedItem());*/
+		selectedItems.add(treeTable.getSelectionModel().getSelectedItem().getValue().getTaxID());*/
 		TreeItem<Taxonomy> chosen = treeTable.getSelectionModel().getSelectedItem();
 		if(chosen != null && chosen.getValue().isExpandable() && chosen.getChildren().size()==0)//If the chosen table entry has children and they weren't retrieved yet
 		{
@@ -159,10 +177,8 @@ public class TreeScreenController
 				{
 
 					if(chosen.getValue().getOrganism().contains("*"))
-					{
-						//addSonsFromOrthology(chosen);
 						populateTreeMarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);	
-					}
+					
 					else
 						populateTreeUnmarked(chosen,ParseSourceCode.getSons(chosen.getValue()).getSons(),2);
 					pi.setVisible(false);
@@ -172,32 +188,13 @@ public class TreeScreenController
 			t.start();
 		}
 	}
-	private void addSonsFromOrthology(TreeItem<Taxonomy> item)
-	{
-		for(int j=0;j<resultList.size();j++)
-		{
-			Result res = resultList.get(j);//An entry from the orthology
-			if(Vars.nodesArray[Integer.parseInt(res.getTaxID())].equals(item.getValue().getTaxID()))//If the item from the tree is the father of an entry from the orthology
-			{
-				//We check if the son is already in the tree
-				boolean stopped = false;
-				for(int k=0;k<item.getChildren().size();k++)
-				{
-					Taxonomy son = item.getChildren().get(k).getValue();
-					if(son.getTaxID().equals(res.getTaxID()))
-					{
-						if(!son.getOrganism().contains("**"))
-							son.setOrganism("**"+son.getOrganism()+"**");
-						stopped = true;
-						break;
-					}
-				}
-				if(!stopped)//The son isn't present in the tree yet, so we add it
-					item.getChildren().add(new TreeItem<Taxonomy>(new Taxonomy(res.getTaxID(),"**"+res.getOrgName()+"**")));
-				//break;
-			}
-		}
-	}
+	
+	/**
+	 * This function copies the information about the children and grand-children 
+	 * entries of the clicked entry that does appear in the orthology list. 
+	 * @param - The tree item the user clicked on, a list of its children and an integer telling
+	 * how far should we go down the tree(2 - retrieves information about children and grand-children).
+	 */
 	private void populateTreeMarked(TreeItem<Taxonomy> chosenTreeItem, ArrayList<Taxonomy> sons,int depth)
 	{
 		for(int i=0;i<sons.size();i++)
@@ -208,7 +205,7 @@ public class TreeScreenController
 			if(son.isExpandable() && depth>0)
 				populateTreeMarked(sonItem,son.getSons(),depth-1);
 			for(int j=0;j<resultList.size();j++)
-				if(son.getTaxID().equals(resultList.get(j).getTaxID()))
+				if(son.getTaxID().equals(resultList.get(j).getTaxID()) && !son.getOrganism().contains("*"))
 				{
 						son.setOrganism("**"+son.getOrganism()+"**");
 						break;//The son appears only once in the orthology, so there is not reason to continue the loop
@@ -216,6 +213,13 @@ public class TreeScreenController
 			chosenTreeItem.getChildren().add(sonItem);
 		}
 	}
+	
+	/**
+	 * This function copies the information about the children and grand-children 
+	 * entries of the clicked entry that doesn't appear in the orthology list. 
+	 * @param - The tree item the user clicked on, a list of its children and an integer telling
+	 * how far should we go down the tree(2 - retrieves information about children and grand-children).
+	 */
 	private void populateTreeUnmarked(TreeItem<Taxonomy> chosenTreeItem, ArrayList<Taxonomy> sons,int depth)
 	{
 		for(int i=0;i<sons.size();i++)
@@ -227,6 +231,9 @@ public class TreeScreenController
 			chosenTreeItem.getChildren().add(sonItem);
 		}
 	}
+	/**
+	 * This function loads the loading screen and copying the user's selected entries to that screen's controller.
+	 */
 	public void compare()
 	{
 		if(warningText.isVisible())
@@ -249,13 +256,18 @@ public class TreeScreenController
 		}
 		selectedTable.getItems().removeAll(selectedTable.getItems());
 	}
-	
+	/**
+	 * This function displays a warning text in case the user hasn't selected any entries for comparison
+	 * while the mouse pointer is hovering over the "Compare" button.
+	 */
 	public void displayMessage()
 	{
 		if(selectedTable.getItems().size()==0)
 			warningText.setVisible(true);
 	}
-	
+	/**
+	 * This function hides the warning text mentioned in the displayMessage() documentation.
+	 */
 	public void removeMessage()
 	{	
 		warningText.setVisible(false);
@@ -267,6 +279,7 @@ public class TreeScreenController
 			Taxonomy tax = new Taxonomy();
 			tax.setTaxID(Result.orthology.get(i).getTaxID());
 			tax.geneID = Result.orthology.get(i).getGeneID();
+			tax.setOrganism(Result.orthology.get(i).getOrgName());
 			arr.add(tax);
 		}
 		return arr;

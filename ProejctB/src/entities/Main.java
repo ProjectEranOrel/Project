@@ -31,8 +31,8 @@ public class Main extends Application
 		popup.initModality(Modality.APPLICATION_MODAL);
 		popup.initOwner(primaryStage);
 		popup = new Stage();
-		//showScreen("FirstScreen", Vars.firstScreenTitle);
-		 showScreen("GetResultsScreen", "");
+		showScreen("FirstScreen", Vars.firstScreenTitle);
+		 //showScreen("GetResultsScreen", "");
 
 	}
 
