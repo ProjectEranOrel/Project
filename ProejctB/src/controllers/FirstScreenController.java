@@ -40,6 +40,10 @@ public class FirstScreenController {
 		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("FASTA files", "*.FASTA", "*.txt");  
 		fileChooser.getExtensionFilters().add(extFilter);
 		Vars.setUserDNAFile(fileChooser.showOpenDialog(Main.primaryStage));
+		if(!isDNAFile(Vars.getUserDNAFile())) {
+			JOptionPane.showMessageDialog(null,  "The file you've uploaded does not contain any DNA sequences.\n Please upload another one", "No DNA",
+					JOptionPane.WARNING_MESSAGE);return;
+		}
 		if(Vars.getUserDNAFile().exists()) {
 			fileNameText.setText(Vars.getUserDNAFile().getName());
 			subtitleText.setText("Please insert gene's Tax ID");
@@ -60,7 +64,7 @@ public class FirstScreenController {
 			String str;
 			while((str = br.readLine()) != null) {
 				cnt++;
-				if(!str.matches("[AGTC]+") || !str.matches("[agtc]+"))
+				if(!str.matches("[AGTC]+"))
 					noDNALines++;
 			}
 			if(cnt == noDNALines)
@@ -82,7 +86,7 @@ public class FirstScreenController {
 	/*CHANGE add a short video on how to do it and check weather its user's or looking for a match*/
 	public void onSearch() throws IOException
 	{
-		
+
 		if(uploadTextField.getText().equals("") && Vars.getUserDNAFile() == null) {
 			JOptionPane.showMessageDialog(null,  "Please insert a key word before you search.", "Warning",
 					JOptionPane.WARNING_MESSAGE);

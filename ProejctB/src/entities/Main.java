@@ -32,7 +32,10 @@ public class Main extends Application
 		popup.initOwner(primaryStage);
 		popup = new Stage();
 		showScreen("FirstScreen", Vars.firstScreenTitle);
+<<<<<<< HEAD
 		 //showScreen("GetResultsScreen", "");
+=======
+>>>>>>> branch 'master' of https://github.com/ProjectEranOrel/Project.git
 
 	}
 
