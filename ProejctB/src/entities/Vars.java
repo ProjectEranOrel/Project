@@ -119,7 +119,9 @@ public class Vars {
 					hidden1Family = row;break loop;
 				}
 		for(int i=0;i<6;++i) 
-			if(hidden2.equals(families[hidden1Family][i])) 
+			if(families[hidden1Family][i]==null)
+				break;
+			else if(hidden2.equals(families[hidden1Family][i])) 
 				return true;
 			
 		return false;

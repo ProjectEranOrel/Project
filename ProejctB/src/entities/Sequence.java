@@ -27,8 +27,7 @@ public class Sequence {
 	 */
 	public double compare(Sequence toCompareDNA) {
 		try {
-			@SuppressWarnings("unused")
-			int userClusterNum = 0, toCompareClusterNum = 0, startIndex=0, endIndex=0, matchNumber=0, compares =0;
+			int userClusterNum = 0, toCompareClusterNum = 0, startIndex=0, endIndex=0, matchNumber=0;
 			String cluster1="", cluster2="";
 			/*           CHECK IF HIDDEN REPEATS OF 2 CLUSTERS ARE EQUAL        */		
 
@@ -49,14 +48,14 @@ public class Sequence {
 
 
 				if(toCompareDNA.clusters.get(toCompareClusterNum).getStart() < clusters.get(userClusterNum).getStart())
-					startIndex = toCompareDNA.clusters.get(toCompareClusterNum).getStart();
-				else
 					startIndex = clusters.get(userClusterNum).getStart();
+				else 
+					startIndex = toCompareDNA.clusters.get(toCompareClusterNum).getStart();
 
 				if(toCompareDNA.clusters.get(toCompareClusterNum).getEnd() > clusters.get(userClusterNum).getEnd())
-					endIndex = toCompareDNA.clusters.get(toCompareClusterNum).getEnd();
+					endIndex = clusters.get(userClusterNum).getEnd();
 				else
-					endIndex = clusters.get(toCompareClusterNum).getEnd();
+					endIndex = toCompareDNA.clusters.get(toCompareClusterNum).getEnd();
 
 
 
@@ -84,15 +83,14 @@ public class Sequence {
 					userClusterNum++;
 
 				//The 2 clusters are aligned and ready to be compared
-				for(int j=0;j<Math.min((double)cluster1.length(), (double)cluster2.length());) {
-					compares++;
+				for(int j=0;j<Math.min((double)cluster1.length(), (double)cluster2.length());j++) 
 					if((cluster1.charAt(j)) == (cluster2.charAt(j))) 
 						matchNumber++;
-					if(++j>=Math.min((double)cluster1.length(), (double)cluster2.length()) && ((toCompareClusterNum>=toCompareDNA.clusters.size() || userClusterNum>=clusters.size()))) 
+/*					if(++j==Math.min((double)cluster1.length(), (double)cluster2.length()) && ((toCompareClusterNum>=toCompareDNA.clusters.size() || userClusterNum>=clusters.size()))) 
 						if((cluster1.charAt(j-1)) == (cluster2.charAt(j-1))) 
-							matchNumber++;	
-				}
-			}
+							matchNumber++;	*/
+				
+			}//while
 
 			return ((double)matchNumber/(Math.min((double)dna.length(), (double)(toCompareDNA.getDNA()).length())))*100;
 		}
