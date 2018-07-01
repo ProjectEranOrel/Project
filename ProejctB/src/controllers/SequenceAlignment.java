@@ -233,19 +233,4 @@ public class SequenceAlignment {
 		}
 		return VOWEL_CONSONANT_PENALTY;
 	}
-
-
-	/*public static void main(String[] args) {
-		SequenceAlignment sequenceAligner = new SequenceAlignment();
-
-		String[][] testSequences = {{"MEAN", "name"},
-									{"abc", "ab"},
-									{"asdc", "gcasa"},
-									{"abc", "bc"}
-									};
-		for(int i=0; i< testSequences.length; i++){
-			sequenceAligner.calcOptimalAlignment(testSequences[i][0], testSequences[i][1]);
-		}
-	}*/
-
 }

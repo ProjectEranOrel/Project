@@ -1,8 +1,7 @@
 package controllers;
 
-import java.io.IOException;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import entities.Cluster;
 import entities.Sequence;
 import entities.Vars;
@@ -27,14 +26,6 @@ public class SearchScreenController
 	@FXML
 	public static TextField toTextField;
 	public ArrayList<Integer> clustersIndexes = new ArrayList<Integer>();
-	/*T2T
-  1.Create sequence from DNA File from perl - create a function that does that
-  2.Do 1 by running eran's function and reading the file it returns(Down here there's an example of creating clusters and a sequence)
-  To Do:
-  3.Learn how to search close DNAs
-  4.Compare and write in the table, send out the best
-
-  CHANGE: Add search bars for tableview*/
 
 
 
@@ -111,7 +102,7 @@ public class SearchScreenController
 				Vars.foundSequence = toCompareDNA;
 			}
 			else
-				System.out.println("seqvence no found");
+				System.out.println("sequence no found");
 		}else if(score>maxScore) maxScore=score;
 
 	}

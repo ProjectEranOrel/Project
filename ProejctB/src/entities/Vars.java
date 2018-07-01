@@ -2,10 +2,12 @@ package entities;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
@@ -109,8 +111,11 @@ public class Vars {
  * @param hidden2 - hidden repeat 2
  * @return true - belong to the same family, false - does not belong to the same family
  */
-	public static boolean isInSameFamily(String hidden1, String hidden2) {
-		int hidden1Family = 0;
+	public static boolean isInSameFamily(String hidden1, String hidden2) 
+	{
+		int a1 = 0,c1 = 0,t1 = 0,g1 = 0;
+		int a2 = 0,c2 = 0,t2 = 0,g2 = 0;
+		/*int hidden1Family = 0;
 		loop:
 		for(int row=0;row<20;row++)
 			for(int col=0;col<6;col++)
@@ -124,7 +129,38 @@ public class Vars {
 			else if(hidden2.equals(families[hidden1Family][i])) 
 				return true;
 			
-		return false;
+		return false;*/
+		for(int i=0;i<3;i++)
+			switch(hidden1.charAt(i))
+			{
+			case 'A':
+				a1++;
+				break;
+			case 'G':
+				g1++;break;
+			case 'C':
+				c1++;break;
+			case 'T':
+				t1++;break;
+			}
+		
+		for(int i=0;i<3;i++)
+			switch(hidden2.charAt(i))
+			{
+			case 'A':
+				a2++;
+				break;
+			case 'G':
+				g2++;break;
+			case 'C':
+				c2++;break;
+			case 'T':
+				t2++;break;
+			}
+		
+		return (a1==a2 && c1==c2 && g1==g2 && t1==t2);
+		
+				
 	}
 /**
  * This function reads a dna file and returns the dna written within as a String
@@ -189,13 +225,31 @@ public class Vars {
 		try {
 			file = new File("acc_num.txt");
 			BufferedReader br = new BufferedReader(new FileReader(file));
+			/*
 			String st = br.readLine();
 			br.close();
 
 			int index = st.indexOf(".");
 			if(index>-1)
 				cmdArray[2] = st.substring(0,index);
-			else cmdArray[2] = st;
+			else cmdArray[2] = st;*/
+			String st;
+			boolean foundAccNum = false;
+			while((st=br.readLine())!=null)//We don't know in what line the accession number is found
+			{
+				System.out.println(st);
+				int index = st.indexOf("_");
+				//Making sure we found the accession number
+				if(index>-1 && isAccessionNumber(st, index))
+				{
+					cmdArray[2] = st.substring(index-2, index+7);
+					foundAccNum = true;
+					break;
+				}
+			}
+			br.close();
+			if(!foundAccNum)
+				return null;
 			cmdArray[1] = "getFasta.pl";
 
 			Runtime.getRuntime().exec(cmdArray).waitFor();
@@ -207,7 +261,42 @@ public class Vars {
 		{
 			//file.delete();
 		}
-		return new File("dna.txt");
+		File f = new File("dna.txt");
+		File res = new File("res"+Vars.i++ +".txt");
+		try {
+			FileReader fr = new FileReader(f);
+			BufferedReader br = new BufferedReader(fr);
+			BufferedWriter fw = new BufferedWriter(new FileWriter(res, false));
+			String st;
+			fw.write(br.readLine());
+			fw.newLine();
+			int charCount = 70;
+			while((st = br.readLine())!=null)
+			{
+				for(int i=0;i<st.length();i++)
+					if(st.charAt(i)=='A' || st.charAt(i)=='G' || st.charAt(i)=='C' || st.charAt(i)=='T')
+					{
+						fw.write(st.charAt(i));
+						if(--charCount==0)
+						{
+							fw.newLine();
+							charCount = 70;
+						}
+						//System.out.print(st.charAt(i));
+					}
+				//System.out.println();  
+			}
+		    
+			fw.close();
+		    br.close();
+		    fr.close();
+		} catch (IOException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
+		return res;
 	}
 
 	public static File blackBox(String filePath)
@@ -222,6 +311,21 @@ public class Vars {
 			e.printStackTrace();
 		}
 		return new File("clusters.txt");
+	}
+	
+	private static boolean isAccessionNumber(String st,int index)
+	{
+		if(!(Character.isLetter(st.charAt(index-1)) && Character.isLetter(st.charAt(index-2)) && st.charAt(index-3)==' '))
+			return false;
+		for(int i=1;i<7;i++)
+		{
+			if(st.length()==index+i)//It's too short
+				return false;
+			System.out.println(st.charAt(index+i));
+			if(!Character.isDigit(st.charAt(index+i)))
+				return false;
+		}
+		return true;
 	}
 
 	public static Sequence compare(String geneID) {
@@ -242,17 +346,26 @@ public class Vars {
 
 			else
 				dnaFile = getDNAByGI(geneID);
+			if(dnaFile==null || !isErrorDNA(dnaFile)) 
+			{
+				sequence.setDNA("bad dna");return sequence;
+			}
+			//System.out.println("setting sequence...");
 			fr = new FileReader(dnaFile);
 			br = new BufferedReader(fr);
 
-			if(!isErrorDNA(dnaFile)) {
+			/*if(!isErrorDNA(dnaFile)) {
 				sequence.setDNA("bad dna");return sequence;
-			}
+			}*/
 			br.readLine();//First line is junk
 			/*        DNA          */
 			String string = "";
 			while((string=br.readLine())!=null) 
-				sequence.dna+= string;
+			{
+				//System.out.println("YOYOYOYOYOYOYOYOYOYO");
+				sequence.dna+=string;
+			}
+			System.out.println(sequence.dna.length());
 
 			/*        Clusters       */
 			fr = new FileReader(blackBox(dnaFile.getPath()));
@@ -261,10 +374,12 @@ public class Vars {
 
 
 			String start=br.readLine()/*=0*/, end;
+			//System.out.println("Beginning clustering...");
 			while((end = br.readLine()) != null) {
 				sequence.clusters.add(new Cluster(Integer.parseInt(start), Integer.parseInt(end), 
 						sequence.dna.substring(Integer.parseInt(start), Integer.parseInt(end))));
 				start = end;
+				//System.out.println("clustering...");
 			}
 		}catch(Exception e) {e.printStackTrace(); sequence = null;}
 		return sequence;

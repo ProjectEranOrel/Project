@@ -12,19 +12,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
-/*hggfhgh**/
+
 
 
 
 
 public class ProgressScreenController {
 	public ProgressBar pb = new ProgressBar(0.0);
-	//public ProgressIndicator pi = new ProgressIndicator();
 	ArrayList<Taxonomy> itemsToBeCompared = new ArrayList<Taxonomy>();
 	ArrayList<Taxonomy> alreadyCompared = new ArrayList<Taxonomy>();
 	Stage stage;
 	private int i;
-
+	/***
+	 * This function binds the progress attribute of the progress attribute of the progress bar to the number of entries compared to the input,
+	 * meaning that after each comparison, the progress indicator will increase in size.
+	 */
 	public void initialize()
 	{
 		ArrayList<Result> resultList = Result.orthology;
@@ -44,7 +46,6 @@ public class ProgressScreenController {
 					if(index>-1)
 					{
 						item.setSequence(Vars.setSequence(resultList.get(index).getGeneID()));
-						//item.setSequence(Vars.compare(resultList.get(index).getGeneID()));
 						if(item.getSequence().getDNA().equals("bad dna"))
 							item.getSequence().setMatchScore(-1);
 						else 
@@ -65,7 +66,8 @@ public class ProgressScreenController {
 							FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/gui/ResultMatchScreen.fxml"));
 							Parent root1 = (Parent) fxmlLoader.load();
 							ResultMatchScreen controller = fxmlLoader.getController();
-							controller.setItems(new ArrayList<Taxonomy>(alreadyCompared));
+							//controller.setItems(new ArrayList<Taxonomy>(alreadyCompared));
+							controller.setItems(alreadyCompared);
 							Stage stage = new Stage();
 							stage.setScene(new Scene(root1));
 							stage.show();
