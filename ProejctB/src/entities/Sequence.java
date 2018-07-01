@@ -26,14 +26,8 @@ public class Sequence {
 	 * @param toCompareDNA Sequence we should compare to the user's dna
 	 * @return The score of the comparison
 	 */
-	public double compare(Sequence toCompareDNA) {
-		BufferedWriter pr = null;
-		try {
-			pr = new BufferedWriter(new FileWriter(new File("test"+ Vars.i++  +".txt"), false));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	public double compare(Sequence toCompareDNA) 
+	{
 		try {
 			@SuppressWarnings("unused")
 			int userClusterNum = 0, toCompareClusterNum = 0, startIndex=0, endIndex=0, matchNumber=0, compares =0;
@@ -42,18 +36,6 @@ public class Sequence {
 			/*           CHECK IF HIDDEN REPEATS OF 2 CLUSTERS ARE EQUAL        */		
 			while(toCompareClusterNum<toCompareDNA.clusters.size() && userClusterNum<clusters.size() ) {//Go over all the clusters and check their hidden repeat
 
-				/*WRITE, DELETE LATER */
-				pr.write(clusters.get(userClusterNum).getDnaCluster());
-				pr.newLine();
-
-				pr.write(toCompareDNA.clusters.get(toCompareClusterNum).getDnaCluster());
-				pr.newLine();
-
-				pr.write(clusters.get(userClusterNum).getHiddenRepeat() + " " + toCompareDNA.clusters.get(toCompareClusterNum).getHiddenRepeat());
-				pr.newLine();
-
-
-				/*WRITE, DELETE LATER */
 
 				if(!(Vars.isInSameFamily(clusters.get(userClusterNum).getHiddenRepeat(),toCompareDNA.clusters.get(toCompareClusterNum).getHiddenRepeat()))) 
 				{
@@ -124,20 +106,11 @@ public class Sequence {
 			matchScore = ((double)matchNumber/(Math.min((double)dna.length(), (double)(toCompareDNA.getDNA()).length())))*100;
 			if(matchScore>100)
 				matchScore = 100;
-			pr.write("\nScore:" + ((double)matchNumber/(Math.min((double)dna.length(), (double)(toCompareDNA.getDNA()).length())))*100);
 			return matchScore;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return matchScore;
-		}finally 
-		{
-			try {
-				pr.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 
 

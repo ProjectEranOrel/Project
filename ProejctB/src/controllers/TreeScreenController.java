@@ -75,8 +75,6 @@ public class TreeScreenController
 		for(int i=0;i<data.size();i++)
 		{
 			TreeItem<Taxonomy> item = new TreeItem<Taxonomy>(data.get(i));
-			/*if(data.get(i).getOrganism().contains("*"))
-				addSonsFromOrthology(item);*/
 			root.getChildren().add(item);
 		}
 		treeTable.setRoot(root);
@@ -162,9 +160,6 @@ public class TreeScreenController
 	 */
 	public void onClick() 
 	{
-		/*if(selectedItems.contains(treeTable.getSelectionModel().getSelectedItem().getValue().getTaxID()))
-			return;
-		selectedItems.add(treeTable.getSelectionModel().getSelectedItem().getValue().getTaxID());*/
 		TreeItem<Taxonomy> chosen = treeTable.getSelectionModel().getSelectedItem();
 		if(chosen != null && chosen.getValue().isExpandable() && chosen.getChildren().size()==0)//If the chosen table entry has children and they weren't retrieved yet
 		{
