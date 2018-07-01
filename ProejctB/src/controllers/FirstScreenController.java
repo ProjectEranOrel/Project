@@ -67,6 +67,7 @@ public class FirstScreenController {
 				if(!str.matches("[AGTC]+"))
 					noDNALines++;
 			}
+			br.close();
 			if(cnt == noDNALines)
 				return false;
 			return true;
@@ -120,8 +121,6 @@ public class FirstScreenController {
 		else 
 			JOptionPane.showMessageDialog(null, "No Results were found.\nPlease try something else.", "Warning",
 					JOptionPane.WARNING_MESSAGE);
-
-		/*CHANGE check if too many results!(will take too long)*/
 	}
 
 	public boolean getOrthology(String TaxID) {

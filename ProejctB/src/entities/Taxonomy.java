@@ -32,7 +32,6 @@ public class Taxonomy {
 			super();
 			this.taxID = taxID;
 			this.organism = organism;
-			//this.isExpandable = isExpandable;
 		}
 		
 		public ArrayList<Taxonomy> getSons() {

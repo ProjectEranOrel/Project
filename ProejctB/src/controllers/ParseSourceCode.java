@@ -30,7 +30,7 @@ public class ParseSourceCode {
 	 * @return returns an arraylist of all the lineage of the node
 	 */
 	public static ArrayList<Taxonomy> getLineage(String taxID) { 
-		URLConnection conn;
+		//URLConnection conn;
 		ArrayList<Taxonomy> taxList = new ArrayList<Taxonomy>();
 		Taxonomy tax;
 		Taxonomy taxSelected = new Taxonomy();
@@ -409,6 +409,7 @@ public class ParseSourceCode {
 			FileReader fr = new FileReader(file);
 			BufferedReader brdmp = new BufferedReader(fr);
 			oldDate = brdmp.readLine();
+			brdmp.close();
 			String[] oldDateArr = oldDate.split("."), newDateArr = newDate.split(".");//DD-MM-YYYY
 			boolean toDownload = false;
 			if(Integer.parseInt(newDateArr[2]) > Integer.parseInt(oldDateArr[2])) 
@@ -429,6 +430,7 @@ public class ParseSourceCode {
 	
 	
 
+	@SuppressWarnings("finally")
 	public static BufferedReader getBufferedReader(String link) {
 		URLConnection conn;
 		BufferedReader br = null;
@@ -437,7 +439,10 @@ public class ParseSourceCode {
 			conn = url.openConnection();
 			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		}catch(Exception e) {e.printStackTrace();}
-		finally {return br;}
+		finally 
+		{
+			return br;
+		}
 	}
 
 

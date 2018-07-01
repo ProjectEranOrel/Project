@@ -115,19 +115,6 @@ public class Vars {
 	{
 		int a1 = 0,c1 = 0,t1 = 0,g1 = 0;
 		int a2 = 0,c2 = 0,t2 = 0,g2 = 0;
-		/*int hidden1Family = 0;
-		loop:
-		for(int row=0;row<20;row++)
-			for(int col=0;col<6;col++)
-				if(families[row][col] == null) break;
-				else if(hidden1.equals(families[row][col])) {
-					hidden1Family = row;break loop;
-				}
-		for(int i=0;i<6;++i) 
-			if(hidden2.equals(families[hidden1Family][i])) 
-				return true;
-			
-		return false;*/
 		for(int i=0;i<3;i++)
 			switch(hidden1.charAt(i))
 			{
@@ -223,14 +210,6 @@ public class Vars {
 		try {
 			file = new File("acc_num.txt");
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			/*
-			String st = br.readLine();
-			br.close();
-
-			int index = st.indexOf(".");
-			if(index>-1)
-				cmdArray[2] = st.substring(0,index);
-			else cmdArray[2] = st;*/
 			String st;
 			boolean foundAccNum = false;
 			while((st=br.readLine())!=null)//We don't know in what line the accession number is found
@@ -255,10 +234,6 @@ public class Vars {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		finally
-		{
-			//file.delete();
-		}
 		File f = new File("dna.txt");
 		File res = new File("res"+Vars.i++ +".txt");
 		try {
@@ -280,9 +255,7 @@ public class Vars {
 							fw.newLine();
 							charCount = 70;
 						}
-						//System.out.print(st.charAt(i));
 					}
-				//System.out.println();  
 			}
 		    
 			fw.close();
@@ -346,23 +319,17 @@ public class Vars {
 				dnaFile = getDNAByGI(geneID);
 			if(dnaFile==null || !isErrorDNA(dnaFile)) 
 			{
-				sequence.setDNA("bad dna");return sequence;
+				sequence.setDNA("bad dna");
+				return sequence;
 			}
-			//System.out.println("setting sequence...");
 			fr = new FileReader(dnaFile);
 			br = new BufferedReader(fr);
 
-			/*if(!isErrorDNA(dnaFile)) {
-				sequence.setDNA("bad dna");return sequence;
-			}*/
 			br.readLine();//First line is junk
 			/*        DNA          */
 			String string = "";
 			while((string=br.readLine())!=null) 
-			{
-				//System.out.println("YOYOYOYOYOYOYOYOYOYO");
 				sequence.dna+=string;
-			}
 			System.out.println(sequence.dna.length());
 
 			/*        Clusters       */
@@ -372,12 +339,10 @@ public class Vars {
 
 
 			String start=br.readLine()/*=0*/, end;
-			//System.out.println("Beginning clustering...");
 			while((end = br.readLine()) != null) {
 				sequence.clusters.add(new Cluster(Integer.parseInt(start), Integer.parseInt(end), 
 						sequence.dna.substring(Integer.parseInt(start), Integer.parseInt(end))));
 				start = end;
-				//System.out.println("clustering...");
 			}
 		}catch(Exception e) {e.printStackTrace(); sequence = null;}
 		return sequence;

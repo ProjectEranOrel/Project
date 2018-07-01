@@ -90,7 +90,6 @@ public class GetResultsScreenController
 			if(Vars.resultsFile.isFile())
 				System.out.println("IS FILE!");
 
-			//Main.showScreen("ResultsScreen", Vars.resultsScreenScreenTitle);
 		}
 
 	}
